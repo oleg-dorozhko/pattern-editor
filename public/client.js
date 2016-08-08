@@ -17,7 +17,22 @@ function test_call_server()
 
 			if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
 			
-			console.log("SERVEr ANSWER: "+xhr.responseText);
+			//console.log("SERVEr ANSWER: "+xhr.responseText);
+			
+			var server_blob = xhr.responseText;
+			
+			var newImg = document.createElement("img"),
+			url = URL.createObjectURL(server_blob);
+
+			newImg.onload = function() {	
+    
+				URL.revokeObjectURL(url);
+				
+			};
+			newImg.src = url;
+			document.body.appendChild(newImg);
+			
+	
 			
 		}
 		

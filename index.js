@@ -17,7 +17,11 @@ app.get('/', function(request, response) {
 });
 
 app.post('/test_call', function(request, response) {
-  response.end("test ok");
+  
+  //response.end("test ok");
+  request.pipe(response);
+  
+  
 });
 
 app.listen(app.get('port'), function() {

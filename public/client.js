@@ -1,6 +1,6 @@
 window.onload = function()
 {
-	$("#canvas").click = function()
+	$("#canvas").onclick = function()
 	{
 		alert('test ok');
 	}

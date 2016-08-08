@@ -22,14 +22,14 @@ function test_call_server()
 			var server_blob = xhr.responseText;
 			
 			var newImg = document.createElement("img"),
-			url = URL.createObjectURL(server_blob);
+			//url = URL.createObjectURL(server_blob);
 
 			newImg.onload = function() {	
     
-				URL.revokeObjectURL(url);
-				
+				//URL.revokeObjectURL(url);
+				console.log("loaded");
 			};
-			newImg.src = url;
+			newImg.src = server_blob;
 			document.body.appendChild(newImg);
 			
 	

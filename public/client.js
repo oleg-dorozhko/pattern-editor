@@ -22,7 +22,7 @@ function test_call_server()
 			
 			var server_blob = xhr.responseText;
 			
-			var newImg = document.createElement("img"),
+			var newImg = document.createElement("img");
 			//url = URL.createObjectURL(server_blob);
 
 			newImg.onload = function() {	

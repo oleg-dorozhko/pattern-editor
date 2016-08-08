@@ -11,7 +11,7 @@ function test_call_server()
 			  
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', '/test_call', true);
-		
+		xhr.responseType = "blob";
 		xhr.onload = function(e) {  
 		
 			if (xhr.readyState != 4) return;
@@ -20,9 +20,14 @@ function test_call_server()
 			
 			//console.log("SERVEr ANSWER: "+xhr.responseText);
 			
-			var server_blob = xhr.responseText;
+			//var server_blob = xhr.responseText;
 			
 			var newImg = document.createElement("img");
+			
+			var urlCreator = window.URL || window.webkitURL;
+			var imageUrl = urlCreator.createObjectURL(this.response);
+			//document.querySelector("#image").src = imageUrl;
+			
 			//url = URL.createObjectURL(server_blob);
 
 			newImg.onload = function() {	
@@ -31,7 +36,7 @@ function test_call_server()
 				console.log("loaded");
 			}
 			
-			newImg.src = server_blob;
+			newImg.src = imageUrl;
 			
 			document.body.appendChild(newImg);
 			

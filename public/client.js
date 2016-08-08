@@ -1,3 +1,4 @@
+alert('test ok');
 function test_call_server()
 {
 	

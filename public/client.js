@@ -28,8 +28,10 @@ function test_call_server()
     
 				//URL.revokeObjectURL(url);
 				console.log("loaded");
-			};
+			}
+			
 			newImg.src = server_blob;
+			
 			document.body.appendChild(newImg);
 			
 	

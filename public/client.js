@@ -38,7 +38,7 @@ window.onload = function()
 			canvas.height = this.height;
 			ctx.drawImage(this, 0, 0,canvas.width,canvas.height);
 		}
-		img.src = canvas.init_path;
+		img.src = canvas.init-path;
 
 		$("#inv").click( function() { transform("canvas", '/inverse'); } );
 		

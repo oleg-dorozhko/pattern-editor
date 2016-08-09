@@ -26,12 +26,34 @@ app.post('/test_call', function(request, response) {
   
 });
 
+
+
+function getSeedListFromFS()
+{
+	var s = '';
+	var img_tmpl = '';
+	var arr = fs.readdirSync( __dirname + '/views/pages/sims');
+	for(var i=0;i<arr.length;i++)
+	{
+		img_tmpl = '<img src="[img-path]" width="20" height="20" seed-clicked="true"> ';
+		img_tmpl = img_tmpl.replace("[img-path]", __dirname + '/views/pages/sims/'+arr[i]);
+		s += img_tmpl;
+	}
+	return s;
+}
+
+
+
 app.post('/load_div_first', function(request, response) {
   
 
 	fs.readFile( __dirname + '/views/pages/index.html', 'utf8', function (err,data) {
 	  
 	  if (err) { return console.log(err);  }
+
+	  var strData = data.toString();
+	  strData = strData.replace("[seed-list]",getSeedListFromFS());
+	  data = new Buffer(strData);
 	  
 	  response.writeHead(200, {  'Content-Type': 'text/html' } );
 	  response.end(data);

@@ -2,6 +2,7 @@ var opbeat = require('opbeat').start()
 
 var http = require('http');
 var PNG = require('pngjs').PNG;
+var fs = require('fs');
 
 var express = require('express');
 var app = express();

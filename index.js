@@ -1,7 +1,7 @@
 var http = require('http'); 
 var PNG = require('pngjs').PNG;
 var fs = require('fs');
-var PATH = require('path'):
+var PATH = require('path');
 
 
 console.log("\n------------------------------");

@@ -41,6 +41,9 @@ function getImageFromCanvas(canvas_id, callback )
 
 function blobToServer(blob, action, callback)
 {
+	var progressBar = document.getElementById("progress");
+	progressBar.hidden = false;
+	
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', action, true);
 	xhr.responseType = "blob";
@@ -54,8 +57,8 @@ function blobToServer(blob, action, callback)
 		
 		callback( blob_from_server );	
 		
-		var progressBar = document.getElementById("progress");
-		progressBar.hidden = false;
+		
+		
 		
 		xhr.upload.onprogress = function(e) {
 			if (e.lengthComputable) {

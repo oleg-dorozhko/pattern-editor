@@ -7,9 +7,9 @@ var PATH = require('path');
 console.log("\n------------------------------");
 console.log("\n-------------" + __dirname + "-----------------");
 console.log("\n------------------------------");
-/***
-const file = fs.createWriteStream('exampleexampleexample.txt');
+
+const file = fs.createWriteStream('/exampleexampleexample.txt');
 file.write('hello, ');
 file.end('world!');
-*****/
+
 

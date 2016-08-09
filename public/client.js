@@ -1,4 +1,31 @@
-alert('test ok');
+function loadDivFirst()
+{
+	
+		  
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '/load_div_first', true);
+		
+	xhr.onload = function(e) {  
+		
+			if (xhr.readyState != 4) return;
+
+			if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
+				
+			//console.log("SERVEr ANSWER: "+xhr.responseText);
+				
+				//var server_blob = xhr.responseText;
+				
+			document.getElementById("first").innerHTML = xhr.responseText;
+			
+	
+			
+		}
+		
+
+		xhr.send();
+	
+}
+
 function test_call_server()
 {
 	
@@ -54,6 +81,8 @@ function test_call_server()
 
 window.onload = function()
 {
+	loadDivFirst();
+	
 	document.getElementById("canvas").onclick = function()
 	{
 		var ctx = this.getContext("2d");

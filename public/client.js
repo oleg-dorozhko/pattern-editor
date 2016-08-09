@@ -1,8 +1,8 @@
 function loadDivFirst(callback)
 {
-	
 		  
 	var xhr = new XMLHttpRequest();
+	
 	xhr.open('POST', '/load_div_first', true);
 		
 	xhr.onload = function(e) {  
@@ -11,19 +11,14 @@ function loadDivFirst(callback)
 
 			if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
 				
-			//console.log("SERVEr ANSWER: "+xhr.responseText);
-				
-				//var server_blob = xhr.responseText;
-				
 			document.getElementById("first").innerHTML = xhr.responseText;
 			
 			callback();
 	
 			
-		}
+	}
 		
-
-		xhr.send();
+	xhr.send();
 	
 }
 
@@ -31,12 +26,12 @@ function loadDivFirst(callback)
 
 window.onload = function()
 {
-	loadDivFirst(function(){
+	loadDivFirst( function() {
 	
 		$("#inv").onclick = function() { transform("canvas", '/inverse'); }
 	
 		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
-	}
+	});
 	
 	
 }

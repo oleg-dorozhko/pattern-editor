@@ -29,11 +29,12 @@ app.post('/load_div_first', function(request, response) {
   
 
 	fs.readFile( __dirname + '/views/pages/index.html', 'utf8', function (err,data) {
-	  if (err) {
-		return console.log(err);
-	  }
+	  
+	  if (err) { return console.log(err);  }
+	  
 	  response.writeHead(200, {  'Content-Type': 'text/html' } );
 	  response.end(data);
+	  
 	});
   
   

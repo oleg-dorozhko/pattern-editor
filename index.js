@@ -1,24 +1,31 @@
-var http = require('http'); 
-var PNG = require('pngjs').PNG;
-var fs = require('fs');
-var PATH = require('path');
+var opbeat = require('opbeat').start()
 
+var express = require('express');
+var app = express();
 
-console.log("\n------------------------------");
-console.log("\n-------------" + __dirname + "-----------------");
-var fs = require('fs');
-var path = "./testfs.txt";
-var data = "Hello from the Node writeFile method!";
+app.set('port', (process.env.PORT || 5000));
 
-fs.writeFile(path, data, function(error) {
-     if (error) {
-       console.error("write error:  " + error.message);
-     } else {
-       console.log("Successful Write to " + path);
-     }
+app.use(express.static(__dirname + '/public'));
+app.use(opbeat.middleware.express())
+
+// views is directory for all template files
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+app.get('/', function(request, response) {
+  response.render('pages/index');
 });
 
-var contents = fs.readFileSync('./testfs.txt').toString();
-console.log(contents); //esperamos por el resultado
-console.log("Hello!"); 
-console.log("\n------------------------------");
+app.post('/test_call', function(request, response) {
+  
+  //response.end("test ok");
+  request.pipe(response);
+  
+  
+});
+
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
+
+

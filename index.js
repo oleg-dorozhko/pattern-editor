@@ -16,8 +16,9 @@ app.use(opbeat.middleware.express())
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-fs.createWriteStream( "dummydummydummy.txt" );
-fs.end("ok");
+var stream = fs.createWriteStreamSync( "dummydummydummy.txt" );
+stream.write("ok");
+stream.end();
 
 
 

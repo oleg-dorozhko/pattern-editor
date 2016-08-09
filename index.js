@@ -39,6 +39,42 @@ app.post('/load_div_first', function(request, response) {
   
 });
 
+app.post('/paste',function(request, response) {
+
+				request.pipe(response);
+					/*******
+					var old_fullpath = './canvas1' + '/' + getCurrentImageCanvasName();
+					
+					var newname = generateFileName()+".png";
+					var new_fullpath = './canvas1' + '/' + newname;
+					
+					var wstream = fs.createWriteStream( new_fullpath );
+					req.pipe(wstream);
+					
+					request.on('end', function()
+					{
+						console.log("Stream "+new_fullpath+" is wrote and closed");
+						//setCurrentCanvasImageName(newname);
+						
+						console.log("Now we try to unlink "+old_fullpath);
+						fs.unlinkSync(old_fullpath);
+						console.log("success");
+						
+						returnNewCanvasImageName(res);
+						
+					});
+					******/
+					
+				   
+}   
+
+
+
+
+
+
+
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });

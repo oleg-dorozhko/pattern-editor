@@ -1,5 +1,6 @@
 var opbeat = require('opbeat').start()
 
+var PNG = require('pngjs').PNG;
 var express = require('express');
 var app = express();  
 var fs = require('fs');

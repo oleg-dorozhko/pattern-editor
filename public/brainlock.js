@@ -83,9 +83,10 @@ function transform(canvas_id, action)
 {
 	var progressBar = document.getElementById("progress");
 	progressBar.hidden = false;
+	progressBar.value = 0;
 	
 	var intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
-	//init timer and redraw progress
+	//init timer for redraw progress
 	
 	getImageFromCanvas( canvas_id, function(blob) { 
 		blobToServer(blob, action, function( blob_from_server ) {

@@ -6,19 +6,8 @@ var PATH = require('path');
 
 console.log("\n------------------------------");
 console.log("\n-------------" + __dirname + "-----------------");
-console.log("\n------------------------------");
-
-/*****
-const file = fs.createWriteStream('/exampleexampleexample.txt');
-file.write('hello, ');
-file.end('world!');
-******/
-
 var fs = require('fs');
-fs.writeFile("exampleexampleexample.txt", "Hey there!", function(err) {
-    if(err) {
-        return console.log(err);
-    }
-
-    console.log("The file was saved!");
-}); 
+var contents = fs.readFileSync('exampleexampleexample.txt').toString();
+console.log(contents); //esperamos por el resultado
+console.log("Hello!"); 
+console.log("\n------------------------------");

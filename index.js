@@ -36,7 +36,7 @@ function getSeedListFromFS()
 	for(var i=0;i<arr.length;i++)
 	{
 		img_tmpl = '<img src="[img-path]" width="20" height="20" seed-clicked="true"> ';
-		img_tmpl = img_tmpl.replace("[img-path]", __dirname + '/views/pages/sims/'+arr[i]);
+		img_tmpl = img_tmpl.replace("[img-path]", '/sims/'+arr[i]);
 		s += img_tmpl;
 	}
 	return s;

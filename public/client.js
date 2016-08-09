@@ -192,7 +192,7 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 						var xhr = new XMLHttpRequest();
 						
 						xhr.open('POST', '/paste', true);
-						
+						xhr.responseType = "blob";
 						xhr.onload = function(e) {  
 						
 							//progressBar.hidden = true;
@@ -203,6 +203,58 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 
 							//console.log("combined as "+xhr.responseText);
 							//window['loadOut'](xhr.responseText);
+							
+							
+							
+							
+							var newImg = document.createElement("img");
+			
+							var urlCreator = window.URL || window.webkitURL;
+							var imageUrl = urlCreator.createObjectURL(this.response);
+							//document.querySelector("#image").src = imageUrl;
+							
+							//url = URL.createObjectURL(server_blob);
+
+							newImg.onload = function() {	
+					
+								//URL.revokeObjectURL(url);
+								console.log("loaded");
+								
+								
+								var canvas = document.getElementById("canvas");
+								canvas.width=this.width;
+								canvas.height=this.height;
+								var ctx = canvas.getContext("2d");
+								ctx.drawImage(this,0,0);
+								
+								
+								
+								
+								
+								
+								
+								
+								
+							}
+							
+							newImg.src = imageUrl;
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
 						
 							
 						}
@@ -303,10 +355,11 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 			
 			canvas.toBlob(function(blob) { 
 	
-				console.log(blob);
+				//console.log(blob);
 					  
 				var xhr = new XMLHttpRequest();
 				xhr.open('POST', '/paste', true);
+				xhr.responseType = "blob";
 				
 				xhr.onload = function(e) {  
 				
@@ -318,6 +371,68 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 
 					//console.log("combined as "+xhr.responseText);
 					//window['loadOut'](xhr.responseText);
+					
+					
+					
+					
+					
+					
+					
+						
+							var newImg = document.createElement("img");
+			
+							var urlCreator = window.URL || window.webkitURL;
+							var imageUrl = urlCreator.createObjectURL(this.response);
+							//document.querySelector("#image").src = imageUrl;
+							
+							//url = URL.createObjectURL(server_blob);
+
+							newImg.onload = function() {	
+					
+								//URL.revokeObjectURL(url);
+								console.log("loaded");
+								
+								
+								var canvas = document.getElementById("canvas");
+								canvas.width=this.width;
+								canvas.height=this.height;
+								var ctx = canvas.getContext("2d");
+								ctx.drawImage(this,0,0);
+								
+								
+								
+								
+								
+								
+								
+								
+								
+							}
+							
+							newImg.src = imageUrl;
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 				
 					
 				}

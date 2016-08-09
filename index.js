@@ -32,7 +32,7 @@ function getSeedListFromFS()
 {
 	var s = '';
 	var img_tmpl = '';
-	var arr = fs.readdirSync( __dirname + '/views/pages/sims');
+	var arr = fs.readdirSync( __dirname + '/public/sims');
 	for(var i=0;i<arr.length;i++)
 	{
 		img_tmpl = '<img src="[img-path]" width="20" height="20" seed-clicked="true"> ';

@@ -7,7 +7,7 @@ var PATH = require('path');
 console.log("\n------------------------------");
 console.log("\n-------------" + __dirname + "-----------------");
 var fs = require('fs');
-var contents = fs.readFileSync('exampleexampleexample.txt').toString();
+var contents = fs.readFileSync('app.json').toString();
 console.log(contents); //esperamos por el resultado
 console.log("Hello!"); 
 console.log("\n------------------------------");

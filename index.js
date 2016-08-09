@@ -20,7 +20,7 @@ app.set('view engine', 'ejs');
 
 function getFromFSCurrentImageCanvasName()
 {
-	var arr = fs.readdirSync('./canvas1');
+	var arr = fs.readdirSync('canvas1');
 	return arr[0];
 }
 
@@ -33,11 +33,11 @@ function getSeedListFromFS()
 {
 	var s = '';
 	var img_tmpl = '';
-	var arr = fs.readdirSync('./sims');
+	var arr = fs.readdirSync('sims');
 	for(var i=0;i<arr.length;i++)
 	{
 		img_tmpl = '<img src="[img-path]" width="20" height="20" seed-clicked="true"> ';
-		img_tmpl = img_tmpl.replace("[img-path]",'./sims/'+arr[i]);
+		img_tmpl = img_tmpl.replace("[img-path]",'sims/'+arr[i]);
 		s += img_tmpl;
 	}
 	return s;
@@ -48,14 +48,14 @@ function dummy(res)
 {
 	res.writeHead(200, {  'Content-Type': 'text/html' } );
 		
-		fs.readFile('../public/pages/index.html', (err, data) => {
+		fs.readFile('pages/index.html', (err, data) => {
 		
 			if (err) throw err;
 			
 			//var strData = StringDecoder.write(data);
 			var strData = data.toString();
 			strData = strData.replace("[seed-list]",getSeedListFromFS());
-			strData = strData.replace("[init-path]","./canvas1"+"/"+getFromFSCurrentImageCanvasName());
+			strData = strData.replace("[init-path]","canvas1"+"/"+getFromFSCurrentImageCanvasName());
 			data = new Buffer(strData);
 			//console.log();
 			

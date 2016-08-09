@@ -186,7 +186,7 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 						
 						
 						
-						console.log(blob);
+						//console.log(blob);
 						
 						
 						var xhr = new XMLHttpRequest();
@@ -201,8 +201,8 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 
 							if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
 
-							console.log("combined as "+xhr.responseText);
-							window['loadOut'](xhr.responseText);
+							//console.log("combined as "+xhr.responseText);
+							//window['loadOut'](xhr.responseText);
 						
 							
 						}
@@ -316,8 +316,8 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 
 					if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
 
-					console.log("combined as "+xhr.responseText);
-					window['loadOut'](xhr.responseText);
+					//console.log("combined as "+xhr.responseText);
+					//window['loadOut'](xhr.responseText);
 				
 					
 				}

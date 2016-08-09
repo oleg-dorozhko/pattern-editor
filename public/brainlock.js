@@ -8,6 +8,8 @@ function imageToCanvas(img, canvas_id)
 	canvas.height = img.height;
 	ctx.drawImage(img, 0, 0,canvas.width,canvas.height);
 	
+	//close timer
+	
 }
 
 function getImageFromBlob(blob, callback)
@@ -41,9 +43,6 @@ function getImageFromCanvas(canvas_id, callback )
 
 function blobToServer(blob, action, callback)
 {
-	var progressBar = document.getElementById("progress");
-	progressBar.hidden = false;
-	
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', action, true);
 	xhr.responseType = "blob";
@@ -56,29 +55,45 @@ function blobToServer(blob, action, callback)
 		var blob_from_server = xhr.response;
 		
 		callback( blob_from_server );	
-		
-		
-		
-		
+				
+		/*****		
 		xhr.upload.onprogress = function(e) {
 			if (e.lengthComputable) {
 				progressBar.value = (e.loaded / e.total) * 100;
 				progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
 			}
 		};
-
+		******/
 					
 	}
 	
 	xhr.send(blob);
 }
 
+function redrawProgress( progressBar )
+{
+	if(progressBar.value >= 99)  progressBar.value = 0;
+	progressBar.value ++;
+	progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
+		
+}
+
 function transform(canvas_id, action)
 {
+	var progressBar = document.getElementById("progress");
+	progressBar.hidden = false;
+	
+	var intervalID = setInterval(redrawProgress, 1000);
+	//init timer and redraw progress
+	
 	getImageFromCanvas( canvas_id, function(blob) { 
 		blobToServer(blob, action, function( blob_from_server ) {
 			getImageFromBlob( blob_from_server, function(img) {
-				imageToCanvas(img, canvas_id);	
+				imageToCanvas(img, canvas_id, function(){ 
+				
+				progressBar.hidden = true;
+				clearInterval(intervalID); });	
+				
 			});	
 		}); 
 	});

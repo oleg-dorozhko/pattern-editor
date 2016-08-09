@@ -15,8 +15,82 @@ app.use(opbeat.middleware.express())
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+
+
+function getFromFSCurrentImageCanvasName()
+{
+	var arr = fs.readdirSync('./canvas1');
+	return arr[0];
+}
+
+function getCurrentImageCanvasName()
+{
+	return getFromFSCurrentImageCanvasName();
+}
+
+function getSeedListFromFS()
+{
+	var s = '';
+	var img_tmpl = '';
+	var arr = fs.readdirSync('./sims');
+	for(var i=0;i<arr.length;i++)
+	{
+		img_tmpl = '<img src="[img-path]" width="20" height="20" seed-clicked="true"> ';
+		img_tmpl = img_tmpl.replace("[img-path]",'./sims/'+arr[i]);
+		s += img_tmpl;
+	}
+	return s;
+}
+
+
+function dummy(res)
+{
+	res.writeHead(200, {  'Content-Type': 'text/html' } );
+		
+		fs.readFile('first/index.html', (err, data) => {
+		
+			if (err) throw err;
+			
+			//var strData = StringDecoder.write(data);
+			var strData = data.toString();
+			strData = strData.replace("[seed-list]",getSeedListFromFS());
+			strData = strData.replace("[init-path]","./canvas1"+"/"+getFromFSCurrentImageCanvasName());
+			data = new Buffer(strData);
+			//console.log();
+			
+			
+			res.writeHead(HTTP_OK, contentType(".html"));
+			res.end(data);
+			
+		});
+}
+
+
+
+
+
+
+
+
+
 app.get('/', function(request, response) {
-  response.render('pages/index');
+	
+	
+	dummy(res);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+  //response.render('pages/index');
 });
 
 

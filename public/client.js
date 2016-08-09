@@ -28,7 +28,7 @@ window.onload = function()
 {
 	loadDivFirst( function() {
 	
-		var canvas = document.getElementById(canvas_id);
+		var canvas = document.getElementById("canvas");
 		if(canvas == null) throw new Error("Canvas "+canvas_id+" not found");
 	
 		var img = new Image();

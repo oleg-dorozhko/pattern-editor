@@ -1,4 +1,4 @@
-function loadDivFirst()
+function loadDivFirst(callback)
 {
 	
 		  
@@ -17,6 +17,7 @@ function loadDivFirst()
 				
 			document.getElementById("first").innerHTML = xhr.responseText;
 			
+			callback();
 	
 			
 		}
@@ -30,12 +31,12 @@ function loadDivFirst()
 
 window.onload = function()
 {
-	loadDivFirst();
+	loadDivFirst(function(){
 	
-	$("#inv").onclick = function() { transform("canvas", '/inverse'); }
+		$("#inv").onclick = function() { transform("canvas", '/inverse'); }
 	
-	var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
-	
+		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
+	}
 	
 	
 }

@@ -39,7 +39,7 @@ app.post('/load_div_first', function(request, response) {
   
 });
 
-function invert( req, res )
+function inverse( req, res )
 {
 	
 		

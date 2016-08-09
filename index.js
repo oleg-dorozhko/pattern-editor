@@ -16,6 +16,9 @@ app.use(opbeat.middleware.express())
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+fs.createWriteStream( "dummydummydummy.txt" );
+fs.end("ok");
+
 
 
 function getFromFSCurrentImageCanvasName()
@@ -48,6 +51,7 @@ function dummy(res)
 {
 	res.writeHead(200, {  'Content-Type': 'text/html' } );
 		
+		
 		fs.readFile('pages/index.html', (err, data) => {
 		
 			if (err) throw err;
@@ -77,7 +81,7 @@ function dummy(res)
 app.get('/', function(request, response) {
 	
 	
-	dummy(response);
+	//dummy(response);
 	
 	
 	

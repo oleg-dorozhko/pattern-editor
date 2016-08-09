@@ -28,7 +28,20 @@ window.onload = function()
 {
 	loadDivFirst( function() {
 	
-		$("#inv").click( function() { console.log("was click"); transform("canvas", '/inverse'); } );
+		var canvas = document.getElementById(canvas_id);
+		if(canvas == null) throw new Error("Canvas "+canvas_id+" not found");
+	
+		var img = new Image();
+		img.onload = function() {
+			var ctx = canvas.getContext("2d");
+			canvas.width = this.width;
+			canvas.height = this.height;
+			ctx.drawImage(this, 0, 0,canvas.width,canvas.height);
+		}
+		img.src = canvas.init_path;
+
+		$("#inv").click( function() { transform("canvas", '/inverse'); } );
+		
 	
 		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
 		

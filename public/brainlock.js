@@ -53,6 +53,17 @@ function blobToServer(blob, action, callback)
 		var blob_from_server = xhr.response;
 		
 		callback( blob_from_server );	
+		
+		var progressBar = document.getElementById("progress");
+		progressBar.hidden = false;
+		
+		xhr.upload.onprogress = function(e) {
+			if (e.lengthComputable) {
+				progressBar.value = (e.loaded / e.total) * 100;
+				progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
+			}
+		};
+
 					
 	}
 	

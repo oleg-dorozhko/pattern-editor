@@ -1,4 +1,4 @@
-function imageToCanvas(img, canvas_id)
+function imageToCanvas(img, canvas_id, callback)
 {
 	var canvas = document.getElementById(canvas_id);
 	if(canvas == null) throw new Error("Canvas "+canvas_id+" not found");
@@ -9,6 +9,7 @@ function imageToCanvas(img, canvas_id)
 	ctx.drawImage(img, 0, 0,canvas.width,canvas.height);
 	
 	//close timer
+	callback();
 	
 }
 

@@ -1,6 +1,6 @@
 var opbeat = require('opbeat').start()
 
-var http = require('http');
+var http = require('http'); 
 var PNG = require('pngjs').PNG;
 var fs = require('fs');
 
@@ -17,7 +17,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 var stream = fs.createWriteStream( "dummydummydummy.txt" );
-stream.on('open', function(){
+stream.once('open', function(){
 	stream.write("ok");
 	stream.end();
 });

@@ -16,11 +16,20 @@ app.use(opbeat.middleware.express())
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+const file = fs.createWriteStream('example.txt');
+file.write('hello, ');
+file.end('world!');
+
+/*******
+
 var stream = fs.createWriteStream( "dummydummydummy.txt" );
+
 stream.once('open', function(){
 	stream.write("ok");
 	stream.end();
 });
+
+*******/
 
 
 

@@ -39,6 +39,54 @@ app.post('/load_div_first', function(request, response) {
   
 });
 
+function invert( req, res )
+{
+	
+		
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+			
+			var result_png = new PNG ( {
+						
+							width: this.width,
+							height: this.height,
+							filterType: 4
+					} );
+
+			for (var y = 0; y < this.height; y++) {
+				for (var x = 0; x < this.width; x++) {
+					var idx = (this.width * y + x) << 2;
+
+					// invert color
+					result_png.data[idx] = 255 - this.data[idx];
+					result_png.data[idx+1] = 255 - this.data[idx+1];
+					result_png.data[idx+2] = 255 - this.data[idx+2];
+
+					// and reduce opacity
+					//this.data[idx+3] = this.data[idx+3] >> 1;
+					
+					result_png.data[idx+3] = this.data[idx+3];
+				}
+			}
+			
+			
+			result_png.pack();
+			
+			res.writeHead( 200, {  'Content-Type': 'blob' } );
+			
+			result_png.pipe(res);
+			
+			result_png.on('end', function(){
+				
+				console.log("retu 12345 rning new canvas image name (inverted) ");
+				
+			});
+			
+	});
+		
+}
+
+app.post('/inverse', inverse );
+
 app.post('/paste',function(request, response) {
 
 				request.pipe(response);

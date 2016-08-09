@@ -26,82 +26,24 @@ function loadDivFirst()
 	
 }
 
-function test_call_server()
-{
-	
-	
-	var canvas = document.getElementById("canvas");
 
-	canvas.toBlob( function(blob) { 
-	
-		//console.log(blob);
-			  
-		var xhr = new XMLHttpRequest();
-		xhr.open('POST', '/test_call', true);
-		xhr.responseType = "blob";
-		xhr.onload = function(e) {  
-		
-			if (xhr.readyState != 4) return;
-
-			if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
-			
-			//console.log("SERVEr ANSWER: "+xhr.responseText);
-			
-			//var server_blob = xhr.responseText;
-			
-			var newImg = document.createElement("img");
-			
-			var urlCreator = window.URL || window.webkitURL;
-			var imageUrl = urlCreator.createObjectURL(this.response);
-			//document.querySelector("#image").src = imageUrl;
-			
-			//url = URL.createObjectURL(server_blob);
-
-			newImg.onload = function() {	
-    
-				//URL.revokeObjectURL(url);
-				console.log("loaded");
-			}
-			
-			newImg.src = imageUrl;
-			
-			document.body.appendChild(newImg);
-			
-	
-			
-		}
-		
-
-		xhr.send(blob);
-		
-	});
-
-
-}
 
 window.onload = function()
 {
 	loadDivFirst();
 	
-	document.getElementById("canvas").onclick = function()
-	{
-		var ctx = this.getContext("2d");
-		ctx.fillStyle = "blue";
-		ctx.fillRect(100,100,200,200);
-	
-	}
-	
-	document.getElementById("test_call_server").onclick = function()
-	{
-		
-		test_call_server();
-		
-	}
+	$("#inv").onclick = function() { transform("canvas", '/inverse'); }
 	
 	var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
+	
+	
+	
 }
 
-
+window.onerror = function(message, url, lineNumber) {
+    alert("Поймана ошибка, выпавшая в глобальную область!\n" + "Сообщение: " + message + "\n(" + url + ":" + lineNumber + ")");
+}
+  
 
 
 

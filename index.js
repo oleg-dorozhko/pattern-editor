@@ -76,7 +76,7 @@ function dummy(res)
 app.get('/', function(request, response) {
 	
 	
-	dummy(res);
+	dummy(response);
 	
 	
 	

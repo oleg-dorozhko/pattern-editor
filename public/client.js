@@ -28,7 +28,7 @@ window.onload = function()
 {
 	loadDivFirst( function() {
 	
-		$("#inv").onclick = function() { transform("canvas", '/inverse'); }
+		$("#inv").onclick = function() { console.log("was click"); transform("canvas", '/inverse'); }
 	
 		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
 	});

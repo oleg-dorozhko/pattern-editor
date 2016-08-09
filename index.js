@@ -66,7 +66,7 @@ app.post('/paste',function(request, response) {
 					******/
 					
 				   
-}   
+});  
 
 
 

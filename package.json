@@ -12,7 +12,8 @@
   "dependencies": {
     "ejs": "2.4.1",
     "express": "4.13.3",
-    "opbeat": "^3.14.0"
+    "opbeat": "^3.14.0",
+	"pngjs":"3.0.0"
   },
   "repository": {
     "type": "git",

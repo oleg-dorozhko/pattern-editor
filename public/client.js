@@ -97,6 +97,8 @@ window.onload = function()
 		test_call_server();
 		
 	}
+	
+	var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
 }
 
 

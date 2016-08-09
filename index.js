@@ -53,9 +53,8 @@ app.post('/load_div_first', function(request, response) {
 
 	  var strData = data.toString();
 	  strData = strData.replace("[seed-list]",getSeedListFromFS());
-	  data = new Buffer(strData);
-	  
 	  strData = strData.replace("[init-path]","/initial-image.png");
+	  data = new Buffer(strData);
 	  
 	  response.writeHead(200, {  'Content-Type': 'text/html' } );
 	  response.end(data);

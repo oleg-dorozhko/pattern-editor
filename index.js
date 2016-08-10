@@ -654,7 +654,7 @@ function random( req, res )
 		var x = req.body.x;
 		var y = req.body.y;
 		var flag = req.body.flag;
-		var imgdata = req.body.blob;
+		var blob = req.body.blob;
 				
 		console.log("x="+x);
 		console.log("y="+y);
@@ -678,18 +678,18 @@ function random( req, res )
 			 
 		}
 
-		
+		var s = new Readable;
+		s.push( new Buffer(blob) ); 
 		
 		var png_from_client = new PNG ( { filterType: 4 } );
 		
-		imgdata.pipe(png_from_client);
+		s.pipe(png_from_client);
 		
 /*******
 		blob.lastModifiedDate = new Date();
 		blob.name = "crop.png";
     
-		var s = new Readable;
-		s.push( blob ); 
+		
 		s.push(null);      // indicates end-of-file basically - the end of the stream
 		
 		s.pipe( png_from_client );

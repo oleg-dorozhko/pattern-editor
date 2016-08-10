@@ -175,7 +175,7 @@ function sendPostWithParametersOnServer(  params )
 	var tmp = '';
 	for(key in params)
 	{
-		parameters += (tmp + key + '=' + params[key]);
+		parameters += (tmp + key + '=' + encodeURIComponent(params[key]));
 		tmp = '&';
 	}
 	
@@ -207,12 +207,12 @@ function crop(x,y,flag)
 {
 	getImageFromCanvas("canvas", function(blob) {   
 		
-		var newImg = document.createElement("img");
+		//var newImg = document.createElement("img");
 				
-		var urlCreator = window.URL || window.webkitURL;
-		var imageUrl = urlCreator.createObjectURL(blob);
+		//var urlCreator = window.URL || window.webkitURL;
+		//var imageUrl = urlCreator.createObjectURL(blob);
 		
-		newImg.onload = function() {	
+		//newImg.onload = function() {	
 					
 			
 			var params = [];
@@ -220,14 +220,14 @@ function crop(x,y,flag)
 			params['x']= x;
 			params['y']= y;
 			params['flag']= flag;
-			params['blob']= this;
+			params['blob']= blob;
 			
 			sendPostWithParametersOnServer( params ); 
 			
 			
-		}
+		//}
 				
-		newImg.src = imageUrl;
+		//newImg.src = imageUrl;
 		
 		
 		

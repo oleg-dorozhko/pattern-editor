@@ -245,6 +245,7 @@ function inverse( req, res )
 }
 
 app.post('/plus', plus );
+app.post('/minus', minus );
 app.post('/inverse', inverse );
 
 app.post('/paste',function(request, response) {

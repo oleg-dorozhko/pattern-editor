@@ -20,7 +20,7 @@ function whenClickedOnCanvas(e)
 		glob_x_left_top = x;
 		glob_y_left_top = y;
 						
-		var context = this.getContext("2d");
+		var context = e.target.getContext("2d");
 		var imageData = context.getImageData(x,y,1,1);
 			
 		global_pg_main_color = ""+imageData.data[0]+","+imageData.data[1]+","+imageData.data[2]+","+imageData.data[3];

@@ -64,6 +64,56 @@ app.post('/load_div_first', function(request, response) {
   
 });
 
+function sendImage(result_png, res, msg)
+{
+	result_png.pack();
+	res.writeHead( 200, {  'Content-Type': 'blob' } ); 
+	result_png.pipe(res);
+			
+	result_png.on('end', function()	{
+		console.log(msg);
+	});
+}
+
+function minus( req, res )
+{
+
+	req.pipe( new PNG ( {filterType: 4} ) ).on('parsed', function() {
+		
+		//here we create new png (same as result bufferedImage (in java))
+		var newpng = new PNG ( {
+			
+				width: this.width/2|0,
+				height: this.height/2|0,
+				filterType: 4
+		} );
+		
+
+		for (var y = 0; y < this.height; y+=2) {
+			for (var x = 0; x < this.width; x+=2) {
+				
+				var idx = (this.width * y + x) << 2;
+				
+				var new_idx = newpng.width * (y/2) + (x/2) << 2;
+				//var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
+				
+				newpng.data[new_idx] = this.data[idx];
+				newpng.data[new_idx+1] = this.data[idx+1];
+				newpng.data[new_idx+2] = this.data[idx+2];
+				newpng.data[new_idx+3] = this.data[idx+3];
+
+				
+				
+			}
+		}
+		
+		sendImage(newpng, res, "\nImage minused\n" );
+	
+			
+	});
+}
+
+
 function plus( req, res)
 {
 

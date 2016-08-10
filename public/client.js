@@ -48,7 +48,7 @@ window.onload = function()
 
 		$("#inv").click( function() { transform("canvas", '/inverse'); } );
 		$("#plus").click( function() { transform("canvas", '/plus'); } );
-		//$("#minus").click( function() { transform("canvas", '/minus'); } );
+		$("#minus").click( function() { transform("canvas", '/minus'); } );
 		
 		
 		

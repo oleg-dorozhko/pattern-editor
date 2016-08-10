@@ -742,7 +742,7 @@ function random( req, res )
 								
 			}
 		
-		}
+		});
 		
 	}
 

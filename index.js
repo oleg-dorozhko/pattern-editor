@@ -654,6 +654,7 @@ function random( req, res )
 	function crop( post, res )
 	{
 		
+		console.log('\nIn crop(...)\n');
 	
 		var x = post['x'];
 		var y = post['y'];
@@ -789,6 +790,8 @@ function precrop( req, res)
 
 		req.on('data', function (data) {
 			
+			console.log("when req.on data");
+			
 			body += data;
 
 			// Too much POST data, kill the connection!
@@ -805,8 +808,9 @@ function precrop( req, res)
 
 		req.on('end', function () {
 			
+			console.log("when req.on end");
 			var post = qs.parse(body);
-			
+			console.log("when qs.parse done");
 			crop( post, res );
 			
 			

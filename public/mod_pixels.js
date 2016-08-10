@@ -176,8 +176,9 @@ function sendPostWithParametersOnServer( params, action )
 	var tmp = '';
 	for(key in params)
 	{
-		if(key=='blob')  parameters += (tmp + key + '=' + params[key]);
-		else parameters += (tmp + key + '=' + encodeURIComponent(params[key]));
+		//if(key=='blob')  parameters += (tmp + key + '=' + params[key]);
+		//else 
+		parameters += (tmp + key + '=' + encodeURIComponent(params[key]));
 		
 		tmp = '&';
 	}
@@ -207,18 +208,14 @@ function sendPostWithParametersOnServer( params, action )
 
 function crop( x, y, flag )
 {
-	var blob = getImageFromCanvas("canvas", function(blob) {   
+	var params = [];
 		
-		var params = [];
+	params['x']= x;
+	params['y']= y;
+	params['flag']= flag;
+	params['dataurl']=  $("#canvas").toDataUrl();
 		
-		params['x']= x;
-		params['y']= y;
-		params['flag']= flag;
-		params['blob']= blob;
-		
-		sendPostWithParametersOnServer( params, '/crop' ); 
-		
-	});
+	sendPostWithParametersOnServer( params, '/crop' ); 
 	
 }
 

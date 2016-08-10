@@ -644,55 +644,17 @@ function random( req, res )
 	});
 }
 
-function prepare_crop(req, res)
-{
-	
-	var body = '';
-
-	req.on('data', function (data) {
-			
-			body += data;
-
-			// Too much POST data, kill the connection!
-			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-			
-			if (body.length > 1e6 * 10)	{ 
-				res.writeHead(503, {  'Content-Type': 'text/html' });
-				res.end("error: very big");
-				req.connection.destroy();
-				return;
-			}
-								
-	});
-
-	req.on('end', function () {
-							
-		var post = qs.parse(body);
-		
-		var px =  +post['x'];
-		var py =  +post['y'];
-		var pflag =  +post['flag'];	
-		var blob = post['blob'];
-		
-		crop( px, py, pflag, blob, res);
-		
-	});
-
-	
-	
-	
-}
 
 
-	function crop( x, y, flag, blob, res )
+	function crop(req, res)
 	{
 		//how get (x,y,flag) from req? and how get then img blob from req? and how get two blobs from req?
 		//for all this we are using body-parser
 		
-		//var x = req.body.x;
-		//var y = req.body.y;
-		//var flag = req.body.flag;
-		//var blob = req.body.blob;
+		var x = req.body.x;
+		var y = req.body.y;
+		var flag = req.body.flag;
+		var dataurl = req.body.dataurl;
 				
 		console.log("x="+x);
 		console.log("y="+y);
@@ -715,15 +677,12 @@ function prepare_crop(req, res)
 			y_left_top_pg_crop = 0;
 			 
 		}
-		
+
 		
 		
 		var png_from_client = new PNG ( { filterType: 4 } );
 		
-		//blob.lastModifiedDate = new Date();
-		//blob.name = "crop.png";
-		
-		
+		dataurl.pipe(png_from_client);
 		
 /*******
 		blob.lastModifiedDate = new Date();
@@ -736,7 +695,6 @@ function prepare_crop(req, res)
 		s.pipe( png_from_client );
 ********/		
 		
-		/***********
 		
 		png_from_client.on('parsed', function() {
 
@@ -802,12 +760,10 @@ function prepare_crop(req, res)
 		
 		});
 		
-		****/
-		
 	}
 
 
-app.post('/crop', prepare_crop );
+app.post('/crop', crop );
 app.post('/random', random );
 app.post('/mdown', mdown );
 app.post('/mright', mright );

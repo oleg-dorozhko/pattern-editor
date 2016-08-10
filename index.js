@@ -655,12 +655,10 @@ function crop(body)
 	var x =  post['x'];
 	var y =  post['y'];
 	var flag = post['flag'];
-	var dataurl_base64 = post['dataurl_base64'];
-	
-							
+	var dataurl_base64 = post['imagedata'];
 		
 	var s = new Readable;
-	var buff = new Buffer(dataurl_base64.replace(/^data:image\/(png|gif|jpeg);base64,/,''), 'base64');
+	var buff = new Buffer(dataurl_base64);//.replace(/^data:image\/(png|gif|jpeg);base64,/,''), 'base64');
 	s.push( buff );
 	s.push(null);
 	

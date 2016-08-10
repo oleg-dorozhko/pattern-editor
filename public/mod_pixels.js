@@ -253,26 +253,21 @@ function server_crop(x,y,flag)
 	
 	var canvas =  document.getElementById("canvas");
 	
-	var dataurl_base64 = canvas.toDataURL();
+	var imageData = canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height);
 	
-	/*********
+	
 	
 	///////
-	//var buffer = imageData.data.buffer;  // ArrayBuffer
+	var buffer = imageData.data.buffer;  // ArrayBuffer
 	//////
 	
-	var imageData = context.createImageData(w, h);
-	imageData.data.set(buffer);
+	//var imageData = context.createImageData(w, h);
+	//imageData.data.set(buffer);
 	
-	*********/
+	
 		
-	var params = [];
-			
-	params['x']= x;
-	params['y']= y;
-	params['flag']= flag;
-	params['dataurl_base64']= dataurl_base64;
-			
+	params = 'x='+x+'&y='+y+'&flag='+flag+'&imagedata='+buffer;		
+	
 	sendPostWithParametersOnServer( '/crop', params ); 
 
 	

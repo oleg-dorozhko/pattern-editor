@@ -815,7 +815,7 @@ function random( req, res )
 	}
 
 
-app.post('/crop', crop );
+//app.post('/crop', crop );
 app.post('/random', random );
 app.post('/mdown', mdown );
 app.post('/mright', mright );

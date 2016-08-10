@@ -205,7 +205,37 @@ function sendPostWithParametersOnServer(  params )
 
 function crop(x,y,flag)
 {
-	var dataurl = document.getElementById("canvas").toDataURL();
+	var sx,sy,w,h;
+	if(flag == 1)
+	{
+		sx = x;
+		sy = y;
+		w = canvas.width - sx;
+		h = canvas.height - sy;
+	}
+	else
+	{
+		sx = 0;
+		sy = 0;
+		w = x;
+		h = y;
+	}
+	
+	var canvas =  document.getElementById("canvas");
+	var context = canvas.getContext("2d");
+	var imageData = context.getImageData(sx, sy, w, h);
+	
+	///////
+	//var buffer = imageData.data.buffer;  // ArrayBuffer
+	//////
+	
+	canvas.width = w;
+	canvas.height = h;
+	canvas.getContext("2d").putImageData(imageData,0,0);
+	
+	/*********
+	var imageData = context.createImageData(w, h);
+	imageData.data.set(buffer);
 	
 	var params = [];
 			
@@ -215,6 +245,7 @@ function crop(x,y,flag)
 	params['imgdata_base64']= dataurl;
 			
 	sendPostWithParametersOnServer( params ); 
+	*********/
 	
 }
 

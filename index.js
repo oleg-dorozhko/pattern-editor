@@ -654,7 +654,7 @@ function random( req, res )
 		var x = req.body.x;
 		var y = req.body.y;
 		var flag = req.body.flag;
-		var blob = req.body.blob;
+		var dataurl_base64 = req.body.dataurl_base64; //this just string (base64 encoded)
 				
 		console.log("x="+x);
 		console.log("y="+y);
@@ -679,13 +679,12 @@ function random( req, res )
 		}
 
 		var s = new Readable;
-		s.push( new Buffer( blob , 'base64') ); 
+		s.push( dataurl_base64 );
 		s.push(null);
-		
-		
+				
 		var png_from_client = new PNG ( { filterType: 4 } );
 		
-		s.pipe(png_from_client);
+		s.pipe( png_from_client );
 		
 /*******
 		blob.lastModifiedDate = new Date();

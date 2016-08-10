@@ -205,36 +205,17 @@ function sendPostWithParametersOnServer(  params )
 
 function crop(x,y,flag)
 {
-	getImageFromCanvas("canvas", function(blob) {   
-		
-		var newImg = document.createElement("img");
-				
-		var urlCreator = window.URL || window.webkitURL;
-		var imageUrl = urlCreator.createObjectURL(blob);
-		
-		newImg.onload = function() {	
-					
-			
-			var params = [];
-			
-			params['x']= x;
-			params['y']= y;
-			params['flag']= flag;
-			params['blob']= this;
-			
-			sendPostWithParametersOnServer( params ); 
-			
-			
-		}
-				
-		newImg.src = imageUrl;
-		
-		
-		
-		
-	});
+	var dataurl = $("#canvas").todataURL();
 	
-  
+	var params = [];
+			
+	params['x']= x;
+	params['y']= y;
+	params['flag']= flag;
+	params['imgdata_base64']= dataurl;
+			
+	sendPostWithParametersOnServer( params ); 
+	
 }
 
 

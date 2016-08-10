@@ -86,12 +86,12 @@ function showSomeDiv(target,x,y)
 	if(glob_scale_div != null && glob_showing_scale_div == true) hidePixels();
 	
 	var el = document.createElement('div');
-    el.className = 'tooltip';
+    //el.className = 'tooltip';
 	
-    var coords = target.getBoundingClientRect();
+    //var coords = target.getBoundingClientRect();
 
-	el.style.left = (screen.width / 2 - 75) + 'px';
-    el.style.top = (screen.height/4 - 75) + 'px';
+	//el.style.left = (screen.width / 2 - 75) + 'px';
+    //el.style.top = (screen.height/4 - 75) + 'px';
 	
 	var tri_btns = '<input type="button" id="btn_lt" value=" left top "> <input type="button" id="btn_rb" value=" right bottom "> <input type="button" id="btn_esc" value=" cancel ">';
 	

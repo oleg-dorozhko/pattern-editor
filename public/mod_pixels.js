@@ -271,7 +271,7 @@ function server_crop(x,y,flag)
 	params['x']= x;
 	params['y']= y;
 	params['flag']= flag;
-	params['imgdata_base64']= dataurl_base64;
+	params['dataurl_base64']= dataurl_base64;
 			
 	sendPostWithParametersOnServer( '/crop', params ); 
 

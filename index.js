@@ -717,42 +717,53 @@ function random( req, res )
 			var h = Math.abs(y1-y0);
 			
 			
+			
+			
 			if(w>0 && h>0)
 			{
 				 
-		
-				var arr = [ x0, y0, w, h ];
-
-
-				var newpng = new PNG ( {
-					
-						width: w,
-						height: h,
-						filterType: 4
-				} );
 				
-				var limy = arr[1]+arr[3];
-				var limx = arr[0]+arr[2];
-				var n=0;
-				var m=0;
+				var arr = [ x0, y0, w, h ];
+	
+	
+		
+		
+		
+		
+		
+		
+		
+		
+						var newpng = new PNG ( {
+							
+								width: w,
+								height: h,
+								filterType: 4
+						} );
+						
+						var limy = arr[1]+arr[3];
+						var limx = arr[0]+arr[2];
+						var n=0;
+						var m=0;
 
-				for (var y = arr[1]; y < limy; y++) {
-					n=0;
-					for (var x = arr[0]; x < limx; x++) {
-						
-						var idx = (w0 * y + x) << 2;
-						var idx2 = (w * m + n) << 2;
-						
-						
-						newpng.data[idx2] = data[idx];
-						newpng.data[idx2+1] = data[idx+1];
-						newpng.data[idx2+2] = data[idx+2];
-						
-						newpng.data[idx2+3] = data[idx+3];
-						n++;
-					}
-					m++;
-				}
+							for (var y = arr[1]; y < limy; y++) {
+								n=0;
+								for (var x = arr[0]; x < limx; x++) {
+									var idx = (w0 * y + x) << 2;
+									var idx2 = (newpng.width * m + n) << 2;
+									
+									
+									newpng.data[idx2] = data[idx];
+									newpng.data[idx2+1] = data[idx+1];
+									newpng.data[idx2+2] = data[idx+2];
+									
+									newpng.data[idx2+3] = data[idx+3];
+									n++;
+								}
+								m++;
+							}
+			 
+				
 						
 				sendImage(newpng, res, '\nImage cropped\n');
 							

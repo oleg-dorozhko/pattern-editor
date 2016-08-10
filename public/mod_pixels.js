@@ -249,8 +249,8 @@ function sendPostWithParametersOnServer( action, params  )
 			alert(ints[10]);
 			
 			************/
-           
-			getImageFromBlob( xhr.response, function( img ) {	imageToCanvas( img, "canvas" ); } );
+            var blob = xhr.response;
+			getImageFromBlob( blob, function( img ) {	imageToCanvas( img, "canvas" ); } );
 			
 	}
 

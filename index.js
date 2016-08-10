@@ -688,12 +688,7 @@ function random( req, res )
 			y_left_top_pg_crop = y;
 			x_right_bottom_pg_crop = -1000;
 			y_rigth_bottom_pg_crop = -1000;
-			partimg_crop(path, returnNewCanvasImageName, res);
 			
-					
-						
-			
-			 
 		}
 		
 		else if(flag==2)
@@ -703,8 +698,7 @@ function random( req, res )
 			y_rigth_bottom_pg_crop = y+1;
 			x_left_top_pg_crop = 0;
 			y_left_top_pg_crop = 0;
-			partimg_crop(path, returnNewCanvasImageName, res);	
-			 
+			
 		}
 		
 		

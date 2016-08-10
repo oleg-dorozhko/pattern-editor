@@ -114,7 +114,7 @@ function setEventListenersOnTri_Btns()
 		btn.onclick = function()
 		{
 			
-			crop_crop(glob_x_left_top,glob_y_left_top,1);
+			crop(glob_x_left_top,glob_y_left_top,1);
 			
 			hidePixels();
 			
@@ -124,7 +124,7 @@ function setEventListenersOnTri_Btns()
 		btn.onclick = function()
 		{
 			
-			crop_crop(glob_x_left_top,glob_y_left_top,2);
+			crop(glob_x_left_top,glob_y_left_top,2);
 			
 			hidePixels();
 			

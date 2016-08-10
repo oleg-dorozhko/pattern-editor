@@ -243,7 +243,7 @@ function sendPostWithParametersOnServer( action, params  )
 			
 	}
 
-	xhr.send(parameters);
+	xhr.send(params);
 	
 }
 

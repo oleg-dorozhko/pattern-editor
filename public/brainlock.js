@@ -42,7 +42,7 @@ function getImageFromCanvas(canvas_id, callback )
 }
 
 
-function blobToServer(blob, action, callback)
+function blobToServer(blob, action, callback, onerror)
 {
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', action, true);
@@ -51,21 +51,12 @@ function blobToServer(blob, action, callback)
 		
 		if (xhr.readyState != 4) return;
 
-		if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
+		if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; onerror(error); return; }
 		
 		var blob_from_server = xhr.response;
 		
 		callback( blob_from_server );	
-				
-		/*****		
-		xhr.upload.onprogress = function(e) {
-			if (e.lengthComputable) {
-				progressBar.value = (e.loaded / e.total) * 100;
-				progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
-			}
-		};
-		******/
-					
+		
 	}
 	
 	xhr.send(blob);
@@ -81,31 +72,28 @@ function redrawProgress( progressBar )
 
 function transform(canvas_id, action)
 {
-	var intervalID;
-	try
-	{
-		var progressBar = document.getElementById("progress");
-		progressBar.hidden = false;
-		progressBar.value = 0;
-		
-		intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
-		//init timer for redraw progress
-		
-		getImageFromCanvas( canvas_id, function(blob) { 
-			blobToServer(blob, action, function( blob_from_server ) {
-				getImageFromBlob( blob_from_server, function(img) {
-					imageToCanvas(img, canvas_id, function() { 
-						progressBar.hidden = true;
-						clearInterval(intervalID); 
-					});	
-					
+	var progressBar = document.getElementById("progress");
+	progressBar.hidden = false;
+	progressBar.value = 0;
+	
+	var intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
+	//init timer for redraw progress
+	
+	getImageFromCanvas( canvas_id, function(blob) { 
+		blobToServer(blob, action, function( blob_from_server ) {
+			getImageFromBlob( blob_from_server, function(img) {
+				imageToCanvas(img, canvas_id, function() { 
+					progressBar.hidden = true;
+					clearInterval(intervalID); 
 				});	
-			}); 
-		});
-	}
-	catch(e)
-	{
-		clearInterval(intervalID); 
-	}
+				
+			});	
+		}, function(msg) {
+			console.log("Was error: "+msg);
+			progressBar.hidden = true;
+			clearInterval(intervalID); 
+		}); 
+	});
+	 
 }
 

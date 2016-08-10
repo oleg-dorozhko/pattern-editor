@@ -252,24 +252,14 @@ function server_crop(x,y,flag)
 {
 	
 	var canvas =  document.getElementById("canvas");
-	
-	var imageData = canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height);
-	
-	
-	
-	///////
-	var buffer = imageData.data.buffer;  // ArrayBuffer
-	//////
-	
-	//var imageData = context.createImageData(w, h);
-	//imageData.data.set(buffer);
-	
-	
+	canvas.toBlob( function(blob) {
 		
-	params = 'x='+x+'&y='+y+'&flag='+flag+'&imagedata='+buffer;		
+		params = 'x='+x+'&y='+y+'&flag='+flag+'&imagedata='+blob;		
 	
-	sendPostWithParametersOnServer( '/crop', params ); 
-
+		sendPostWithParametersOnServer( '/crop', params ); 
+		
+	});
+	
 	
 }
 

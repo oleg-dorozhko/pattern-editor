@@ -782,7 +782,7 @@ function precrop( req, res)
 			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
 			if (body.length > 1e6*50)
 			{
-				res.writeHead( 503, {Content-Type: 'text/plain'} );
+				res.writeHead( 503, { 'Content-Type':'text/plain' } );
 				res.end("error: data too big");
 				req.connection.destroy();
 				return;

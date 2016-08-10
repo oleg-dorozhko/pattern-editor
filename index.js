@@ -790,7 +790,7 @@ function precrop( req, res)
 
 		req.on('data', function (data) {
 			
-			console.log("when req.on data");
+			//console.log("when req.on data");
 			
 			body += data;
 
@@ -811,7 +811,7 @@ function precrop( req, res)
 			console.log("when req.on end");
 			var post = qs.parse(body);
 			console.log("when qs.parse done");
-			crop( post, res );
+			//crop( post, res );
 			
 			
 			

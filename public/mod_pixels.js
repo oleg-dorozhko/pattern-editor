@@ -264,7 +264,7 @@ function server_crop(x,y,flag)
 	
 	var canvas =  document.getElementById("canvas");
 	var imageData = canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height);
-	var imgdata = imageData.data.join(',');
+	var imgdata = imageData.data;
 	var w = canvas.width;
 	var h = canvas.height;
 	var params = 'x='+x+'&y='+y+'&w='+w+'&h='+h+'&flag='+flag+'&imgdata='+imgdata;		

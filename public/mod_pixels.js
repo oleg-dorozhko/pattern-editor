@@ -237,9 +237,7 @@ function sendPostWithParametersOnServer( action, params  )
 			
 			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
 
-			getImageFromBlob(xhr.response, function(img) {
-				imageToCanvas(img, canvas_id);
-			});
+			getImageFromBlob( xhr.response, function( img ) {	imageToCanvas( img, canvas_id ); } );
 			
 	}
 
@@ -252,10 +250,12 @@ function server_crop(x,y,flag)
 {
 	
 	var canvas =  document.getElementById("canvas");
+	
 	canvas.toBlob( function(blob) {
 		
 		params = 'x='+x+'&y='+y+'&flag='+flag+'&imagedata='+blob;		
-	
+		console.log(blob);
+		alert(params);
 		sendPostWithParametersOnServer( '/crop', params ); 
 		
 	});

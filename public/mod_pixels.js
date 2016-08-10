@@ -86,7 +86,6 @@ function showSomeDiv(target,x,y)
 	if(glob_scale_div != null && glob_showing_scale_div == true) hidePixels();
 	
 	var el = document.createElement('div');
-	
     //el.className = 'tooltip';
 	
     //var coords = target.getBoundingClientRect();
@@ -115,7 +114,7 @@ function setEventListenersOnTri_Btns()
 		btn.onclick = function()
 		{
 			
-			crop(glob_x_left_top,glob_y_left_top,1);
+			crop_crop(glob_x_left_top,glob_y_left_top,1);
 			
 			hidePixels();
 			
@@ -125,7 +124,7 @@ function setEventListenersOnTri_Btns()
 		btn.onclick = function()
 		{
 			
-			crop(glob_x_left_top,glob_y_left_top,2);
+			crop_crop(glob_x_left_top,glob_y_left_top,2);
 			
 			hidePixels();
 			
@@ -170,22 +169,20 @@ function redrawPixels_main(context, x,y)
 	
 }
 
-function sendPostWithParametersOnServer( params, action )
+function sendPostWithParametersOnServer(  params )
 {
 	var parameters = '';
 	var tmp = '';
 	for(key in params)
 	{
-		//if(key=='blob')  parameters += (tmp + key + '=' + params[key]);
-		//else 
-		parameters += (tmp + key + '=' + encodeURIComponent(params[key]));
-		
+		parameters += (tmp + key + '=' + params[key]);
 		tmp = '&';
 	}
-					
+	
+				
 	var xhr = new XMLHttpRequest();
 	
-	xhr.open('POST', action, true);
+	xhr.open('POST', '/crop', true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.responseType = "blob";	
 	
@@ -206,17 +203,38 @@ function sendPostWithParametersOnServer( params, action )
 }
 
 
-function crop( x, y, flag )
+function crop(x,y,flag)
 {
-	var params = [];
+	getImageFromCanvas("canvas", function(blob) {   
 		
-	params['x']= x;
-	params['y']= y;
-	params['flag']= flag;
-	params['dataurl']=  document.getElementById("canvas").toDataUrl();
+		var newImg = document.createElement("img");
+				
+		var urlCreator = window.URL || window.webkitURL;
+		var imageUrl = urlCreator.createObjectURL(blob);
 		
-	sendPostWithParametersOnServer( params, '/crop' ); 
+		newImg.onload = function() {	
+					
+			
+			var params = [];
+			
+			params['x']= x;
+			params['y']= y;
+			params['flag']= flag;
+			params['blob']= this;
+			
+			sendPostWithParametersOnServer( params ); 
+			
+			
+		}
+				
+		newImg.src = imageUrl;
+		
+		
+		
+		
+	});
 	
+  
 }
 
 

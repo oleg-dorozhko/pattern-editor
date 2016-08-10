@@ -654,7 +654,7 @@ function random( req, res )
 		var x = req.body.x;
 		var y = req.body.y;
 		var flag = req.body.flag;
-		var dataurl = req.body.dataurl;
+		var imgdata = req.body.blob;
 				
 		console.log("x="+x);
 		console.log("y="+y);
@@ -682,7 +682,7 @@ function random( req, res )
 		
 		var png_from_client = new PNG ( { filterType: 4 } );
 		
-		dataurl.pipe(png_from_client);
+		imgdata.pipe(png_from_client);
 		
 /*******
 		blob.lastModifiedDate = new Date();

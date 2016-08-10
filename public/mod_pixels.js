@@ -263,13 +263,40 @@ function server_crop(x,y,flag)
 {
 	
 	var canvas =  document.getElementById("canvas");
-	var imageData = canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height);
-	var imgdata = JSON.stringify(imageData.data);
+
 	var w = canvas.width;
 	var h = canvas.height;
-	var params = 'x='+x+'&y='+y+'&w='+w+'&h='+h+'&flag='+flag+'&imgdata='+imgdata;		
+	var params = 'x='+x+'&y='+y+'&w='+w+'&h='+h+'&flag='+flag;		
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '/precrop', true);
+	//xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	
+	xhr.onload = function(e) {  
+		
+			if (xhr.readyState != 4) return;
 			
-	sendPostWithParametersOnServer( '/crop', params ); 
+			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
+
+			/*******
+    
+            var buffer = xhr.response;
+            var dataview = new DataView(buffer);
+            var ints = new Uint8ClampedArray(buffer.byteLength);
+            for (var i = 0; i < ints.length; i++) {
+                ints[i] = dataview.getUint8(i);
+            }
+			
+			alert(ints[10]);
+			
+			************/
+			
+            transform("canvas",'/crop');
+			
+	}
+
+	xhr.send(params);
+	
 	
 }
 

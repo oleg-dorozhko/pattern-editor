@@ -647,133 +647,113 @@ function random( req, res )
 }
 
 
-
-
+	var crop_settings = null;
 	
 	
-	function crop( post, res )
+	
+	function crop( req, res )
 	{
 		
+		if(crop_settings == null)
+		{
+			
+			res.writeHead( 503, { 'Content-Type':'text/plain' } );
+			res.end("error: call /precrop before");
+			req.connection.destroy();
+			return;
+
+		}
+				
+		
 		console.log('\nIn crop(...)\n');
-	
-		var x = post['x'];
-		var y = post['y'];
-		var w0 = post['w'];
-		var h0 = post['h'];
-		var flag = post['flag'];
-		var imgdata	= post['imgdata'];
+		
+		var x = crop_settings.x;
+		var y = crop_settings.y;
+		//var w0 = crop_settings.w;
+		//var h0 = crop_settings.h;
+		var flag = crop_settings.flag;
+		
 		
 		console.log("x="+x);
 		console.log("y="+y);
-		console.log("w0="+w0);
-		console.log("h0="+h0);
+		//console.log("w0="+w0);
+		//console.log("h0="+h0);
 		console.log("flag="+flag);
-		console.log("imgdata="+imgdata.substr(0,20));	
-		console.log("imgdata="+imgdata.length);	
-				
-
-		if(flag==1)
-		{
-			x_left_top_pg_crop = x;
-			y_left_top_pg_crop = y;
-			
-			x_right_bottom_pg_crop = w0;
-			y_rigth_bottom_pg_crop = h0;
-			
-		}	
-		 
-		else if(flag==2)
-		{
-			
-			x_right_bottom_pg_crop = x+1;
-			y_rigth_bottom_pg_crop = y+1;
-			x_left_top_pg_crop = 0;
-			y_left_top_pg_crop = 0;
-			 
-		}
-
-		var data = imgdata.split(',');
 		
-		for(var i=0;i<data.length;i++) data[i] = +data[i];									
-		
-					/****							
-					
-					var png_from_client = new PNG ( { 
-						width: w,
-						height: h,
-						filterType: 4 
-					} );
+		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+	
+
+	
+	
+						if(x_right_bottom_pg_crop == -1000) x_right_bottom_pg_crop = this.width;
+						if(y_rigth_bottom_pg_crop == -1000) y_rigth_bottom_pg_crop = this.height;
 						
-					*********/
-		
-	
-		if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
-		{
-		
-			var x0 = Math.min(x_left_top_pg_crop,x_right_bottom_pg_crop);
-			var x1 = Math.max(x_left_top_pg_crop,x_right_bottom_pg_crop);
-			
-			var y0 = Math.min(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-			var y1 = Math.max(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-			
-			var w = Math.abs(x1-x0);
-			var h = Math.abs(y1-y0);
-			
-			
-			
-			
-			if(w>0 && h>0)
-			{
-				 
-				
-				var arr = [ x0, y0, w, h ];
-	
-	
-		
-		
-		
-		
-		
-		
-		
-		
-						var newpng = new PNG ( {
+						
+						if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
+						{
 							
-								width: w,
-								height: h,
-								filterType: 4
-						} );
+		
+							
+								var x0 = Math.min(x_left_top_pg_crop,x_right_bottom_pg_crop);
+								var x1 = Math.max(x_left_top_pg_crop,x_right_bottom_pg_crop);
+								
+								var y0 = Math.min(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
+								var y1 = Math.max(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
+								
+								var w = Math.abs(x1-x0);
+								var h = Math.abs(y1-y0);
+			
+								if(w>0 && h>0)
+								{
+									 
+									
+											var arr = [ x0, y0, w, h ];
 						
-						var limy = arr[1]+arr[3];
-						var limx = arr[0]+arr[2];
-						var n=0;
-						var m=0;
+							
+											var newpng = new PNG ( {
+												
+													width: w,
+													height: h,
+													filterType: 4
+											} );
+											
+											
+											var limy = arr[1]+arr[3];
+											var limx = arr[0]+arr[2];
+											var n=0;
+											var m=0;
 
-							for (var y = arr[1]; y < limy; y++) {
-								n=0;
-								for (var x = arr[0]; x < limx; x++) {
-									var idx = (w0 * y + x) << 2;
-									var idx2 = (newpng.width * m + n) << 2;
+											for (var y = arr[1]; y < limy; y++) {
+												n=0;
+												for (var x = arr[0]; x < limx; x++) {
+													var idx = (this.width * y + x) << 2;
+													var idx2 = (newpng.width * m + n) << 2;
+													
+													
+													newpng.data[idx2] = this.data[idx];
+													//console.log(typeof(newpng.data[idx2]));
+													newpng.data[idx2+1] = this.data[idx+1];
+													newpng.data[idx2+2] = this.data[idx+2];
+													
+													newpng.data[idx2+3] = this.data[idx+3];
+													n++;
+												}
+												m++;
+											}
+							 
+								
+											crop_settings = null;
+											
+											
+											sendImage(newpng, res, '\nImage cropped\n');
 									
-									
-									newpng.data[idx2] = data[idx];
-									newpng.data[idx2+1] = data[idx+1];
-									newpng.data[idx2+2] = data[idx+2];
-									
-									newpng.data[idx2+3] = data[idx+3];
-									n++;
 								}
-								m++;
-							}
-			 
-				
-						
-				sendImage(newpng, res, '\nImage cropped\n');
+						}		
 							
 		
-			}
+		});
 							
-		}
+		
 		
 		
 	}
@@ -783,7 +763,7 @@ function precrop( req, res)
 {
 	
 									
-		console.log("entering pre_crop");
+		console.log("entering precrop");
 		
 		
 		var body = '';
@@ -808,12 +788,36 @@ function precrop( req, res)
 
 		req.on('end', function () {
 			
-			console.log("when req.on end");
+			
+			
 			var post = qs.parse(body);
+						
+			var x = post['x'];
+			var y = post['y'];
+			var w0 = post['w'];
+			var h0 = post['h'];
+			var flag = post['flag'];
+
+			crop_settings = {};
+			crop_settings.x = x;
+			crop_settings.y = y;
+			crop_settings.w = w0;
+			crop_settings.h = h0;
+			crop_settings.flag = flag;
+			
+			res.writeHead( 200, { 'Content-Type':'text/plain' } );
+			res.end("ok");
+			
+			/********	
+			
+			
+			console.log("when req.on end");
+			
 			post['imgdata'] = JSON.parse(post['imgdata']);
 			console.log("when qs.parse done");
 			console.log("typeof(post[imgdata])="+typeof(post['imgdata'])+' '+post['imgdata'].length);
 			//crop( post, res );
+			*******/
 			
 			
 			
@@ -828,8 +832,8 @@ function precrop( req, res)
 	
 	
 
-
-app.post('/crop', precrop );
+app.post('/crop', crop );
+app.post('/precrop', precrop );
 app.post('/random', random );
 app.post('/mdown', mdown );
 app.post('/mright', mright );

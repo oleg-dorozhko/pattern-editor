@@ -86,6 +86,7 @@ function showSomeDiv(target,x,y)
 	if(glob_scale_div != null && glob_showing_scale_div == true) hidePixels();
 	
 	var el = document.createElement('div');
+	
     //el.className = 'tooltip';
 	
     //var coords = target.getBoundingClientRect();
@@ -114,7 +115,7 @@ function setEventListenersOnTri_Btns()
 		btn.onclick = function()
 		{
 			
-			crop_crop(glob_x_left_top,glob_y_left_top,1);
+			crop(glob_x_left_top,glob_y_left_top,1);
 			
 			hidePixels();
 			
@@ -124,7 +125,7 @@ function setEventListenersOnTri_Btns()
 		btn.onclick = function()
 		{
 			
-			crop_crop(glob_x_left_top,glob_y_left_top,2);
+			crop(glob_x_left_top,glob_y_left_top,2);
 			
 			hidePixels();
 			
@@ -169,34 +170,53 @@ function redrawPixels_main(context, x,y)
 	
 }
 
-
-function crop_crop(x,y,flag)
+function sendPostWithParametersOnServer( params, action )
 {
-	var parameters = 'x=' + encodeURIComponent(x) +  '&y=' + encodeURIComponent(y)+"&flag="+encodeURIComponent(flag);
-	alert(parameters);
-	
-	/********
+	var parameters = '';
+	var tmp = '';
+	for(key in params)
+	{
+		parameters += (tmp + key + '=' + encodeURIComponent(params[key]));
+		tmp = '&';
+	}
+					
 	var xhr = new XMLHttpRequest();
-			
-			
 	
-	
-	xhr.open('POST', '/crop', true);
+	xhr.open('POST', action, true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		
+	xhr.responseType = "blob";	
+	
 	xhr.onload = function(e) {  
 		
 			if (xhr.readyState != 4) return;
 			
-			if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
+			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
 
-			//window['loadOut'](xhr.responseText);
-		
+			getImageFromBlob(xhr.response, function(img) {
+				imageToCanvas(img, canvas_id);
+			});
 			
 	}
 
 	xhr.send(parameters);
-	****/
+	
+}
+
+
+function crop( x, y, flag )
+{
+	var blob = getImageFromCanvas("canvas", function(blob) {   
+		
+		var params = [];
+		
+		params['x']= x;
+		params['y']= y;
+		params['flag']= flag;
+		params['blob']= blob;
+		
+		sendPostWithParametersOnServer( params, '/crop' ); 
+		
+	});
 	
 }
 

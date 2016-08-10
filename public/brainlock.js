@@ -9,7 +9,7 @@ function imageToCanvas(img, canvas_id, callback)
 	ctx.drawImage(img, 0, 0,canvas.width,canvas.height);
 	
 	//close timer
-	callback();
+	if(callback) callback();
 	
 }
 

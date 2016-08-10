@@ -205,7 +205,7 @@ function sendPostWithParametersOnServer(  params )
 
 function crop(x,y,flag)
 {
-	var dataurl = $("#canvas").toDataURL();
+	var dataurl = document.getElementById("canvas").toDataURL();
 	
 	var params = [];
 			

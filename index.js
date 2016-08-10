@@ -447,6 +447,134 @@ function rotate( req, res )
 		
 }
 
+
+function mdown( req, res )
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		
+		var newpng = new PNG ( {
+			
+				width: this.width,
+				height: this.height*2,
+				filterType: 4
+		} );
+		
+		var m=0;
+		
+		for (var x = 0; x < newpng.width; x++) {
+			
+			m=0;
+			
+			for (var y = 0; y < newpng.height; y++) {
+				
+				
+				
+					
+					var idx = 0;
+					
+					var new_idx1 = newpng.width * y + x << 2;
+					
+					if(y < this.height)
+					{
+					
+						idx = (this.width * y + x) << 2;
+						
+						newpng.data[new_idx1+0] = this.data[idx+0];
+						newpng.data[new_idx1+1] = this.data[idx+1];
+						newpng.data[new_idx1+2] = this.data[idx+2];
+						newpng.data[new_idx1+3] = this.data[idx+3];
+						m++;
+					}
+					else
+					{
+						idx = (this.width * (m-1) + x) << 2;
+						
+						newpng.data[new_idx1+0] = this.data[idx+0];
+						newpng.data[new_idx1+1] = this.data[idx+1];
+						newpng.data[new_idx1+2] = this.data[idx+2];
+						newpng.data[new_idx1+3] = this.data[idx+3];
+						
+						m--;
+
+					}
+					
+					
+					
+				}
+				
+			}
+			
+			sendImage(newpng,res,'\nImage mirror downed\n');
+			
+			
+	});
+}
+
+
+
+
+function mright( req, res )
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		
+		var newpng = new PNG ( {
+			
+				width: this.width*2,
+				height: this.height,
+				filterType: 4
+		} );
+		
+		
+
+			for (var y = 0; y < newpng.height; y++) {
+				
+				n=0;
+				for (var x = 0; x < newpng.width; x++) {
+					
+					var idx 
+					var new_idx1 = newpng.width * y + x << 2;
+					if(x < this.width)
+					{
+					
+						idx = (this.width * y + x) << 2;
+						
+						newpng.data[new_idx1+0] = this.data[idx+0];
+						newpng.data[new_idx1+1] = this.data[idx+1];
+						newpng.data[new_idx1+2] = this.data[idx+2];
+						newpng.data[new_idx1+3] = this.data[idx+3];
+						n++;
+					}
+					else
+					{
+						idx = (this.width * y + (n-1)) << 2;
+						
+						newpng.data[new_idx1+0] = this.data[idx+0];
+						newpng.data[new_idx1+1] = this.data[idx+1];
+						newpng.data[new_idx1+2] = this.data[idx+2];
+						newpng.data[new_idx1+3] = this.data[idx+3];
+						
+						n--;
+
+					}
+					
+					
+					
+				}
+				
+			}
+			
+			sendImage(newpng, res, '\nImage mirror righted\n');		
+			
+	});
+}
+
+
+app.post('/mdown', mdown );
+app.post('/mright', mright );
 app.post('/rotate', rotate );
 app.post('/median', median );
 app.post('/multiply', multiply );

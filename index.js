@@ -573,6 +573,59 @@ function mright( req, res )
 }
 
 
+function getColDec( cccol, cccol1 )
+	{
+		var cccol2=0;
+		if(cccol+cccol1>255) cccol2=    ((cccol+cccol1)-255)+10;
+		else cccol2=cccol+cccol1;
+		return cccol2;
+	}
+	
+
+	function getRandomInt(min, max) 
+	{
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+function random( req, res )
+{
+
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		var newpng = new PNG ( {
+			
+				width: this.width,
+				height: this.height,
+				filterType: 4
+		} );
+		
+		var p = [];
+		p[0] = 	getRandomInt(0, 255);
+		p[1] = 	getRandomInt(0, 255);
+		p[2] = 	getRandomInt(0, 255);
+
+
+			for (var y = 0; y < this.height; y++) {
+				for (var x = 0; x < this.width; x++) {
+					var idx = (this.width * y + x) << 2;
+
+					
+					// invert color
+					newpng.data[idx] = getColDec(p[0],this.data[idx]);
+					newpng.data[idx+1] = getColDec(p[1],this.data[idx+1]);
+					newpng.data[idx+2] = getColDec(p[2],this.data[idx+2]);
+					
+					newpng.data[idx+3] = this.data[idx+3];
+				}
+			}
+			
+			sendImage(newpng,res,'\nImage was randomized\n');
+			
+	});
+}
+
+app.post('/random', random );
 app.post('/mdown', mdown );
 app.post('/mright', mright );
 app.post('/rotate', rotate );

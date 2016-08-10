@@ -54,6 +54,7 @@ window.onload = function()
 		$("#rotate").click( function() { transform("canvas", '/rotate'); } );
 		$("#mirror_down").click( function() { transform("canvas", '/mdown'); } );
 		$("#mirror_right").click( function() { transform("canvas", '/mright'); } );
+		$("#random").click( function() { transform("canvas", '/random'); } );
 		
 		
 		

@@ -205,7 +205,11 @@ function sendPostWithParametersOnServer(  params )
 
 function crop(x,y,flag)
 {
+	
+	
 	var sx,sy,w,h;
+	var canvas =  document.getElementById("canvas");
+	
 	if(flag == 1)
 	{
 		sx = x;
@@ -221,7 +225,7 @@ function crop(x,y,flag)
 		h = y+1;
 	}
 	
-	var canvas =  document.getElementById("canvas");
+	
 	var context = canvas.getContext("2d");
 	var imageData = context.getImageData(sx, sy, w, h);
 	

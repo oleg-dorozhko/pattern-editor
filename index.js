@@ -669,7 +669,8 @@ function random( req, res )
 							{
 								req.connection.destroy();
 								res.writeHead( 503,{  'Content-Type': 'text/plain' } );
-								res.end("error: image to big");
+								res.end("error: image too big");
+								return;
 							}
 								
 								
@@ -688,53 +689,55 @@ function random( req, res )
 		
 								var s = new Readable;
 								s.push( dataurl_base64 );
-								s.push(null);
-										
-								var png_from_client = new PNG ( { filterType: 4 } );
-								
-								s.pipe( png_from_client );
-								
-								/***********
-								var x = req.body.x;
-								var y = req.body.y;
-								var flag = req.body.flag;
-								var dataurl_base64 = req.body.dataurl_base64; //this just string (base64 encoded)
-								**********/
-										
-								console.log("x="+x);
-								console.log("y="+y);
-								console.log("flag="+flag);
-								
-								
-								if(flag==1)
-								{
-									x_left_top_pg_crop = x;
-									y_left_top_pg_crop = y;
-									x_right_bottom_pg_crop = -1000;
-									y_rigth_bottom_pg_crop = -1000;
-								}	
-								 
-								else if(flag==2)
-								{
+								s.on('end', function() {
 									
-									x_right_bottom_pg_crop = x+1;
-									y_rigth_bottom_pg_crop = y+1;
-									x_left_top_pg_crop = 0;
-									y_left_top_pg_crop = 0;
+									s.push(null);
+											
+									var png_from_client = new PNG ( { filterType: 4 } );
+									
+									s.pipe( png_from_client );
+									
+									/***********
+									var x = req.body.x;
+									var y = req.body.y;
+									var flag = req.body.flag;
+									var dataurl_base64 = req.body.dataurl_base64; //this just string (base64 encoded)
+									**********/
+											
+									console.log("x="+x);
+									console.log("y="+y);
+									console.log("flag="+flag);
+									
+									
+									if(flag==1)
+									{
+										x_left_top_pg_crop = x;
+										y_left_top_pg_crop = y;
+										x_right_bottom_pg_crop = -1000;
+										y_rigth_bottom_pg_crop = -1000;
+									}	
 									 
-								}
+									else if(flag==2)
+									{
+										
+										x_right_bottom_pg_crop = x+1;
+										y_rigth_bottom_pg_crop = y+1;
+										x_left_top_pg_crop = 0;
+										y_left_top_pg_crop = 0;
+										 
+									}
 
 								
 								
-						/*******
-								blob.lastModifiedDate = new Date();
-								blob.name = "crop.png";
-							
-								
-								s.push(null);      // indicates end-of-file basically - the end of the stream
-								
-								s.pipe( png_from_client );
-						********/		
+									/*******
+											blob.lastModifiedDate = new Date();
+											blob.name = "crop.png";
+										
+											
+											s.push(null);      // indicates end-of-file basically - the end of the stream
+											
+											s.pipe( png_from_client );
+									********/		
 								
 								
 								png_from_client.on('parsed', function() {
@@ -804,7 +807,7 @@ function random( req, res )
 						});
 	
 		
-		
+					});
 		
 		
 		

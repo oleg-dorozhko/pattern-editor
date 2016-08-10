@@ -169,32 +169,6 @@ function redrawPixels_main(context, x,y)
 	
 }
 
-function sendPostWithParametersOnServer(  params )
-{
-	
-				
-	var xhr = new XMLHttpRequest();
-	
-	xhr.open('POST', '/crop', true);
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xhr.responseType = "blob";	
-	
-	xhr.onload = function(e) {  
-		
-			if (xhr.readyState != 4) return;
-			
-			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
-
-			getImageFromBlob(xhr.response, function(img) {
-				imageToCanvas(img, canvas_id);
-			});
-			
-	}
-
-	xhr.send(parameters);
-	
-}
-
 
 function crop(x,y,flag)
 {
@@ -247,6 +221,33 @@ function crop(x,y,flag)
 }
 
 
+function sendPostWithParametersOnServer( action, params  )
+{
+	
+				
+	var xhr = new XMLHttpRequest();
+	
+	xhr.open('POST', action, true);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.responseType = "blob";	
+	
+	xhr.onload = function(e) {  
+		
+			if (xhr.readyState != 4) return;
+			
+			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
+
+			getImageFromBlob(xhr.response, function(img) {
+				imageToCanvas(img, canvas_id);
+			});
+			
+	}
+
+	xhr.send(parameters);
+	
+}
+
+
 function server_crop(x,y,flag)
 {
 	
@@ -270,9 +271,9 @@ function server_crop(x,y,flag)
 	params['x']= x;
 	params['y']= y;
 	params['flag']= flag;
-	params['imgdata_base64']= dataurl;
+	params['imgdata_base64']= dataurl_base64;
 			
-	sendPostWithParametersOnServer( params ); 
+	sendPostWithParametersOnServer( '/crop', params ); 
 
 	
 }

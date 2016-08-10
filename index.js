@@ -810,7 +810,7 @@ function precrop( req, res)
 			
 			console.log("when req.on end");
 			var post = qs.parse(body);
-			
+			post['imgdata'] = JSON.parse(post['imgdata']);
 			console.log("when qs.parse done");
 			console.log("typeof(post[imgdata])="+typeof(post['imgdata'])+' '+post['imgdata'].length);
 			//crop( post, res );

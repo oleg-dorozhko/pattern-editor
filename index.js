@@ -304,6 +304,106 @@ function inverse( req, res )
 		
 }
 
+function get_coordinates(w,h)
+{
+
+	
+	if(w != h) {  console.log('error: width of image != height of image'); return null; }
+	
+	
+	if(w == 11) return [3,3,11,11];
+	if(w == 10) return [2,2,10,10];
+	if(w == 9) return [2,2,5,5];
+	if(w == 8) return [2,2,4,4];
+	if(w==7) return [2,2,3,3];
+	if(w==6) return [1,1,4,4];
+	if(w==5) return [1,1,3,3];
+	if(w==4) return [1,1,2,2];
+	if(w==3) return [1,1,1,1];
+	
+	
+	if(w % 2 == 0) //when even
+	{
+		var tmp = w/2;
+		
+		if(tmp % 2 == 0)  return [ tmp/2, tmp/2, tmp, tmp];
+		
+		
+		var t1 = Math.abs(w-(tmp+1)*2); 
+		var t2 = Math.abs(w-(tmp-1)*2); 
+		
+		if(t1==t2) return [ tmp/2|0, tmp/2|0,tmp+1,tmp+1];
+		
+		console.log("w="+w);
+		throw err;
+		
+		
+	}
+	else //when odd
+	{
+		
+		var tmpOdd = w/2|0;
+		if(tmpOdd % 2 == 1)  return [ (tmpOdd/2|0)+1, (tmpOdd/2|0)+1, tmpOdd, tmpOdd];
+		
+		return [ tmpOdd/2, tmpOdd/2, tmpOdd+1,tmpOdd+1];
+		
+		/***********
+		var t1 = Math.mod(w-(tmpOdd+1)*2); //mod(17-(8+1)*2) = 1
+		var t2 = Math.mod(w-(tmpOdd-1)*2); //mod(17-(8-1)*2) = 3
+		
+		//0 1 2 3 4 5 6 7 (8) 9 10 11 12 13 14 15 16
+		if(t1=<t2)
+		
+		return [ tmpOdd/2|0, tmpOdd/2|0,tmpOdd-1,tmpOdd-1];
+		*********/
+		
+	}
+}	
+
+function median( req, res )
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		var arr = get_coordinates(this.width, this.height);
+		if(arr == null) return; 
+		
+		var newpng = new PNG ( {
+			
+				width: arr[2],
+				height: arr[3],
+				filterType: 4
+		} );
+		
+		var limy = arr[1]+arr[3];
+		var limx = arr[0]+arr[2];
+		var n=0;
+		var m=0;
+
+			for (var y = arr[1]; y < limy; y++) {
+				n=0;
+				for (var x = arr[0]; x < limx; x++) {
+					var idx = (this.width * y + x) << 2;
+					var idx2 = (newpng.width * m + n) << 2;
+					
+					// invert color
+					newpng.data[idx2] = this.data[idx];
+					newpng.data[idx2+1] = this.data[idx+1];
+					newpng.data[idx2+2] = this.data[idx+2];
+					
+					newpng.data[idx2+3] = this.data[idx+3];
+					n++;
+				}
+				m++;
+			}
+			
+			sendImage(newpng,res,"\nImage was medianed\n");
+						
+		});
+}
+
+
+app.post('/median', median );
 app.post('/multiply', multiply );
 app.post('/plus', plus );
 app.post('/minus', minus );

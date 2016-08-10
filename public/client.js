@@ -50,6 +50,7 @@ window.onload = function()
 		$("#plus").click( function() { transform("canvas", '/plus'); } );
 		$("#minus").click( function() { transform("canvas", '/minus'); } );
 		$("#multiply").click( function() { transform("canvas", '/multiply'); } );
+		$("#median").click( function() { transform("canvas", '/median'); } );
 		
 		
 		

@@ -217,8 +217,8 @@ function crop(x,y,flag)
 	{
 		sx = 0;
 		sy = 0;
-		w = x;
-		h = y;
+		w = x+1;
+		h = y+1;
 	}
 	
 	var canvas =  document.getElementById("canvas");

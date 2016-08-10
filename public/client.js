@@ -84,7 +84,7 @@ window.onload = function()
 		$("#mirror_right").click( function() { transform("canvas", '/mright'); } );
 		$("#random").click( function() { transform("canvas", '/random'); } );
 		
-		$("#canvas").click( function() { whenClickedOnCanvas(e); } );
+		$("#canvas").click( function(ev) { whenClickedOnCanvas(ev); } );
 				
 		document.onclick = function (ev) { 
 			if (!ev.target.hasAttribute('seed-clicked')) return;

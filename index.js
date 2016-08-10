@@ -403,6 +403,51 @@ function median( req, res )
 }
 
 
+
+function rotate( req, res )
+{
+	
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		
+		var newpng = new PNG ( {
+			
+				width: this.height,
+				height: this.width,
+				filterType: 4
+		} );
+		
+				
+		for (var y = 0; y < this.height; y++) {
+		
+		
+			for (var x = 0; x < this.width; x++) {
+			
+			
+				var idx = (this.width * y + x) << 2;
+				
+				var n = newpng.width - y;
+				var m = x;
+				var new_idx1 = (newpng.width * m + n) << 2;
+						
+				
+				newpng.data[new_idx1+0] = this.data[idx+0];
+				newpng.data[new_idx1+1] = this.data[idx+1];
+				newpng.data[new_idx1+2] = this.data[idx+2];
+				newpng.data[new_idx1+3] = this.data[idx+3];	
+			}
+		}
+		
+		sendImage(newpng, res, '\nImage rotated\n');	
+		
+	});
+		
+		
+		
+}
+
+app.post('/rotate', rotate );
 app.post('/median', median );
 app.post('/multiply', multiply );
 app.post('/plus', plus );

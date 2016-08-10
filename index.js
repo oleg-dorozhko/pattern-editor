@@ -883,7 +883,6 @@ function crop2(req,res)
 					s.push( null );
 		
 				
-					s.on('end', function() { 
 								
 					/*******
 									
@@ -894,9 +893,9 @@ function crop2(req,res)
 												
 												
 					
-						var png_from_client = new PNG ( { filterType: 4 } );
+					var png_from_client = new PNG ( { filterType: 4 } );
 						
-						s.pipe( png_from_client ).on('parsed', function() {
+					s.pipe( png_from_client ).on('parsed', function() {
 							
 						
 
@@ -960,9 +959,9 @@ function crop2(req,res)
 												
 							}
 				
-						});
+					
 							
-					} );		
+					});		
 }
 
 	

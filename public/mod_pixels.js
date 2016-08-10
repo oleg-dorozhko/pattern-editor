@@ -250,7 +250,7 @@ function sendPostWithParametersOnServer( action, params  )
 			
 			************/
            
-			getImageFromBlob( xhr.response, function( img ) {	imageToCanvas( img, canvas_id ); } );
+			getImageFromBlob( xhr.response, function( img ) {	imageToCanvas( img, "canvas" ); } );
 			
 	}
 

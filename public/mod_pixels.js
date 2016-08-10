@@ -253,7 +253,7 @@ function server_crop(x,y,flag)
 	
 	canvas.toBlob( function(blob) {
 		
-		params = 'x='+x+'&y='+y+'&flag='+flag+'&imagedata='+blob;		
+		params = 'x='+x+'&y='+y+'&flag='+flag+'&imagedata='+encodeURIComponent(blob);		
 		console.log(blob);
 		alert(params);
 		sendPostWithParametersOnServer( '/crop', params ); 

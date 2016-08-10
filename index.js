@@ -653,6 +653,7 @@ function random( req, res )
 	
 	function crop( req, res )
 	{
+		console.log('\nIn crop(...)\n');
 		
 		if(crop_settings == null)
 		{
@@ -665,7 +666,7 @@ function random( req, res )
 		}
 				
 		
-		console.log('\nIn crop(...)\n');
+		
 		
 		var x = crop_settings.x;
 		var y = crop_settings.y;
@@ -679,6 +680,33 @@ function random( req, res )
 		//console.log("w0="+w0);
 		//console.log("h0="+h0);
 		console.log("flag="+flag);
+		
+		
+		if(flag==1)
+		{
+			x_left_top_pg_crop = x;
+			y_left_top_pg_crop = y;
+			x_right_bottom_pg_crop = -1000;
+			y_rigth_bottom_pg_crop = -1000;
+			partimg_crop(path, returnNewCanvasImageName, res);
+			
+					
+						
+			
+			 
+		}
+		
+		else if(flag==2)
+		{
+			
+			x_right_bottom_pg_crop = x+1;
+			y_rigth_bottom_pg_crop = y+1;
+			x_left_top_pg_crop = 0;
+			y_left_top_pg_crop = 0;
+			partimg_crop(path, returnNewCanvasImageName, res);	
+			 
+		}
+		
 		
 		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 	

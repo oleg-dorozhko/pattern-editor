@@ -46,6 +46,7 @@ window.onload = function()
 	
 		setInitialImageToCanvas();
 
+		$("#save").click( function() { save_pattern(); } );
 		$("#inv").click( function() { transform("canvas", '/inverse'); } );
 		$("#plus").click( function() { transform("canvas", '/plus'); } );
 		$("#minus").click( function() { transform("canvas", '/minus'); } );

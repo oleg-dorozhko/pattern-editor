@@ -681,8 +681,9 @@ function random( req, res )
 		
 		var png_from_client = new PNG ( { filterType: 4 } );
 		
-		
-
+		blob.lastModifiedDate = new Date();
+		blob.name = "crop.png";
+    
 		var s = new Readable;
 		s.push( blob ); 
 		s.push(null);      // indicates end-of-file basically - the end of the stream

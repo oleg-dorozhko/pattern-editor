@@ -646,14 +646,173 @@ function random( req, res )
 }
 
 
+function crop(body)
+{
+	
+	
+	var post = qs.parse(body);
+	
+	var x =  post['x'];
+	var y =  post['y'];
+	var flag = post['flag'];
+	var dataurl_base64 = post['dataurl_base64'];
+	
+							
+		
+	var s = new Readable;
+	var buff = new Buffer(dataurl_base64.replace(/^data:image\/(png|gif|jpeg);base64,/,''), 'base64');
+	s.push( buff );
+	s.push(null);
+	
+	
+								
+	s.on('end', function() {
+									
+									
+				console.log("ended entering buff (base64)");
+						
+				var png_from_client = new PNG ( { filterType: 4 } );
+				
+				
+				
+				/***********
+				var x = req.body.x;
+				var y = req.body.y;
+				var flag = req.body.flag;
+				var dataurl_base64 = req.body.dataurl_base64; //this just string (base64 encoded)
+				**********/
+						
+				console.log("x="+x);
+				console.log("y="+y);
+				console.log("flag="+flag);
+				
+				
+				if(flag==1)
+				{
+					x_left_top_pg_crop = x;
+					y_left_top_pg_crop = y;
+					x_right_bottom_pg_crop = -1000;
+					y_rigth_bottom_pg_crop = -1000;
+				}	
+				 
+				else if(flag==2)
+				{
+					
+					x_right_bottom_pg_crop = x+1;
+					y_rigth_bottom_pg_crop = y+1;
+					x_left_top_pg_crop = 0;
+					y_left_top_pg_crop = 0;
+					 
+				}
 
-	function crop(req, res)
+								
+								
+									/*******
+									
+											blob.lastModifiedDate = new Date();
+											blob.name = "crop.png";
+									
+									********/		
+									
+				s.pipe( png_from_client );				
+								
+				png_from_client.on('parsed', function() {
+
+					if(x_right_bottom_pg_crop == -1000) x_right_bottom_pg_crop = this.width;
+					if(y_rigth_bottom_pg_crop == -1000) y_rigth_bottom_pg_crop = this.height;
+				
+				
+					if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
+					{
+					
+						var x0 = Math.min(x_left_top_pg_crop,x_right_bottom_pg_crop);
+						var x1 = Math.max(x_left_top_pg_crop,x_right_bottom_pg_crop);
+						
+						var y0 = Math.min(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
+						var y1 = Math.max(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
+						
+						var w = Math.abs(x1-x0);
+						var h = Math.abs(y1-y0);
+						
+						
+						if(w>0 && h>0)
+						{
+							 
+					
+							var arr = [ x0, y0, w, h ];
+
+
+							var newpng = new PNG ( {
+								
+									width: w,
+									height: h,
+									filterType: 4
+							} );
+							
+							var limy = arr[1]+arr[3];
+							var limx = arr[0]+arr[2];
+							var n=0;
+							var m=0;
+
+							for (var y = arr[1]; y < limy; y++) {
+								n=0;
+								for (var x = arr[0]; x < limx; x++) {
+									var idx = (this.width * y + x) << 2;
+									var idx2 = (newpng.width * m + n) << 2;
+									
+									
+									newpng.data[idx2] = this.data[idx];
+									newpng.data[idx2+1] = this.data[idx+1];
+									newpng.data[idx2+2] = this.data[idx+2];
+									
+									newpng.data[idx2+3] = this.data[idx+3];
+									n++;
+								}
+								m++;
+							}
+									
+							sendImage(newpng, res, '\nImage cropped\n');
+										
+					
+						}
+										
+					}
+		
+				});
+							
+	});
+	
+	
+	
+	
+	
+	
+}
+
+
+
+	function pre_crop(req, res)
 	{
 		//how get (x,y,flag) from req? and how get then img blob from req? and how get two blobs from req?
 		//for all this we are using body-parser
 		
-		
-		
+					/********		
+
+					//http://stackoverflow.com/questions/8110294/nodejs-base64-image-encoding-decoding-not-quite-working
+
+					var buff = new Buffer(req.body.imageFile.replace(/^data:image\/(png|gif|jpeg);base64,/,''), 'base64');
+
+
+					var Stream = require('stream');
+					var stream = new Stream();
+
+					stream.pipe = function(dest) {
+					  dest.write('your string');
+					  return dest;
+					};
+
+					stream.pipe(process.stdout);
+					*******/
 		
 	
 						
@@ -677,145 +836,13 @@ function random( req, res )
 								
 						});
 
-						req.on('end', function () {
-							
-							var post = qs.parse(body);
-							//var simname = post['simname'];
-							var x =  post['x'];
-							var y =  post['y'];
-							var flag = post['flag'];
-							var dataurl_base64 = post['dataurl_base64'];
-							
-		
-								var s = new Readable;
-								s.push( dataurl_base64 );
-								s.on('end', function() {
-									
-									s.push(null);
-											
-									var png_from_client = new PNG ( { filterType: 4 } );
-									
-									s.pipe( png_from_client );
-									
-									/***********
-									var x = req.body.x;
-									var y = req.body.y;
-									var flag = req.body.flag;
-									var dataurl_base64 = req.body.dataurl_base64; //this just string (base64 encoded)
-									**********/
-											
-									console.log("x="+x);
-									console.log("y="+y);
-									console.log("flag="+flag);
-									
-									
-									if(flag==1)
-									{
-										x_left_top_pg_crop = x;
-										y_left_top_pg_crop = y;
-										x_right_bottom_pg_crop = -1000;
-										y_rigth_bottom_pg_crop = -1000;
-									}	
-									 
-									else if(flag==2)
-									{
-										
-										x_right_bottom_pg_crop = x+1;
-										y_rigth_bottom_pg_crop = y+1;
-										x_left_top_pg_crop = 0;
-										y_left_top_pg_crop = 0;
-										 
-									}
-
-								
-								
-									/*******
-											blob.lastModifiedDate = new Date();
-											blob.name = "crop.png";
-										
-											
-											s.push(null);      // indicates end-of-file basically - the end of the stream
-											
-											s.pipe( png_from_client );
-									********/		
-								
-								
-								png_from_client.on('parsed', function() {
-
-									if(x_right_bottom_pg_crop == -1000) x_right_bottom_pg_crop = this.width;
-									if(y_rigth_bottom_pg_crop == -1000) y_rigth_bottom_pg_crop = this.height;
-								
-								
-									if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
-									{
-									
-										var x0 = Math.min(x_left_top_pg_crop,x_right_bottom_pg_crop);
-										var x1 = Math.max(x_left_top_pg_crop,x_right_bottom_pg_crop);
-										
-										var y0 = Math.min(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-										var y1 = Math.max(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-										
-										var w = Math.abs(x1-x0);
-										var h = Math.abs(y1-y0);
-										
-										
-										if(w>0 && h>0)
-										{
-											 
-									
-											var arr = [ x0, y0, w, h ];
-
-
-											var newpng = new PNG ( {
-												
-													width: w,
-													height: h,
-													filterType: 4
-											} );
-											
-											var limy = arr[1]+arr[3];
-											var limx = arr[0]+arr[2];
-											var n=0;
-											var m=0;
-
-											for (var y = arr[1]; y < limy; y++) {
-												n=0;
-												for (var x = arr[0]; x < limx; x++) {
-													var idx = (this.width * y + x) << 2;
-													var idx2 = (newpng.width * m + n) << 2;
-													
-													
-													newpng.data[idx2] = this.data[idx];
-													newpng.data[idx2+1] = this.data[idx+1];
-													newpng.data[idx2+2] = this.data[idx+2];
-													
-													newpng.data[idx2+3] = this.data[idx+3];
-													n++;
-												}
-												m++;
-											}
-													
-											sendImage(newpng, res, '\nImage cropped\n');
-														
-									
-										}
-														
-									}
-								
-								});
-							
-						});
-	
-		
-					});
-		
-		
-		
+						req.on('end', function () {  crop( body); });
+						
 		
 	}
 
 
-//app.post('/crop', crop );
+app.post('/crop', pre_crop );
 app.post('/random', random );
 app.post('/mdown', mdown );
 app.post('/mright', mright );

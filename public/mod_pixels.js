@@ -114,7 +114,7 @@ function setEventListenersOnTri_Btns()
 		btn.onclick = function()
 		{
 			
-			crop(glob_x_left_top,glob_y_left_top,1);
+			server_crop(glob_x_left_top,glob_y_left_top,1);
 			
 			hidePixels();
 			
@@ -124,7 +124,7 @@ function setEventListenersOnTri_Btns()
 		btn.onclick = function()
 		{
 			
-			crop(glob_x_left_top,glob_y_left_top,2);
+			server_crop(glob_x_left_top,glob_y_left_top,2);
 			
 			hidePixels();
 			
@@ -171,13 +171,6 @@ function redrawPixels_main(context, x,y)
 
 function sendPostWithParametersOnServer(  params )
 {
-	var parameters = '';
-	var tmp = '';
-	for(key in params)
-	{
-		parameters += (tmp + key + '=' + encodeURIComponent(params[key]));
-		tmp = '&';
-	}
 	
 				
 	var xhr = new XMLHttpRequest();
@@ -253,4 +246,34 @@ function crop(x,y,flag)
 	
 }
 
+
+function server_crop(x,y,flag)
+{
+	
+	var canvas =  document.getElementById("canvas");
+	
+	var dataurl_base64 = canvas.toDataURL();
+	
+	/*********
+	
+	///////
+	//var buffer = imageData.data.buffer;  // ArrayBuffer
+	//////
+	
+	var imageData = context.createImageData(w, h);
+	imageData.data.set(buffer);
+	
+	*********/
+		
+	var params = [];
+			
+	params['x']= x;
+	params['y']= y;
+	params['flag']= flag;
+	params['imgdata_base64']= dataurl;
+			
+	sendPostWithParametersOnServer( params ); 
+
+	
+}
 

@@ -86,7 +86,7 @@ window.onload = function()
 		
 		$("#canvas").click( function() { whenClickedOnCanvas(e); } );
 				
-		document.onclick = function () { 
+		document.onclick = function (ev) { 
 			if (!ev.target.hasAttribute('seed-clicked')) return;
 			whenSomeSeedSelected(ev);
 		};

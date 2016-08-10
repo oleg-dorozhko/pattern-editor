@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();  
 var fs = require('fs');
 var bodyParser = require('body-parser');
+var Readable = require('stream').Readable;
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -643,6 +644,8 @@ function random( req, res )
 	});
 }
 
+
+
 	function crop(req, res)
 	{
 		//how get (x,y,flag) from req? and how get then img blob from req? and how get two blobs from req?
@@ -678,7 +681,14 @@ function random( req, res )
 		
 		var png_from_client = new PNG ( { filterType: 4 } );
 		
-		blob.pipe( png_from_client );
+		
+
+		var s = new Readable;
+		s.push( blob ); 
+		s.push(null);      // indicates end-of-file basically - the end of the stream
+		
+		s.pipe( png_from_client );
+		
 		
 		png_from_client.on('parsed', function() {
 

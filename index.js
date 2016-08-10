@@ -75,6 +75,66 @@ function sendImage(result_png, res, msg)
 	});
 }
 
+function multiply(req, res)
+{
+	
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		
+		var newpng = new PNG ( {
+			
+				width: this.width*2,
+				height: this.height*2,
+				filterType: 4
+		} );
+		
+		
+
+			for (var y = 0; y < this.height; y++) {
+				
+				for (var x = 0; x < this.width; x++) {
+					
+					var idx = (this.width * y + x) << 2;
+					
+					var new_idx1 = newpng.width * (y) + (x) << 2;
+					
+					var new_idx2 = (newpng.width * (y) + (x)+this.width << 2);
+					
+					var new_idx3 = newpng.width * (y+this.height) + (x) << 2;
+					
+					var new_idx4 = newpng.width * (y+this.height) + (x)+this.width << 2;
+					
+					newpng.data[new_idx1+0] = this.data[idx];
+					newpng.data[new_idx1+1] = this.data[idx+1];
+					newpng.data[new_idx1+2] = this.data[idx+2];
+					newpng.data[new_idx1+3] = this.data[idx+3];
+					
+					newpng.data[new_idx2+0] = this.data[idx];
+					newpng.data[new_idx2+1] = this.data[idx+1];
+					newpng.data[new_idx2+2] = this.data[idx+2];
+					newpng.data[new_idx2+3] = this.data[idx+3];
+					
+					newpng.data[new_idx3+0] = this.data[idx];
+					newpng.data[new_idx3+1] = this.data[idx+1];
+					newpng.data[new_idx3+2] = this.data[idx+2];
+					newpng.data[new_idx3+3] = this.data[idx+3];
+					
+					newpng.data[new_idx4+0] = this.data[idx];
+					newpng.data[new_idx4+1] = this.data[idx+1];
+					newpng.data[new_idx4+2] = this.data[idx+2];
+					newpng.data[new_idx4+3] = this.data[idx+3];
+					
+				}
+				
+			}
+			
+			sendImage(newpng, res, "\nImage multiplied\n" );
+			
+			
+		});
+}
+
 function minus( req, res )
 {
 
@@ -244,6 +304,7 @@ function inverse( req, res )
 		
 }
 
+app.post('/multiply', multiply );
 app.post('/plus', plus );
 app.post('/minus', minus );
 app.post('/inverse', inverse );

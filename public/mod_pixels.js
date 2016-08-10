@@ -207,12 +207,12 @@ function crop(x,y,flag)
 {
 	getImageFromCanvas("canvas", function(blob) {   
 		
-		//var newImg = document.createElement("img");
+		var newImg = document.createElement("img");
 				
-		//var urlCreator = window.URL || window.webkitURL;
-		//var imageUrl = urlCreator.createObjectURL(blob);
+		var urlCreator = window.URL || window.webkitURL;
+		var imageUrl = urlCreator.createObjectURL(blob);
 		
-		//newImg.onload = function() {	
+		newImg.onload = function() {	
 					
 			
 			var params = [];
@@ -220,14 +220,14 @@ function crop(x,y,flag)
 			params['x']= x;
 			params['y']= y;
 			params['flag']= flag;
-			params['blob']= blob;
+			params['blob']= this;
 			
 			sendPostWithParametersOnServer( params ); 
 			
 			
-		//}
+		}
 				
-		//newImg.src = imageUrl;
+		newImg.src = imageUrl;
 		
 		
 		

@@ -679,7 +679,9 @@ function random( req, res )
 		}
 
 		var s = new Readable;
-		s.push( new Buffer(blob) ); 
+		s.push( new Buffer( blob , 'base64') ); 
+		s.push(null);
+		
 		
 		var png_from_client = new PNG ( { filterType: 4 } );
 		

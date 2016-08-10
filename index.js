@@ -847,44 +847,46 @@ function crop2(req,res)
 {
 	
 									
-				console.log("entering crop2");
-				
-				var x = req.body.x;
-				var y = req.body.y;
-				var w0 = req.body.w;
-				var h0 = req.body.h;
-				var flag = req.body.flag;
-				var imgdata	= req.body.imgdata;
-				
-				console.log("x="+x);
-				console.log("y="+y);
-				console.log("w0="+w0);
-				console.log("h0="+h0);
-				console.log("flag="+flag);
-				console.log("imgdata="+imgdata.substr(0,20));	
+		console.log("entering crop2");
+		
+		var x = req.body.x;
+		var y = req.body.y;
+		var w0 = req.body.w;
+		var h0 = req.body.h;
+		var flag = req.body.flag;
+		var imgdata	= req.body.imgdata;
+		
+		console.log("x="+x);
+		console.log("y="+y);
+		console.log("w0="+w0);
+		console.log("h0="+h0);
+		console.log("flag="+flag);
+		console.log("imgdata="+imgdata.substr(0,20));	
 
 				
 
-					if(flag==1)
-					{
-						x_left_top_pg_crop = x;
-						y_left_top_pg_crop = y;
-						x_right_bottom_pg_crop = -1000;
-						y_rigth_bottom_pg_crop = -1000;
-					}	
-					 
-					else if(flag==2)
-					{
-						
-						x_right_bottom_pg_crop = x+1;
-						y_rigth_bottom_pg_crop = y+1;
-						x_left_top_pg_crop = 0;
-						y_left_top_pg_crop = 0;
-						 
-					}
+		if(flag==1)
+		{
+			x_left_top_pg_crop = x;
+			y_left_top_pg_crop = y;
+			
+			x_right_bottom_pg_crop = w0;
+			y_rigth_bottom_pg_crop = h0;
+			
+		}	
+		 
+		else if(flag==2)
+		{
+			
+			x_right_bottom_pg_crop = x+1;
+			y_rigth_bottom_pg_crop = y+1;
+			x_left_top_pg_crop = 0;
+			y_left_top_pg_crop = 0;
+			 
+		}
 
-					var data = imgdata.split(',');
-					
+		var data = imgdata.split(',');
+		
 												
 					/****							
 					
@@ -895,71 +897,68 @@ function crop2(req,res)
 					} );
 						
 					*********/
+		
+	
+		if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
+		{
+		
+			var x0 = Math.min(x_left_top_pg_crop,x_right_bottom_pg_crop);
+			var x1 = Math.max(x_left_top_pg_crop,x_right_bottom_pg_crop);
+			
+			var y0 = Math.min(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
+			var y1 = Math.max(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
+			
+			var w = Math.abs(x1-x0);
+			var h = Math.abs(y1-y0);
+			
+			
+			if(w>0 && h>0)
+			{
+				 
+		
+				var arr = [ x0, y0, w, h ];
 
-							if(x_right_bottom_pg_crop == -1000) x_right_bottom_pg_crop = w0;
-							if(y_rigth_bottom_pg_crop == -1000) y_rigth_bottom_pg_crop = h0;
+
+				var newpng = new PNG ( {
+					
+						width: w,
+						height: h,
+						filterType: 4
+				} );
+				
+				var limy = arr[1]+arr[3];
+				var limx = arr[0]+arr[2];
+				var n=0;
+				var m=0;
+
+				for (var y = arr[1]; y < limy; y++) {
+					n=0;
+					for (var x = arr[0]; x < limx; x++) {
+						
+						var idx = (w0 * y + x) << 2;
+						var idx2 = (w * m + n) << 2;
 						
 						
-							if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
-							{
+						newpng.data[idx2] = data[idx];
+						newpng.data[idx2+1] = data[idx+1];
+						newpng.data[idx2+2] = data[idx+2];
+						
+						newpng.data[idx2+3] = data[idx+3];
+						n++;
+					}
+					m++;
+				}
+						
+				sendImage(newpng, res, '\nImage cropped\n');
 							
-								var x0 = Math.min(x_left_top_pg_crop,x_right_bottom_pg_crop);
-								var x1 = Math.max(x_left_top_pg_crop,x_right_bottom_pg_crop);
-								
-								var y0 = Math.min(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-								var y1 = Math.max(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-								
-								var w = Math.abs(x1-x0);
-								var h = Math.abs(y1-y0);
-								
-								
-								if(w>0 && h>0)
-								{
-									 
+		
+			}
 							
-									var arr = [ x0, y0, w, h ];
-
-
-									var newpng = new PNG ( {
-										
-											width: w,
-											height: h,
-											filterType: 4
-									} );
-									
-									var limy = arr[1]+arr[3];
-									var limx = arr[0]+arr[2];
-									var n=0;
-									var m=0;
-
-									for (var y = arr[1]; y < limy; y++) {
-										n=0;
-										for (var x = arr[0]; x < limx; x++) {
-											
-											var idx = (w0 * y + x) << 2;
-											var idx2 = (w * m + n) << 2;
-											
-											
-											newpng.data[idx2] = data[idx];
-											newpng.data[idx2+1] = data[idx+1];
-											newpng.data[idx2+2] = data[idx+2];
-											
-											newpng.data[idx2+3] = data[idx+3];
-											n++;
-										}
-										m++;
-									}
-											
-									sendImage(newpng, res, '\nImage cropped\n');
-												
-							
-								}
-												
-							}
+		}
 				
 					
 							
-					});		
+					
 }
 
 	

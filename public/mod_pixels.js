@@ -213,7 +213,7 @@ function crop( x, y, flag )
 	params['x']= x;
 	params['y']= y;
 	params['flag']= flag;
-	params['dataurl']=  $("#canvas").toDataUrl();
+	params['dataurl']=  document.getElementById("canvas").toDataUrl();
 		
 	sendPostWithParametersOnServer( params, '/crop' ); 
 	

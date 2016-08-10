@@ -71,22 +71,22 @@ function setEventListenersOnPixels()
 				
 			}
 		}
-				
+		
+function hidePixels()
+{
+	document.getElementById("td_pixels").removeChild(glob_scale_div);
+	glob_scale_div = null;
+	glob_showing_scale_div = false;
+}		
 		
 		
 function showSomeDiv(target,x,y)
 {
 	
-	if(glob_scale_div != null && glob_showing_scale_div == true)
-	{
-		document.getElementById("span_pixels").removeChild(glob_scale_div);
-		glob_scale_div = null;
-		glob_showing_scale_div = false;
-	}
+	if(glob_scale_div != null && glob_showing_scale_div == true) hidePixels();
 	
 	var el = document.createElement('div');
     el.className = 'tooltip';
-
 	
     var coords = target.getBoundingClientRect();
 
@@ -95,14 +95,12 @@ function showSomeDiv(target,x,y)
 	
 	var tri_btns = '<input type="button" id="btn_lt" value=" left top "> <input type="button" id="btn_rb" value=" right bottom "> <input type="button" id="btn_esc" value=" cancel ">';
 	
-	el.innerHTML = tri_btns+'<table><tr><td><canvas id="pixels" width="150" height="150" style="cursor:crosshair;border: 1px solid gold"></canvas></td></tr><table>';
-	
-	
-	
+	el.innerHTML = tri_btns+'<table><tr><td><canvas id="pixels" width="150" height="150" style="cursor:crosshair;border: 1px solid gold"></canvas></td></tr></table>';
+		
 	glob_scale_div = el;
 	glob_showing_scale_div = true;
 	
-	document.getElementById("span_pixels").appendChild(el);
+	document.getElementById("td_pixels").appendChild(el);
 	
 	setEventListenersOnTri_Btns();
 	setEventListenersOnPixels();
@@ -118,9 +116,7 @@ function setEventListenersOnTri_Btns()
 			
 			crop_crop(glob_x_left_top,glob_y_left_top,1);
 			
-			document.getElementById("span_pixels").removeChild(glob_scale_div);
-			glob_showing_scale_div = false;
-			glob_scale_div=null;
+			hidePixels();
 			
 		}
 		
@@ -129,18 +125,15 @@ function setEventListenersOnTri_Btns()
 		{
 			
 			crop_crop(glob_x_left_top,glob_y_left_top,2);
-			document.getElementById("span_pixels").removeChild(glob_scale_div);
-			glob_showing_scale_div = false;
-			glob_scale_div=null;
+			
+			hidePixels();
 			
 		}
 		
 		var btn = document.getElementById("btn_esc");
 		btn.onclick = function()
 		{
-			document.getElementById("span_pixels").removeChild(glob_scale_div);
-			glob_showing_scale_div = false;
-			glob_scale_div=null;
+			hidePixels();
 		
 		}
 
@@ -179,10 +172,14 @@ function redrawPixels_main(context, x,y)
 
 function crop_crop(x,y,flag)
 {
+	var parameters = 'x=' + encodeURIComponent(x) +  '&y=' + encodeURIComponent(y)+"&flag="+encodeURIComponent(flag);
+	alert(parameters);
+	
+	/********
 	var xhr = new XMLHttpRequest();
 			
 			
-	var parameters = 'x=' + encodeURIComponent(x) +  '&y=' + encodeURIComponent(y)+"&flag="+encodeURIComponent(flag);
+	
 	
 	xhr.open('POST', '/crop', true);
 	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -199,6 +196,7 @@ function crop_crop(x,y,flag)
 	}
 
 	xhr.send(parameters);
+	****/
 	
 }
 

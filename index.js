@@ -692,7 +692,8 @@ function random( req, res )
 
 		var data = imgdata.split(',');
 		
-												
+		for(var i=0;i<data.length;i++) data[i] = +data[i];									
+		
 					/****							
 					
 					var png_from_client = new PNG ( { 

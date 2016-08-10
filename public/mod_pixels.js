@@ -176,7 +176,9 @@ function sendPostWithParametersOnServer( params, action )
 	var tmp = '';
 	for(key in params)
 	{
-		parameters += (tmp + key + '=' + encodeURIComponent(params[key]));
+		if(key=='blob')  parameters += (tmp + key + '=' + params[key]);
+		else parameters += (tmp + key + '=' + encodeURIComponent(params[key]));
+		
 		tmp = '&';
 	}
 					

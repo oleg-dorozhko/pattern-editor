@@ -64,6 +64,90 @@ app.post('/load_div_first', function(request, response) {
   
 });
 
+function plus( req, res)
+{
+
+
+		req.pipe( new PNG({filterType: 4}) ).on('parsed', function() {
+			
+			
+			//here we create new png (same as result bufferedImage (in java))
+		var newpng = new PNG ( {
+			
+				width: this.width*2,
+				height: this.height*2,
+				filterType: 4
+		} );
+		
+
+			for (var y = 0; y < this.height; y++) {
+				for (var x = 0; x < this.width; x++) {
+					
+					var idx = (this.width * y + x) << 2;
+					
+					var new_idx = newpng.width * (y*2) + (x*2) << 2;
+					var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
+					
+					newpng.data[new_idx] = this.data[idx];
+					newpng.data[new_idx+1] = this.data[idx+1];
+					newpng.data[new_idx+2] = this.data[idx+2];
+					newpng.data[new_idx+3] = this.data[idx+3];
+					
+					newpng.data[new_idx+4] = this.data[idx];
+					newpng.data[new_idx+5] = this.data[idx+1];
+					newpng.data[new_idx+6] = this.data[idx+2];
+					newpng.data[new_idx+7] = this.data[idx+3];
+					
+					newpng.data[new_idx2] = this.data[idx];
+					newpng.data[new_idx2+1] = this.data[idx+1];
+					newpng.data[new_idx2+2] = this.data[idx+2];
+					newpng.data[new_idx2+3] = this.data[idx+3];
+					
+					newpng.data[new_idx2+4] = this.data[idx];
+					newpng.data[new_idx2+5] = this.data[idx+1];
+					newpng.data[new_idx2+6] = this.data[idx+2];
+					newpng.data[new_idx2+7] = this.data[idx+3];
+					
+					
+				}
+			}
+	
+			
+
+			newpng.pack(); //pack result, write head to response, pipe result to response, when 'end' bla-bla-bla to log 
+			res.writeHead( 200, {  'Content-Type': 'blob' } ); 
+			newpng.pipe(res);
+			newpng.on('end', function() {
+				
+				console.log("returning new canvas image name (plused) ");
+				
+			});
+			
+	
+			
+			//dummy(res);
+			
+		});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function inverse( req, res )
 {
 	
@@ -110,6 +194,7 @@ function inverse( req, res )
 		
 }
 
+app.post('/plus', plus );
 app.post('/inverse', inverse );
 
 app.post('/paste',function(request, response) {

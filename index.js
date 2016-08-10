@@ -668,6 +668,7 @@ function random( req, res )
 		console.log("h0="+h0);
 		console.log("flag="+flag);
 		console.log("imgdata="+imgdata.substr(0,20));	
+		console.log("imgdata="+imgdata.length);	
 				
 
 		if(flag==1)

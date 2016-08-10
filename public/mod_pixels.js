@@ -228,8 +228,8 @@ function sendPostWithParametersOnServer( action, params  )
 	var xhr = new XMLHttpRequest();
 	
 	xhr.open('POST', action, true);
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xhr.responseType = "blob";	
+	//xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	req.responseType = "blob";
 	
 	xhr.onload = function(e) {  
 		
@@ -237,6 +237,19 @@ function sendPostWithParametersOnServer( action, params  )
 			
 			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
 
+			/*******
+    
+            var buffer = xhr.response;
+            var dataview = new DataView(buffer);
+            var ints = new Uint8ClampedArray(buffer.byteLength);
+            for (var i = 0; i < ints.length; i++) {
+                ints[i] = dataview.getUint8(i);
+            }
+			
+			alert(ints[10]);
+			
+			************/
+           
 			getImageFromBlob( xhr.response, function( img ) {	imageToCanvas( img, canvas_id ); } );
 			
 	}
@@ -250,16 +263,13 @@ function server_crop(x,y,flag)
 {
 	
 	var canvas =  document.getElementById("canvas");
-	
-	canvas.toBlob( function(blob) {
-		
-		params = 'x='+x+'&y='+y+'&flag='+flag+'&imagedata='+encodeURIComponent(blob);		
-		console.log(blob);
-		alert(params);
-		sendPostWithParametersOnServer( '/crop', params ); 
-		
-	});
-	
+	var imageData = canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height);
+	var imgdata = ''+imageData.data;
+	var w = canvas.width;
+	var h = canvas.height;
+	var params = 'x='+x+'&y='+y+'&w='+w+'&h='+h+'&flag='+flag+'&imgdata='+imgdata;		
+			
+	sendPostWithParametersOnServer( '/crop', params ); 
 	
 }
 

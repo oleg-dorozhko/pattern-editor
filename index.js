@@ -851,12 +851,19 @@ function crop2(req,res)
 				
 				var x = req.body.x;
 				var y = req.body.y;
+				var w0 = req.body.w;
+				var h0 = req.body.h;
 				var flag = req.body.flag;
-						
+				var imgdata	= req.body.imgdata;
+				
 				console.log("x="+x);
 				console.log("y="+y);
-				console.log("flag="+flag);	
+				console.log("w0="+w0);
+				console.log("h0="+h0);
+				console.log("flag="+flag);
+				console.log("imgdata="+imgdata.substr(0,20));	
 
+				
 
 					if(flag==1)
 					{
@@ -876,31 +883,21 @@ function crop2(req,res)
 						 
 					}
 
-					var buff = new Buffer( req.body.imagedata.replace(/^data:image\/(png|gif|jpeg);base64,/,''), 'base64' );
-			
-					var s = new Readable;
-					s.push( buff );
-					s.push( null );
-		
-				
-								
-					/*******
-									
-						blob.lastModifiedDate = new Date();
-						blob.name = "crop.png";
-									
-					********/		
-												
-												
+					var data = imgdata.split(',');
 					
-					var png_from_client = new PNG ( { filterType: 4 } );
+												
+					/****							
+					
+					var png_from_client = new PNG ( { 
+						width: w,
+						height: h,
+						filterType: 4 
+					} );
 						
-					s.pipe( png_from_client ).on('parsed', function() {
-							
-						
+					*********/
 
-							if(x_right_bottom_pg_crop == -1000) x_right_bottom_pg_crop = this.width;
-							if(y_rigth_bottom_pg_crop == -1000) y_rigth_bottom_pg_crop = this.height;
+							if(x_right_bottom_pg_crop == -1000) x_right_bottom_pg_crop = w0;
+							if(y_rigth_bottom_pg_crop == -1000) y_rigth_bottom_pg_crop = h0;
 						
 						
 							if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
@@ -938,15 +935,16 @@ function crop2(req,res)
 									for (var y = arr[1]; y < limy; y++) {
 										n=0;
 										for (var x = arr[0]; x < limx; x++) {
-											var idx = (this.width * y + x) << 2;
-											var idx2 = (newpng.width * m + n) << 2;
+											
+											var idx = (w0 * y + x) << 2;
+											var idx2 = (w * m + n) << 2;
 											
 											
-											newpng.data[idx2] = this.data[idx];
-											newpng.data[idx2+1] = this.data[idx+1];
-											newpng.data[idx2+2] = this.data[idx+2];
+											newpng.data[idx2] = data[idx];
+											newpng.data[idx2+1] = data[idx+1];
+											newpng.data[idx2+2] = data[idx+2];
 											
-											newpng.data[idx2+3] = this.data[idx+3];
+											newpng.data[idx2+3] = data[idx+3];
 											n++;
 										}
 										m++;

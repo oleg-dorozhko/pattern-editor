@@ -4,12 +4,12 @@ var PNG = require('pngjs').PNG;
 var express = require('express');
 var app = express();  
 var fs = require('fs');
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 var Readable = require('stream').Readable;
 var qs = require('querystring');
 
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+//app.use(bodyParser.json()); // support json encoded bodies
+//app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 /***
 app.post('/api/users', function(req, res) {
@@ -593,7 +593,7 @@ function mright( req, res )
 }
 
 
-function getColDec( cccol, cccol1 )
+	function getColDec( cccol, cccol1 )
 	{
 		var cccol2=0;
 		if(cccol+cccol1>255) cccol2=    ((cccol+cccol1)-255)+10;
@@ -607,6 +607,7 @@ function getColDec( cccol, cccol1 )
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
+	
 function random( req, res )
 {
 
@@ -646,215 +647,20 @@ function random( req, res )
 }
 
 
-function crop(body)
-{
-	
-	
-	var post = qs.parse(body);
-	
-	var x =  post['x'];
-	var y =  post['y'];
-	var flag = post['flag'];
-	var dataurl_base64 = post['imagedata'];
-		
-	var s = new Readable;
-	var buff = new Buffer(dataurl_base64);//.replace(/^data:image\/(png|gif|jpeg);base64,/,''), 'base64');
-	s.push( buff );
-	s.push(null);
-	
-	
-								
-	s.on('end', function() {
-									
-									
-				console.log("ended entering buff (base64)");
-						
-				var png_from_client = new PNG ( { filterType: 4 } );
-				
-				
-				
-				/***********
-				var x = req.body.x;
-				var y = req.body.y;
-				var flag = req.body.flag;
-				var dataurl_base64 = req.body.dataurl_base64; //this just string (base64 encoded)
-				**********/
-						
-				console.log("x="+x);
-				console.log("y="+y);
-				console.log("flag="+flag);
-				
-				
-				if(flag==1)
-				{
-					x_left_top_pg_crop = x;
-					y_left_top_pg_crop = y;
-					x_right_bottom_pg_crop = -1000;
-					y_rigth_bottom_pg_crop = -1000;
-				}	
-				 
-				else if(flag==2)
-				{
-					
-					x_right_bottom_pg_crop = x+1;
-					y_rigth_bottom_pg_crop = y+1;
-					x_left_top_pg_crop = 0;
-					y_left_top_pg_crop = 0;
-					 
-				}
-
-								
-								
-									/*******
-									
-											blob.lastModifiedDate = new Date();
-											blob.name = "crop.png";
-									
-									********/		
-									
-				s.pipe( png_from_client );				
-								
-				png_from_client.on('parsed', function() {
-
-					if(x_right_bottom_pg_crop == -1000) x_right_bottom_pg_crop = this.width;
-					if(y_rigth_bottom_pg_crop == -1000) y_rigth_bottom_pg_crop = this.height;
-				
-				
-					if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
-					{
-					
-						var x0 = Math.min(x_left_top_pg_crop,x_right_bottom_pg_crop);
-						var x1 = Math.max(x_left_top_pg_crop,x_right_bottom_pg_crop);
-						
-						var y0 = Math.min(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-						var y1 = Math.max(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-						
-						var w = Math.abs(x1-x0);
-						var h = Math.abs(y1-y0);
-						
-						
-						if(w>0 && h>0)
-						{
-							 
-					
-							var arr = [ x0, y0, w, h ];
 
 
-							var newpng = new PNG ( {
-								
-									width: w,
-									height: h,
-									filterType: 4
-							} );
-							
-							var limy = arr[1]+arr[3];
-							var limx = arr[0]+arr[2];
-							var n=0;
-							var m=0;
-
-							for (var y = arr[1]; y < limy; y++) {
-								n=0;
-								for (var x = arr[0]; x < limx; x++) {
-									var idx = (this.width * y + x) << 2;
-									var idx2 = (newpng.width * m + n) << 2;
-									
-									
-									newpng.data[idx2] = this.data[idx];
-									newpng.data[idx2+1] = this.data[idx+1];
-									newpng.data[idx2+2] = this.data[idx+2];
-									
-									newpng.data[idx2+3] = this.data[idx+3];
-									n++;
-								}
-								m++;
-							}
-									
-							sendImage(newpng, res, '\nImage cropped\n');
-										
-					
-						}
-										
-					}
-		
-				});
-							
-	});
 	
 	
-	
-	
-	
-	
-}
-
-
-
-	function pre_crop(req, res)
+	function crop( post, res )
 	{
-		//how get (x,y,flag) from req? and how get then img blob from req? and how get two blobs from req?
-		//for all this we are using body-parser
-		
-					/********		
-
-					//http://stackoverflow.com/questions/8110294/nodejs-base64-image-encoding-decoding-not-quite-working
-
-					var buff = new Buffer(req.body.imageFile.replace(/^data:image\/(png|gif|jpeg);base64,/,''), 'base64');
-
-
-					var Stream = require('stream');
-					var stream = new Stream();
-
-					stream.pipe = function(dest) {
-					  dest.write('your string');
-					  return dest;
-					};
-
-					stream.pipe(process.stdout);
-					*******/
 		
 	
-						
-						var body = '';
-
-						req.on('data', function (data) {
-							
-							body += data;
-
-							// Too much POST data, kill the connection!
-							// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-							if (body.length > 1e6 * 20)
-							{
-								req.connection.destroy();
-								res.writeHead( 503,{  'Content-Type': 'text/plain' } );
-								res.end("error: image too big");
-								return;
-							}
-								
-								
-								
-						});
-
-						req.on('end', function () {  crop( body); });
-						
-		
-	}
-	
-	
-	
-	
-
-function crop2(req,res)
-{
-	
-									
-		console.log("entering crop2");
-		
-		var x = req.body.x;
-		var y = req.body.y;
-		var w0 = req.body.w;
-		var h0 = req.body.h;
-		var flag = req.body.flag;
-		var imgdata	= req.body.imgdata;
+		var x = post['x'];
+		var y = post['y'];
+		var w0 = post['w'];
+		var h0 = post['h'];
+		var flag = post['flag'];
+		var imgdata	= post['imgdata'];
 		
 		console.log("x="+x);
 		console.log("y="+y);
@@ -862,7 +668,6 @@ function crop2(req,res)
 		console.log("h0="+h0);
 		console.log("flag="+flag);
 		console.log("imgdata="+imgdata.substr(0,20));	
-
 				
 
 		if(flag==1)
@@ -955,7 +760,47 @@ function crop2(req,res)
 			}
 							
 		}
-				
+		
+		
+	}
+	
+
+function precrop( req, res)
+{
+	
+									
+		console.log("entering pre_crop");
+		
+		
+		var body = '';
+
+		req.on('data', function (data) {
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 1e6*50)
+			{
+				res.writeHead( 503, {Content-Type: 'text/plain'} );
+				res.end("error: data too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+			
+			var post = qs.parse(body);
+			
+			crop( post, res );
+			
+			
+			
+		});
+		
+			
 					
 							
 					
@@ -965,7 +810,7 @@ function crop2(req,res)
 	
 
 
-app.post('/crop', crop2 );
+app.post('/crop', precrop );
 app.post('/random', random );
 app.post('/mdown', mdown );
 app.post('/mright', mright );

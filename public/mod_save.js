@@ -20,6 +20,25 @@ function getNewSaveNumber()
 	return 501;
 }
 
+function selectSaveCanvas(id)
+{
+	var list = document.getElementsByTagName('canvas'); 
+	for(var i=0;i<list.length;i++)
+	{
+		if(id == list[i].id) continue;
+		list[i].style.border = '';
+	}
+	var el = document.getElementById(id);
+	if(el.style.border == '')
+	{
+		el.style.border = "1px solid red";
+	}
+	else
+	{
+		el.style.border = '';
+	}
+	
+}
 
 
 function save_pattern()

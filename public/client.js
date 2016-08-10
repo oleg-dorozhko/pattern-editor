@@ -39,6 +39,33 @@ function setInitialImageToCanvas()
 	img.src = $("#canvas").attr("init-path");
 }
 
+//for seed filling
+function findSelectedSeedClicked()
+{
+	var list = document.getElementsByTagName('img');
+	for(var i=0;i<list.length;i++)
+	{
+		if(list[i].hasAttribute('seed-clicked'))
+		{
+			if(!list[i].style.border == '') return list[i].src.substr(list[i].src.lastIndexOf('/')+1);
+		}
+	}
+	return null;
+}
+
+function clearAllSeedClicked(el)
+{
+	var list = document.getElementsByTagName('img');
+	for(var i=0;i<list.length;i++)
+	{
+		if(list[i].hasAttribute('seed-clicked'))
+		{
+			if(el.src == list[i].src) continue;
+			list[i].style.border = '';
+		}
+	}
+}
+
 
 window.onload = function()
 {
@@ -57,9 +84,12 @@ window.onload = function()
 		$("#mirror_right").click( function() { transform("canvas", '/mright'); } );
 		$("#random").click( function() { transform("canvas", '/random'); } );
 		
-		
-		
-		
+		$("#canvas").click( function() { whenClickedOnCanvas(e); } );
+				
+		document.onclick = function () { 
+			if (!ev.target.hasAttribute('seed-clicked')) return;
+			whenSomeSeedSelected(ev);
+		};
 	
 		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
 		
@@ -71,5 +101,4 @@ window.onload = function()
 window.onerror = function(message, url, lineNumber) {
     alert("Поймана ошибка, выпавшая в глобальную область!\n" + "Сообщение: " + message + "\n(" + url + ":" + lineNumber + ")");
 }
-
 

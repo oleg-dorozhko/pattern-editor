@@ -229,7 +229,7 @@ function sendPostWithParametersOnServer( action, params  )
 	
 	xhr.open('POST', action, true);
 	//xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	req.responseType = "blob";
+	xhr.responseType = "blob";
 	
 	xhr.onload = function(e) {  
 		

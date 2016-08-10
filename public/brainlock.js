@@ -51,7 +51,7 @@ function blobToServer(blob, action, callback)
 		
 		if (xhr.readyState != 4) return;
 
-		if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
+		if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
 		
 		var blob_from_server = xhr.response;
 		
@@ -81,23 +81,31 @@ function redrawProgress( progressBar )
 
 function transform(canvas_id, action)
 {
-	var progressBar = document.getElementById("progress");
-	progressBar.hidden = false;
-	progressBar.value = 0;
-	
-	var intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
-	//init timer for redraw progress
-	
-	getImageFromCanvas( canvas_id, function(blob) { 
-		blobToServer(blob, action, function( blob_from_server ) {
-			getImageFromBlob( blob_from_server, function(img) {
-				imageToCanvas(img, canvas_id, function() { 
-					progressBar.hidden = true;
-					clearInterval(intervalID); 
+	var intervalID;
+	try
+	{
+		var progressBar = document.getElementById("progress");
+		progressBar.hidden = false;
+		progressBar.value = 0;
+		
+		intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
+		//init timer for redraw progress
+		
+		getImageFromCanvas( canvas_id, function(blob) { 
+			blobToServer(blob, action, function( blob_from_server ) {
+				getImageFromBlob( blob_from_server, function(img) {
+					imageToCanvas(img, canvas_id, function() { 
+						progressBar.hidden = true;
+						clearInterval(intervalID); 
+					});	
+					
 				});	
-				
-			});	
-		}); 
-	});
+			}); 
+		});
+	}
+	catch(e)
+	{
+		clearInterval(intervalID); 
+	}
 }
 

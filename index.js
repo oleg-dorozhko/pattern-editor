@@ -828,9 +828,103 @@ function precrop( req, res)
 					
 }
 
+
+var fill_settings = null;
+
+function send_seed(req, res)
+{
+	var small_image = new PNG({filterType: 4});
 	
+	req.pipe(small_image).on( 'parsed', function()  {
+				
+		
+		fill_settings = {};
+		fill_settings.seed = this;
+		
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end("ok");
+					
+	}				
+					
+}
 	
 
+function fill( req, res )
+{
+	
+	console.log('\nIn fill(...)\n');
+		
+		if(fill_settings == null)
+		{
+			
+			res.writeHead( 503, { 'Content-Type':'text/plain' } );
+			res.end("error: call /send_seed before");
+			req.connection.destroy();
+			return;
+
+		}
+				
+
+	req.pipe(big_image).on('parsed', function() {
+		
+		
+		
+	
+		var small_image = fill_settings.seed; 
+		
+		//16%3 = 012
+		
+		//console.log("big_image.width="+big_image.width);
+		//console.log("small_image.width="+small_image.width);
+		//console.log("newpng.width="+newpng.width);
+		
+		
+		
+			for (var y = 0; y < big_image.height; y++) {
+				
+				for (var x = 0; x < big_image.width; x++) {
+					
+					
+					var idxBig = ( big_image.width * y + x ) << 2;
+					
+					
+					for (var m = 0; m < small_image.height; m++) {
+						
+						for (var n = 0; n < small_image.width; n++) {
+							
+								var idxSim = ( small_image.width * m + n ) << 2;
+								
+								k=x*small_image.width+n;
+								p=y*small_image.height+m;
+								var idxRes = newpng.width*p + k << 2;
+								
+								newpng.data[idxRes+0] = getColDec( big_image.data[idxBig+0] , small_image.data[idxSim+0]);
+					
+								newpng.data[idxRes+1] = getColDec( big_image.data[idxBig+1] , small_image.data[idxSim+1]);
+								
+								newpng.data[idxRes+2] = getColDec( big_image.data[idxBig+2] , small_image.data[idxSim+2]);
+								
+								newpng.data[idxRes+3] = 255;
+								
+						}
+					}
+					
+					
+				}
+			}				
+			
+			sendImage(newpng,res,'\nImage seeded\n');
+		
+		
+		});
+		
+		
+	});
+}
+	
+	
+app.post('/fill', fill );	
+app.post('/send_seed', get_seed );
 app.post('/crop', crop );
 app.post('/precrop', precrop );
 app.post('/random', random );

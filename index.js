@@ -865,7 +865,9 @@ function fill( req, res )
 		return;
 
 	}
-				
+	
+	var small_image = fill_settings.seed; 
+	
 	var big_image = new PNG({filterType: 4});
 	
 	req.pipe(big_image).on('parsed', function() {
@@ -879,7 +881,7 @@ function fill( req, res )
 					} );
 					
 					
-		var small_image = fill_settings.seed; 
+	
 		
 		//16%3 = 012
 		
@@ -920,7 +922,9 @@ function fill( req, res )
 					
 					
 				}
-			}				
+			}
+
+			fill_settings = null;			
 			
 			sendImage(newpng,res,'\nImage seeded\n');
 		

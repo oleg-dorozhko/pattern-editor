@@ -831,8 +831,10 @@ function precrop( req, res)
 
 var fill_settings = null;
 
-function send_seed(req, res)
+function get_seed(req, res)
 {
+	console.log('\nIn get_seed(...)\n');
+	
 	var small_image = new PNG({filterType: 4});
 	
 	req.pipe(small_image).on( 'parsed', function()  {
@@ -916,7 +918,7 @@ function fill( req, res )
 			sendImage(newpng,res,'\nImage seeded\n');
 		
 		
-		});
+	});
 	
 }
 	

@@ -58,7 +58,7 @@ window.onload = function()
 		$("#mirror_down").click( function() { transform("canvas", '/mdown'); } );
 		$("#mirror_right").click( function() { transform("canvas", '/mright'); } );
 		$("#random").click( function() { transform("canvas", '/random'); } );
-		
+		$("#fill").click( function() { send_seed(); } );
 		$("#canvas").click( function(ev) { whenClickedOnCanvas(ev); } );
 				
 		document.onclick = function (ev) { 

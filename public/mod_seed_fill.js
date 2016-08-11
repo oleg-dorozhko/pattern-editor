@@ -67,7 +67,7 @@ function send_seed()
 			transform("canvas",'/fill');
 			
 		}
-		xhr.send(params);
+		xhr.send(blob);
 		
 			
 	});

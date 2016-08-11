@@ -856,22 +856,20 @@ function fill( req, res )
 	
 	console.log('\nIn fill(...)\n');
 		
-		if(fill_settings == null)
-		{
-			
-			res.writeHead( 503, { 'Content-Type':'text/plain' } );
-			res.end("error: call /send_seed before");
-			req.connection.destroy();
-			return;
+	if(fill_settings == null)
+	{
+		
+		res.writeHead( 503, { 'Content-Type':'text/plain' } );
+		res.end("error: call /send_seed before");
+		req.connection.destroy();
+		return;
 
-		}
+	}
 				
-
+	var big_image = new PNG({filterType: 4});
+	
 	req.pipe(big_image).on('parsed', function() {
 		
-		
-		
-	
 		var small_image = fill_settings.seed; 
 		
 		//16%3 = 012

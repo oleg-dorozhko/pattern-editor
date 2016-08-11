@@ -870,6 +870,15 @@ function fill( req, res )
 	
 	req.pipe(big_image).on('parsed', function() {
 		
+		
+					var newpng = new PNG ( {
+						
+							width: big_image.width * small_image.width,
+							height: big_image.height * small_image.height,
+							filterType: 4
+					} );
+					
+					
 		var small_image = fill_settings.seed; 
 		
 		//16%3 = 012

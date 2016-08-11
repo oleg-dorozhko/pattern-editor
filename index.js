@@ -667,38 +667,35 @@ function random( req, res )
 				
 		
 		
+		var a1x = 0;
+		var a1y = 0;
+		var a2x = 0;
+		var a2y = 0;
 		
-		var x = crop_settings.x;
-		var y = crop_settings.y;
-		//var w0 = crop_settings.w;
-		//var h0 = crop_settings.h;
 		var flag = crop_settings.flag;
 		
 		
-		console.log("x="+x);
-		console.log("y="+y);
-		//console.log("w0="+w0);
-		//console.log("h0="+h0);
+		console.log("x="+crop_settings.x);
+		console.log("y="+crop_settings.y);
+		console.log("w="+crop_settings.w);
+		console.log("h="+crop_settings.h);
 		console.log("flag="+flag);
 		
 		
 		if(flag==1)
 		{
-			x_left_top_pg_crop = x;
-			y_left_top_pg_crop = y;
-			x_right_bottom_pg_crop = -1000;
-			y_rigth_bottom_pg_crop = -1000;
+			a1x = crop_settings.x;
+			a1y = crop_settings.y;
+			a2x = crop_settings.w;
+			a2y = crop_settings.h;	
 			
 		}
 		
 		else if(flag==2)
 		{
 			
-			x_right_bottom_pg_crop = x+1;
-			y_rigth_bottom_pg_crop = y+1;
-			x_left_top_pg_crop = 0;
-			y_left_top_pg_crop = 0;
-			
+			a2x = crop_settings.x+1;
+			a2y = crop_settings.y+1;
 		}
 		
 		
@@ -707,20 +704,18 @@ function random( req, res )
 
 	
 	
-						if(x_right_bottom_pg_crop == -1000) x_right_bottom_pg_crop = this.width;
-						if(y_rigth_bottom_pg_crop == -1000) y_rigth_bottom_pg_crop = this.height;
 						
 						
-						if((x_left_top_pg_crop >= 0) && (y_left_top_pg_crop >=0) && (x_right_bottom_pg_crop >= 1) && (y_rigth_bottom_pg_crop >= 1) )
+						if((a1x >= 0) && (a1y >=0) && (a2x >= 1) && (a2y >= 1) )
 						{
 							
 		
 							
-								var x0 = Math.min(x_left_top_pg_crop,x_right_bottom_pg_crop);
-								var x1 = Math.max(x_left_top_pg_crop,x_right_bottom_pg_crop);
+								var x0 = Math.min(a1x,a2x);
+								var x1 = Math.max(a1x,a2y);
 								
-								var y0 = Math.min(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
-								var y1 = Math.max(y_left_top_pg_crop,y_rigth_bottom_pg_crop);
+								var y0 = Math.min(a1y,a2y);
+								var y1 = Math.max(a1y,a2y);
 								
 								var w = Math.abs(x1-x0);
 								var h = Math.abs(y1-y0);
@@ -813,34 +808,16 @@ function precrop( req, res)
 			
 			
 			var post = qs.parse(body);
-						
-			var x = post['x'];
-			var y = post['y'];
-			var w0 = post['w'];
-			var h0 = post['h'];
-			var flag = post['flag'];
-
+			
 			crop_settings = {};
-			crop_settings.x = x;
-			crop_settings.y = y;
-			crop_settings.w = w0;
-			crop_settings.h = h0;
-			crop_settings.flag = flag;
+			crop_settings.x =  +post['x'];
+			crop_settings.y =  +post['y'];
+			crop_settings.w =  +post['w'];
+			crop_settings.h =  +post['h'];
+			crop_settings.flag =  +post['flag'];
 			
 			res.writeHead( 200, { 'Content-Type':'text/plain' } );
 			res.end("ok");
-			
-			/********	
-			
-			
-			console.log("when req.on end");
-			
-			post['imgdata'] = JSON.parse(post['imgdata']);
-			console.log("when qs.parse done");
-			console.log("typeof(post[imgdata])="+typeof(post['imgdata'])+' '+post['imgdata'].length);
-			//crop( post, res );
-			*******/
-			
 			
 			
 		});

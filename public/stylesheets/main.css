@@ -25,3 +25,14 @@
     .jumbotron .lang-logo img {
       max-width: 100%; }
 
+.canvas
+{
+	margin-top: 60px;
+}
+
+progress
+{
+	position: fixed;
+	left:200px;
+	top:200px;
+}

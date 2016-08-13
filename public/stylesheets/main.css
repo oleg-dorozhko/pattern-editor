@@ -25,9 +25,23 @@
     .jumbotron .lang-logo img {
       max-width: 100%; }
 
-.canvas
+#canvas
 {
 	margin-top: 60px;
+}
+
+#seed_list
+{
+	position: absolute; 
+	left: 1030px; 
+	top: 165px;
+}
+
+#buttons_list
+{
+	position: absolute; 
+	left: 1025px; 
+	top: 37px;
 }
 
 progress

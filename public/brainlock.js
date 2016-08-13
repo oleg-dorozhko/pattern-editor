@@ -75,6 +75,9 @@ function transform(canvas_id, action)
 	var progressBar = document.getElementById("progress");
 	progressBar.hidden = false;
 	progressBar.value = 0;
+	progressBar.position = "absolute";
+	progressBar.left = document.getElementById(canvas_id).width / 2|0 - 50;
+	progressBar.top =  document.getElementById(canvas_id).height / 2|0 - 50;
 	
 	var intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
 	//init timer for redraw progress

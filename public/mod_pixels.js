@@ -72,12 +72,7 @@ function setEventListenersOnPixels()
 			}
 		}
 		
-function hidePixels()
-{
-	document.getElementById("td_pixels").removeChild(glob_scale_div);
-	glob_scale_div = null;
-	glob_showing_scale_div = false;
-}		
+		
 		
 function initModPixels()
 {
@@ -98,6 +93,40 @@ function showScaleDiv(target,x,y)
 	
 }
 
+
+
+function setEventListenersOnTri_Btns()
+{
+		var btn = document.getElementById("btn_lt");
+		btn.onclick = function()
+		{
+			
+			server_crop(glob_x_left_top,glob_y_left_top,1);
+			document.getElementById("scale_div").style.border == '';
+			document.getElementById("scale_div").style.visibility = 'hidden';
+			
+			
+		}
+		
+		btn = document.getElementById("btn_rb");
+		btn.onclick = function()
+		{
+			
+			server_crop(glob_x_left_top,glob_y_left_top,2);
+			document.getElementById("scale_div").style.border == '';
+			document.getElementById("scale_div").style.visibility = 'hidden';
+			
+		}
+		
+		var btn = document.getElementById("btn_esc");
+		btn.onclick = function()
+		{
+			document.getElementById("scale_div").style.border == '';
+			document.getElementById("scale_div").style.visibility = 'hidden'; //visible
+		
+		}
+
+}
 
 function setEventListenersOnTri_Btns()
 {

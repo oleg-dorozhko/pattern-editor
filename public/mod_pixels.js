@@ -128,36 +128,6 @@ function setEventListenersOnTri_Btns()
 
 }
 
-function setEventListenersOnTri_Btns()
-{
-		var btn = document.getElementById("btn_lt");
-		btn.onclick = function()
-		{
-			
-			server_crop(glob_x_left_top,glob_y_left_top,1);
-			
-			hidePixels();
-			
-		}
-		
-		btn = document.getElementById("btn_rb");
-		btn.onclick = function()
-		{
-			
-			server_crop(glob_x_left_top,glob_y_left_top,2);
-			
-			hidePixels();
-			
-		}
-		
-		var btn = document.getElementById("btn_esc");
-		btn.onclick = function()
-		{
-			hidePixels();
-		
-		}
-
-}
 
 
 function redrawPixels_main(context, x,y)

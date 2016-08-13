@@ -39,7 +39,20 @@ function setInitialImageToCanvas()
 	img.src = $("#canvas").attr("init-path");
 }
 
+// event.type должен быть keypress
+function getChar(event) {
+  if (event.which == null) { // IE
+    if (event.keyCode < 32) return null; // спец. символ
+    return String.fromCharCode(event.keyCode)
+  }
 
+  if (event.which != 0 && event.charCode != 0) { // все кроме IE
+    if (event.which < 32) return null; // спец. символ
+    return String.fromCharCode(event.which); // остальные
+  }
+
+  return null; // спец. символ
+}
 
 
 window.onload = function()
@@ -62,6 +75,16 @@ window.onload = function()
 		$("#fill").click( function() { send_seed(); } );
 		
 		// $("#canvas").click( function(ev) { whenClickedOnCanvas(ev); } );
+		
+		document.onkeypress = function(e)
+		{
+			var ch = getChar(e);
+			if(ch == null) return;
+			// if(ch == 'p') showHide(document.getElementById("scale_div"));
+			else if(ch == 's') showHide(document.getElementById("seed_list"));
+			else if(ch == 'b') showHide(document.getElementById("buttons_list"));
+				
+		}
 		
 		
 		

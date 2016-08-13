@@ -47,6 +47,7 @@ window.onload = function()
 	loadDivFirst( function() {
 	
 		setInitialImageToCanvas();
+		moveDraggableOnOwnPlace();
 
 		$("#save").click( function() { save_pattern(); } );
 		$("#inv").click( function() { transform("canvas", '/inverse'); } );
@@ -59,7 +60,8 @@ window.onload = function()
 		$("#mirror_right").click( function() { transform("canvas", '/mright'); } );
 		$("#random").click( function() { transform("canvas", '/random'); } );
 		$("#fill").click( function() { send_seed(); } );
-		$("#canvas").click( function(ev) { whenClickedOnCanvas(ev); } );
+		
+		// $("#canvas").click( function(ev) { whenClickedOnCanvas(ev); } );
 				
 		document.onclick = function (ev) { 
 			if (!ev.target.hasAttribute('seed-clicked')) return;

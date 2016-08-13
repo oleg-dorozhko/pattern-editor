@@ -61,6 +61,8 @@ window.onload = function()
 	
 		setInitialImageToCanvas();
 		moveDraggableOnOwnPlace();
+		initModPixels();
+	
 
 		$("#save").click( function() { save_pattern(); } );
 		$("#inv").click( function() { transform("canvas", '/inverse'); } );
@@ -74,13 +76,13 @@ window.onload = function()
 		$("#random").click( function() { transform("canvas", '/random'); } );
 		$("#fill").click( function() { send_seed(); } );
 		
-		// $("#canvas").click( function(ev) { whenClickedOnCanvas(ev); } );
+		$("#canvas").click( function(ev) { whenClickedOnCanvas(ev); } );
 		
 		document.onkeypress = function(e)
 		{
 			var ch = getChar(e);
 			if(ch == null) return;
-			// if(ch == 'p') showHide(document.getElementById("scale_div"));
+			if(ch == 'p') showHide(document.getElementById("scale_div"));
 			else if(ch == 's') showHide(document.getElementById("seed_list"));
 			else if(ch == 'b') showHide(document.getElementById("buttons_list"));
 				
@@ -162,51 +164,6 @@ window.onload = function()
 		  // (2) в любом случае очистим "состояние переноса" dragObject
 		  dragObject = {};
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 				
 		document.onclick = function (ev) { 

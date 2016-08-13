@@ -25,7 +25,7 @@ function whenClickedOnCanvas(e)
 			
 		global_pg_main_color = ""+imageData.data[0]+","+imageData.data[1]+","+imageData.data[2]+","+imageData.data[3];
 		
-		showSomeDiv(e.target,x,y);
+		showScaleDiv(e.target,x,y);
 		redrawPixels_main(context, x,y);
 		
 	}
@@ -79,31 +79,22 @@ function hidePixels()
 	glob_showing_scale_div = false;
 }		
 		
-		
-function showSomeDiv(target,x,y)
+function initModPixels()
 {
-	
-	if(glob_scale_div != null && glob_showing_scale_div == true) hidePixels();
-	
-	var el = document.createElement('div');
-    //el.className = 'tooltip';
-	
-    //var coords = target.getBoundingClientRect();
-
-	//el.style.left = (screen.width / 2 - 75) + 'px';
-    //el.style.top = (screen.height/4 - 75) + 'px';
-	
-	var tri_btns = '<input type="button" id="btn_lt" value=" left top "> <input type="button" id="btn_rb" value=" right bottom "> <input type="button" id="btn_esc" value=" cancel ">';
-	
-	el.innerHTML = tri_btns+'<table><tr><td><canvas id="pixels" width="150" height="150" style="cursor:crosshair;border: 1px solid gold"></canvas></td></tr></table>';
+	var scale_div = document.getElementById('scale_div');
+	scale_div.style.visibility = 'hidden'; //visible
 		
-	glob_scale_div = el;
-	glob_showing_scale_div = true;
-	
-	document.getElementById("td_pixels").appendChild(el);
-	
 	setEventListenersOnTri_Btns();
 	setEventListenersOnPixels();
+}		
+		
+function showScaleDiv(target,x,y)
+{
+	
+	var el = document.getElementById('scale_div');
+	el.style.border = "";
+    el.style.visibility='visible';
+	
 	
 }
 

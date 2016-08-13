@@ -54,6 +54,19 @@ function getChar(event) {
   return null; // спец. символ
 }
 
+function showHide(el)
+{
+	if(el.style.visibility == 'hidden') el.style.visibility = 'visible';
+	else el.style.visibility = 'hidden';
+	
+	if(el.id == 'scale_div') {  
+		el.style.border = "";
+		glob_x_left_top = canvas.width/2|0;
+		glob_y_left_top = canvas.height/2|0;
+		redrawPixels_main(document.getElementById("canvas").getContext("2d"), glob_x_left_top , glob_y_left_top );
+	
+	 }
+}
 
 window.onload = function()
 {

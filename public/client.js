@@ -180,9 +180,11 @@ window.onload = function()
 		
 				
 		document.onclick = function (ev) { 
-			if (!ev.target.hasAttribute('selectable')||!ev.target.parentElement.hasAttribute('selectable')) return;
-			unselectAll();
-			selectSelectableElement(ev);
+			if ( ev.target.hasAttribute('selectable') || ev.target.parentElement.hasAttribute('selectable') )
+			{
+				unselectAll();
+				selectSelectableElement(ev);
+			}
 		};
 	
 		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);

@@ -828,6 +828,373 @@ function precrop( req, res)
 					
 }
 
+var combo_settings = null;
+
+function prepare_combo(req, res)
+{
+	console.log('\nIn prepare_combo(...)\n');
+	
+	var second_image = new PNG({filterType: 4});
+	
+	req.pipe(second_image).on( 'parsed', function()  {
+				
+		
+		combo_settings = {};
+		combo_settings.second_image = this;
+		
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end("ok");
+					
+	});				
+					
+}
+
+function error( res, msg )
+{
+	res.writeHead( 503, { 'Content-Type':'text/plain' } );
+	res.end( msg );
+	req.connection.destroy();
+	return;	
+}
+
+	
+
+function combo( req, res )
+{
+	
+	console.log('\nIn combo(...)\n');
+		
+	if(combo_settings == null)
+	{
+		
+		res.writeHead( 503, { 'Content-Type':'text/plain' } );
+		res.end("error: call /prepare_combo before");
+		req.connection.destroy();
+		return;
+
+	}
+	
+	var old_png = combo_settings.second_image; 
+	
+	var big_image = new PNG({filterType: 4});
+	
+	req.pipe(big_image).on('parsed', function() {
+		
+		
+				
+					
+					
+					
+			if(old_png.width != old_png.height) 
+			{
+				error( res, "error: old_png.width != old_png.height");
+				return;
+				
+			}
+			
+			if(this.width != this.height) {
+				error( res, "error: this.width != this.height");
+				
+				return;  
+			}
+				
+			if((old_png.width % 2 == 0) && (this.width % 2 ==  0))
+			{
+				//even
+				if(old_png.width > this.width)
+				{
+					
+					
+					
+					var result_png = new PNG ( {
+						
+							width: old_png.width,
+							height: old_png.height,
+							filterType: 4
+					} );
+					
+
+					var t4 = (old_png.width-this.width)/2;
+					var k4 = (old_png.height-this.height)/2;
+					
+					
+					
+					for(var j=0;j<old_png.height;j++)
+					{
+						for(var i=0;i<old_png.width;i++)
+						{
+							if( (i>=t4) && (i<(t4+this.width)) && (j>=k4) && (j<(k4+this.height))	)
+							{
+								
+								
+								
+								var idx = (old_png.width * j + i) << 2;
+								
+								var n=i-t4;
+								var m=j-k4;
+								
+								var new_idx1 = this.width * m + n << 2;
+						
+								result_png.data[idx+0] = slozhenie_cvetov( this.data[new_idx1+0], old_png.data[idx+0] );
+								result_png.data[idx+1] = slozhenie_cvetov( this.data[new_idx1+1], old_png.data[idx+1] );
+								result_png.data[idx+2] = slozhenie_cvetov( this.data[new_idx1+2], old_png.data[idx+2] );
+								result_png.data[idx+3] = 255;
+								
+								
+								
+							}
+							else
+							{
+								
+								
+								var idx = (old_png.width * j + i) << 2;
+								
+								result_png.data[idx+0] = old_png.data[idx+0];
+								result_png.data[idx+1] = old_png.data[idx+1];
+								result_png.data[idx+2] = old_png.data[idx+2];
+								result_png.data[idx+3] = 255;
+								
+							}
+						}
+					}
+					
+					
+					
+					
+					
+
+				}
+				else
+				{
+					
+					var result_png = new PNG ( {
+						
+							width: this.width,
+							height: this.height,
+							filterType: 4
+					} );
+					
+					
+					
+					
+					
+					var t4 = (this.width-old_png.width)/2;
+					var k4 = (this.height-old_png.height)/2;
+					
+					
+					
+					for(var j=0;j<this.height;j++)
+					{
+						for(var i=0;i<this.width;i++)
+						{
+							if( (i>=t4) && (i<(t4+old_png.width)) && (j>=k4) && (j<(k4+old_png.height))	)
+							{
+								
+								
+								
+								var idx = (this.width * j + i) << 2;
+								
+								var n=i-t4;
+								var m=j-k4;
+								
+								var new_idx1 = old_png.width * m + n << 2;
+						
+								result_png.data[idx+0] = slozhenie_cvetov( this.data[idx+0], old_png.data[new_idx1+0] );
+								result_png.data[idx+1] = slozhenie_cvetov( this.data[idx+1], old_png.data[new_idx1+1] );
+								result_png.data[idx+2] = slozhenie_cvetov( this.data[idx+2], old_png.data[new_idx1+2] );
+								result_png.data[idx+3] = 255;
+								
+								
+								
+							}
+							else
+							{
+								
+								
+								var idx = (this.width * j + i) << 2;
+								
+								result_png.data[idx+0] = this.data[idx+0];
+								result_png.data[idx+1] = this.data[idx+1];
+								result_png.data[idx+2] = this.data[idx+2];
+								result_png.data[idx+3] = 255;
+								
+							}
+						}
+					}
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+				}
+				
+						
+				
+				
+				sendImage(newpng,res,'\nImages combined\n');
+				
+				
+				
+			}
+			else if ((old_png.width % 2 == 1) && (this.width % 2 ==  1))
+			{
+				//odd
+				if(old_png.width > this.width)
+				{
+					
+					
+					var result_png = new PNG ( {
+						
+							width: old_png.width,
+							height: old_png.height,
+							filterType: 4
+					} );
+					
+					var middle_of_bigger_w = old_png.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_smaller_w = this.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
+					
+					var begin_w = middle_of_bigger_w - middle_of_smaller_w;
+					var end_w = begin_w + this.width; //and (not include) end
+					
+					var middle_of_bigger_h = old_png.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_smaller_h = this.height / 2 | 0; 
+					
+					var begin_h = middle_of_bigger_h - middle_of_smaller_h;
+					var end_h = begin_h + this.height; 	
+					
+					
+					for(var j=0;j<old_png.height;j++)
+					{
+						for(var i=0;i<old_png.width;i++)
+						{
+							var idx = (old_png.width * j + i) << 2;	
+							
+							if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
+							{
+							
+								var n =	i - begin_w;
+								var m = j - begin_h;
+								
+								var idx2 = this.width * m + n << 2;
+								
+								result_png.data[idx+0] = slozhenie_cvetov( this.data[idx2+0], old_png.data[idx+0] );
+								result_png.data[idx+1] = slozhenie_cvetov( this.data[idx2+1], old_png.data[idx+1] );
+								result_png.data[idx+2] = slozhenie_cvetov( this.data[idx2+2], old_png.data[idx+2] );
+								result_png.data[idx+3] = 255;
+								
+								
+							}
+							else
+							{
+							
+								result_png.data[idx+0] = old_png.data[idx+0];
+								result_png.data[idx+1] = old_png.data[idx+1];
+								result_png.data[idx+2] = old_png.data[idx+2];
+								result_png.data[idx+3] = 255;
+							}
+						}
+					}
+					
+					
+					
+					
+				}
+				else
+				{
+					
+					var result_png = new PNG ( {
+						
+							width: this.width,
+							height: this.height,
+							filterType: 4
+					} );
+					
+					var middle_of_bigger_w = this.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_smaller_w = old_png.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
+					
+					var middle_of_bigger_h = this.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_smaller_h = old_png.height / 2 | 0; 
+					
+					var begin_w = middle_of_bigger_w - middle_of_smaller_w;
+					var end_w = begin_w + old_png.width; //and (not include) end
+					
+					var begin_h = middle_of_bigger_h - middle_of_smaller_h;
+					var end_h = begin_h + old_png.height; 	
+				
+					for(var j=0;j<this.height;j++)
+					{
+						for(var i=0;i<this.width;i++)
+						{
+							var idx = (this.width * j + i) << 2;	
+							
+							if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
+							{
+								
+								var n =	i - begin_w;
+								var m = j - begin_h;
+								
+								var idx2 = old_png.width * m + n << 2;
+								
+								result_png.data[idx+0] = slozhenie_cvetov( old_png.data[idx2+0], this.data[idx+0] );
+								result_png.data[idx+1] = slozhenie_cvetov( old_png.data[idx2+1], this.data[idx+1] );
+								result_png.data[idx+2] = slozhenie_cvetov( old_png.data[idx2+2], this.data[idx+2] );
+								result_png.data[idx+3] = 255;
+								
+								
+							}
+							else
+							{
+								
+								
+								result_png.data[idx+0] = old_png.data[idx+0];
+								result_png.data[idx+1] = old_png.data[idx+1];
+								result_png.data[idx+2] = old_png.data[idx+2];
+								result_png.data[idx+3] = 255;
+							}
+						}
+					}
+				}
+				
+				
+				
+				
+				
+				sendImage(newpng,res,'\nImages combined\n');
+				
+				
+				
+				
+				
+				
+			}
+			else  
+			{
+				
+				error( res, "error: odd first image but even second image. need both odd or even");
+				
+				return; //need error processing
+			}
+			
+		
+		
+	});
+	
+}
+	
+
 
 var fill_settings = null;
 
@@ -935,6 +1302,8 @@ function fill( req, res )
 	
 	
 app.post('/fill', fill );	
+app.post('/prepare_combo', prepare_combo );	
+app.post('/combo', combo );	
 app.post('/send_seed', get_seed );
 app.post('/crop', crop );
 app.post('/precrop', precrop );

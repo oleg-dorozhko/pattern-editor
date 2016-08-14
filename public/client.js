@@ -180,14 +180,43 @@ window.onload = function()
 		
 				
 		document.onclick = function (ev) { 
-			if (!ev.target.hasAttribute('seed-clicked')) return;
-			whenSomeSeedSelected(ev);
+			if (!ev.target.hasAttribute('selectable')) return;
+			unselectAll();
+			selectSelectableElement(ev);
 		};
 	
 		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
 		
 	});
 	
+	
+}
+
+
+function unselectAll()
+{
+	var list = document.getElementsByTagName('*');
+	for(var i=0;i<list.length;i++)
+	{
+		if(list[i].hasAttribute('selectable'))
+		{
+			list[i].style.border = '';
+		}
+	}
+}
+
+function selectSelectableElement(ev)
+{
+	var _el = ev.target;
+		
+	if(_el.style.border == '')
+	{
+		_el.style.border = "1px solid red";
+	}
+	else
+	{
+		_el.style.border = '';
+	}
 	
 }
 

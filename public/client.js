@@ -204,9 +204,20 @@ function isSelectable(el)
 
 function unselectAll()
 {
-	var list = document.getElementsByTagName('*');
+	var list = document.getElementsByTagName('img');
 	for(var i=0;i<list.length;i++)
 	{
+		 
+		if( isSelectable(list[i]) )
+		{
+			list[i].style.border = '';
+		}
+	}
+	
+	list = document.getElementsByTagName('canvas');
+	for(var i=0;i<list.length;i++)
+	{
+		 
 		if( isSelectable(list[i]) )
 		{
 			list[i].style.border = '';

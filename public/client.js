@@ -78,6 +78,7 @@ window.onload = function()
 	
 
 		$("#save").click( function() { save_pattern(); } );
+		$("#copy").click( sendCopyToServer );
 		$("#inv").click( function() { transform("canvas", '/inverse'); } );
 		$("#plus").click( function() { transform("canvas", '/plus'); } );
 		$("#minus").click( function() { transform("canvas", '/minus'); } );

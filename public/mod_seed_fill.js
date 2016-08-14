@@ -6,9 +6,9 @@ function send_seed()
 	for(var i=0;i<list.length;i++)
 	{
 		if(!list[i].style.border == '') 
-			
+		{	
 				
-				var img = list[i];
+				img = list[i];
 				break;
 			
 		}

@@ -1054,7 +1054,7 @@ function combo( req, res )
 						
 				
 				
-				sendImage(newpng,res,'\nImages combined\n');
+				sendImage(result_png,res,'\nImages combined\n');
 				
 				
 				
@@ -1182,7 +1182,7 @@ function combo( req, res )
 				
 				
 				
-				sendImage(newpng,res,'\nImages combined\n');
+				sendImage(result_png,res,'\nImages combined\n');
 				
 				
 				

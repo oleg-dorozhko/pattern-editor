@@ -857,7 +857,17 @@ function error( res, msg )
 	return;	
 }
 
+function slozhenie_cvetov(a,b)
+{
+	var c = 0;
 	
+	if((a+b) > 255) c = (a+b) - 255;
+	else c = (a+b);
+	
+	c /= 2;
+	
+	return c;
+}	
 
 function combo( req, res )
 {

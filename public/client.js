@@ -181,7 +181,7 @@ window.onload = function()
 		
 				
 		document.onclick = function (ev) { 
-			if(isSelectable(e.target))
+			if(isSelectable(ev.target))
 			{
 				unselectAll();
 				selectSelectableElement(ev.target);

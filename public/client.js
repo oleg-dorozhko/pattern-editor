@@ -181,10 +181,10 @@ window.onload = function()
 		
 				
 		document.onclick = function (ev) { 
-			if ( ev.target.hasAttribute('selectable') || ev.target.parentElement.hasAttribute('selectable') )
+			if(isSelectable(e.target))
 			{
 				unselectAll();
-				selectSelectableElement(ev);
+				selectSelectableElement(ev.target);
 			}
 		};
 	
@@ -195,23 +195,28 @@ window.onload = function()
 	
 }
 
+function isSelectable(el)
+{
+	if ( el.hasAttribute('selectable') || el.parentElement.hasAttribute('selectable') ) return true;
+	return false;
+}
+
 
 function unselectAll()
 {
 	var list = document.getElementsByTagName('*');
 	for(var i=0;i<list.length;i++)
 	{
-		if(list[i].hasAttribute('selectable'))
+		if( isSelectable(list[i]) )
 		{
 			list[i].style.border = '';
 		}
 	}
 }
 
-function selectSelectableElement(ev)
+function selectSelectableElement(_el)
 {
-	var _el = ev.target;
-		
+	
 	if(_el.style.border == '')
 	{
 		_el.style.border = "1px solid red";

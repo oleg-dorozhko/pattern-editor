@@ -180,7 +180,7 @@ window.onload = function()
 		
 				
 		document.onclick = function (ev) { 
-			if (!ev.target.hasAttribute('selectable')) return;
+			if (!ev.target.hasAttribute('selectable')||!ev.target.parentElement.hasAttribute('selectable')) return;
 			unselectAll();
 			selectSelectableElement(ev);
 		};

@@ -849,7 +849,7 @@ function prepare_combo(req, res)
 					
 }
 
-function error( res, msg )
+function error( req, res, msg )
 {
 	res.writeHead( 503, { 'Content-Type':'text/plain' } );
 	res.end( msg );
@@ -897,13 +897,13 @@ function combo( req, res )
 					
 			if(old_png.width != old_png.height) 
 			{
-				error( res, "error: old_png.width != old_png.height");
+				error( req, res, "error: old_png.width != old_png.height");
 				return;
 				
 			}
 			
 			if(this.width != this.height) {
-				error( res, "error: this.width != this.height");
+				error( req, res, "error: this.width != this.height");
 				
 				return;  
 			}
@@ -1193,7 +1193,7 @@ function combo( req, res )
 			else  
 			{
 				
-				error( res, "error: odd first image but even second image. need both odd or even");
+				error( req, res, "error: odd first image but even second image. need both odd or even");
 				
 				return; //need error processing
 			}

@@ -77,15 +77,25 @@ app.post('/load_div_first', function(request, response) {
 
 	fs.readFile( __dirname + '/views/pages/index.html', 'utf8', function (err,data) {
 	  
-	  if (err) { return console.log(err);  }
-
-	  var strData = data.toString();
-	  strData = strData.replace("[seed-list]",getSeedListFromFS());
-	  strData = strData.replace("[init-path]","/initial-image.png");
-	  data = new Buffer(strData); 
+	  if (err) {  
 	  
-	  response.writeHead(200, {  'Content-Type': 'text/html' } );
-	  response.end(data);
+		console.log(err);
+		response.writeHead(500, {  'Content-Type': 'text/html' } );
+		response.end("/load_div_first: error: "+err);
+
+	  }
+	  else
+	  {
+
+		  var strData = data.toString();
+		  strData = strData.replace("[seed-list]",getSeedListFromFS());
+		  strData = strData.replace("[init-path]","/initial-image.png");
+		  data = new Buffer(strData); 
+		  
+		  response.writeHead(200, {  'Content-Type': 'text/html' } );
+		  response.end(data);
+	  
+	  }
 	  
 	});
   
@@ -362,8 +372,13 @@ function get_coordinates(w,h)
 		
 		if(t1==t2) return [ tmp/2|0, tmp/2|0,tmp+1,tmp+1];
 		
-		console.log("w="+w);
-		throw err;
+		console.log("\n\nmedian().get_coordinates(...).error: Not implemented for: "+w);
+		console.log("width of full image="+w);
+		console.log("t1="+t1);
+		console.log("t2="+t2);
+		console.log("\n\n");
+		
+		return [0,0,w,h];
 		
 		
 	}
@@ -666,8 +681,8 @@ function random( req, res )
 		if(crop_settings == null)
 		{
 			
-			res.writeHead( 503, { 'Content-Type':'text/plain' } );
-			res.end("error: call /precrop before");
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("crop(): error: call /precrop before");
 			req.connection.destroy();
 			return;
 
@@ -788,7 +803,7 @@ function precrop( req, res)
 {
 	
 									
-		console.log("entering precrop");
+		console.log("\nentering precrop");
 		
 		
 		var body = '';
@@ -803,8 +818,8 @@ function precrop( req, res)
 			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
 			if (body.length > 1e6*50)
 			{
-				res.writeHead( 503, { 'Content-Type':'text/plain' } );
-				res.end("error: data too big");
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("precrop(): error: data too big");
 				req.connection.destroy();
 				return;
 			}
@@ -859,7 +874,7 @@ function prepare_combo(req, res)
 
 function error( req, res, msg )
 {
-	res.writeHead( 503, { 'Content-Type':'text/plain' } );
+	res.writeHead( 500, { 'Content-Type':'text/plain' } );
 	res.end( msg );
 	req.connection.destroy();
 	return;	
@@ -885,8 +900,8 @@ function combo( req, res )
 	if(combo_settings == null)
 	{
 		
-		res.writeHead( 503, { 'Content-Type':'text/plain' } );
-		res.end("error: call /prepare_combo before");
+		res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("combo: error: call /prepare_combo before");
 		req.connection.destroy();
 		return;
 
@@ -905,13 +920,13 @@ function combo( req, res )
 					
 			if(old_png.width != old_png.height) 
 			{
-				error( req, res, "error: old_png.width != old_png.height");
+				error( req, res, "combo: error: old_png.width != old_png.height");
 				return;
 				
 			}
 			
 			if(this.width != this.height) {
-				error( req, res, "error: this.width != this.height");
+				error( req, res, "combo: error: this.width != this.height");
 				
 				return;  
 			}
@@ -1201,7 +1216,7 @@ function combo( req, res )
 			else  
 			{
 				
-				error( req, res, "error: odd first image but even second image. need both odd or even");
+				error( req, res, "combo: error: odd first image but even second image. need both odd or even");
 				
 				return; //need error processing
 			}
@@ -1244,8 +1259,8 @@ function fill( req, res )
 	if(fill_settings == null)
 	{
 		
-		res.writeHead( 503, { 'Content-Type':'text/plain' } );
-		res.end("error: call /send_seed before");
+		res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("fill: error: call /send_seed before");
 		req.connection.destroy();
 		return;
 
@@ -1274,7 +1289,9 @@ function fill( req, res )
 		//console.log("small_image.width="+small_image.width);
 		//console.log("newpng.width="+newpng.width);
 		
-		
+		var testError = new Error('for test only');
+		testError.status = 500;
+		throw testError;
 		
 			for (var y = 0; y < big_image.height; y++) {
 				

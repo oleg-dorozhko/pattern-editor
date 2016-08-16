@@ -3,8 +3,6 @@ function sendBlobToServerForCopy(blob)
 	
 	startProgress();
 	
-	var intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
-	
 	var xhr = new XMLHttpRequest();
 						
 		xhr.open('POST', '/paste', true);

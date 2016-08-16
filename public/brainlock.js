@@ -70,31 +70,43 @@ function redrawProgress( progressBar )
 		
 }
 
-function transform(canvas_id, action)
+var glob_intervalID = null;
+// init timer for redraw progress
+function startProgress()
 {
 	var progressBar = document.getElementById("progress");
 	progressBar.hidden = false;
 	progressBar.value = 0;
 	progressBar.position = "absolute";
-	progressBar.left = document.getElementById(canvas_id).width / 2|0 - 50;
-	progressBar.top =  document.getElementById(canvas_id).height / 2|0 - 50;
+	// progressBar.left = document.getElementById(canvas_id).width / 2|0 - 50;
+	// progressBar.top =  document.getElementById(canvas_id).height / 2|0 - 50;
+	glob_intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
 	
-	var intervalID = setInterval(function(){redrawProgress(progressBar)}, 1000);
-	//init timer for redraw progress
-	
+}
+
+function stopProgress()
+{
+	progressBar.hidden = true;
+	clearInterval(intervalID); 
+}
+
+function transform(canvas_id, action)
+{
+	startProgress();
 	getImageFromCanvas( canvas_id, function(blob) { 
 		blobToServer(blob, action, function( blob_from_server ) {
 			getImageFromBlob( blob_from_server, function(img) {
 				imageToCanvas(img, canvas_id, function() { 
-					progressBar.hidden = true;
-					clearInterval(intervalID); 
+					stopProgress();
 				});	
 				
 			});	
 		}, function(msg) {
-			console.log("Was error: "+msg);
-			progressBar.hidden = true;
-			clearInterval(intervalID); 
+			
+			stopProgress();
+			console.log("transform(): Was error: "+msg);
+			throw new Error(msg);
+			
 		}); 
 	});
 	 

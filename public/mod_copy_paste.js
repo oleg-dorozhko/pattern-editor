@@ -76,7 +76,7 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
                         var blob = items[i].getAsFile();
 						
 						
-						
+						startProgress(); //can we use here object with local scope var interval?
 						
 						//console.log(blob);
 						
@@ -91,7 +91,14 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 						
 							if (xhr.readyState != 4) return;
 
-							if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
+							if (xhr.status != 200) {    
+							
+								stopProgress();  
+								var msg = xhr.status + ': ' + xhr.statusText;
+								console.log(msg); 
+								throw new Error(msg);  
+							
+							}
 
 							//console.log("combined as "+xhr.responseText);
 							//window['loadOut'](xhr.responseText);
@@ -119,7 +126,7 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 								var ctx = canvas.getContext("2d");
 								ctx.drawImage(this,0,0);
 								
-								
+								stopProgress();
 								
 								
 								
@@ -132,63 +139,11 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 							newImg.src = imageUrl;
 							
 							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-						
-							
 						}
 
-						/*****
-						xhr.upload.onprogress = function(e) {
-							if (e.lengthComputable) {
-								progressBar.value = (e.loaded / e.total) * 100;
-								progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
-							}
-						};
-						****/
 
 						xhr.send(blob);
 						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-                        //var URLObj = window.URL || window.webkitURL;
-                        //var source = URLObj.createObjectURL(blob);
-                        //this.paste_createImage(source);
                     }
                 }
                 e.preventDefault();
@@ -243,7 +198,7 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
             ctx.drawImage(pastedImage, 0, 0);
 			
 			
-			
+			startProgress();
 			
 			canvas.toBlob(function(blob) { 
 	
@@ -259,18 +214,15 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 				
 					if (xhr.readyState != 4) return;
 
-					if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
-
-					//console.log("combined as "+xhr.responseText);
-					//window['loadOut'](xhr.responseText);
+					if (xhr.status != 200) {    
 					
-					
-					
-					
-					
-					
-					
+						stopProgress();  
+						var msg = xhr.status + ': ' + xhr.statusText;
+						console.log(msg); 
+						throw new Error(msg);   
 						
+					}
+
 							var newImg = document.createElement("img");
 			
 							var urlCreator = window.URL || window.webkitURL;
@@ -292,7 +244,7 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 								ctx.drawImage(this,0,0);
 								
 								
-								
+								stopProgress();
 								
 								
 								
@@ -306,38 +258,11 @@ function CLIPBOARD_CLASS(canvas_id, autoresize) {
 					
 					
 					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
 				
 					
 				}
 
-				/*****
-				xhr.upload.onprogress = function(e) {
-					if (e.lengthComputable) {
-						progressBar.value = (e.loaded / e.total) * 100;
-						progressBar.textContent = progressBar.value; // Fallback for unsupported browsers.
-					}
-				};
-				****/
-
+				
 				xhr.send(blob);
 				
 			});

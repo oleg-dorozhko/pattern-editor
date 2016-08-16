@@ -1289,9 +1289,9 @@ function fill( req, res )
 		//console.log("small_image.width="+small_image.width);
 		//console.log("newpng.width="+newpng.width);
 		
-		var testError = new Error('for test only');
-		testError.status = 500;
-		throw testError;
+		//var testError = new Error('for test only');
+		//testError.status = 500;
+		//throw testError;
 		
 			for (var y = 0; y < big_image.height; y++) {
 				

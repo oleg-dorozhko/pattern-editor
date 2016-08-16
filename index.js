@@ -38,13 +38,6 @@ app.get('/', function(request, response) {
   response.render('pages/index');
 });
 
-app.post('/test_call', function(request, response) {
-  
-  //response.end("test ok");
-  request.pipe(response);
-  
-  
-});
 
 
 

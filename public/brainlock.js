@@ -88,7 +88,7 @@ function stopProgress()
 {
 	var progressBar = document.getElementById("progress");
 	progressBar.hidden = true;
-	clearInterval(intervalID); 
+	clearInterval(glob_intervalID); 
 }
 
 function transform(canvas_id, action)

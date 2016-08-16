@@ -30,9 +30,24 @@ app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 app.use(opbeat.middleware.express())
 
+app.use(function(err, req, res, next) {
+  // log the error, treat it like a 500 internal server error
+  // maybe also log the request so you have more debug information
+  //log.error(err, req);
+ 
+  // during development you may want to print the errors to your console
+  console.log(err.stack);
+ 
+  // send back a 500 with a generic message
+  res.status(500);
+  res.send('error');
+});
+
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+
+
 
 app.get('/', function(request, response) {
   response.render('pages/index');

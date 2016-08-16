@@ -39,6 +39,7 @@ function save_pattern()
 	if(cnv == null)
 	{
 		cnv =  document.createElement("canvas");
+		cnv.className = "draggable";
 		cnv.id = id;
 		cnv.alt = ""+n;
 		cnv.setAttribute("selectable","true");

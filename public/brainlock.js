@@ -86,6 +86,7 @@ function startProgress()
 
 function stopProgress()
 {
+	var progressBar = document.getElementById("progress");
 	progressBar.hidden = true;
 	clearInterval(intervalID); 
 }

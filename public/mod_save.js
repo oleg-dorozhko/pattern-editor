@@ -2,12 +2,12 @@
 function getNewSaveNumber()
 {
 
-	var list = document.getElementsByTagName('canvas');
-	for(var i=0;i<list.length;i++)
-	{
-		if(list[i].id=="canvas") continue;
-		if(!list[i].style.border == '') return i;
-	}
+	//var list = document.getElementsByTagName('canvas');
+	//for(var i=0;i<list.length;i++)
+	//{
+		//if(list[i].id=="canvas") continue;
+		//if(list[i].style.border == '') return i;
+	//}
 	
 	for(var i=1;i<500;i++)
 	{
@@ -59,8 +59,15 @@ function save_pattern()
 
 function selectSaveCanvas(el)
 {
-	unselectAll();
-	selectSelectableElement(el)
+	if(el.style.border == '') 
+	{
+		unselectAll();
+		selectSelectableElement(el);
+	}
+	else
+	{
+		unselectAll();
+	}
 	
 }
 

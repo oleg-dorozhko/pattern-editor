@@ -44,6 +44,11 @@
 	top: 37px;
 }
 
+input
+{
+	margin: 2px;
+}
+
 progress
 {
 	position: fixed;

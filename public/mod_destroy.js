@@ -14,9 +14,10 @@ function destroy()
 		
 		if(ind != null)
 		{
-			console.log("Will be deleted: "+list[ind].id);
-			document.body.removeChild(document.getElementById(""+list[ind].id));
-			console.log("Removed from body: "+list[ind].id);
+			var id = list[ind].id;
+			console.log("Will be deleted: "+id);
+			document.body.removeChild(document.getElementById(""+id));
+			console.log("Removed from body: "+id);
 			
 		}
 		else

@@ -76,7 +76,9 @@ window.onload = function()
 		moveDraggableOnOwnPlace();
 		initModPixels();
 	
-
+		$("#upload").click( function() { alert('Not implemented yet'); } );
+		$("#paste").click( function() { alert('Not implemented yet'); } );
+		$("#destroy").click( destroy );
 		$("#save").click( function() { save_pattern(); } );
 		$("#copy").click( sendCopyToServer );
 		$("#combo").click( combo );

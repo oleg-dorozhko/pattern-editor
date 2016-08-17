@@ -43,7 +43,7 @@ function save_pattern()
 		cnv.id = id;
 		cnv.alt = ""+n;
 		cnv.setAttribute("selectable","true");
-		cnv.onclick = function(e) { selectSaveCanvas(this); }
+		//cnv.onclick = function(e) { selectSaveCanvas(this); }
 		document.getElementById("saves").appendChild(cnv);
 	}
 	

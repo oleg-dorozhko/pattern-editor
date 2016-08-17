@@ -184,10 +184,20 @@ window.onload = function()
 		
 				
 		document.onclick = function (ev) { 
-			if(isSelectable(ev.target))
+		
+			var el = ev.target;
+			if(isSelectable(el))
 			{
-				unselectAll();
-				selectSelectableElement(ev.target);
+				if(el.style.border == '') 
+				{
+					unselectAll();
+					selectSelectableElement(el);
+				}
+				else
+				{
+					unselectAll();
+				}
+				
 			}
 		};
 	

@@ -42,7 +42,7 @@ function save_pattern()
 		cnv.className = "draggable";
 		cnv.id = id;
 		cnv.alt = ""+n;
-		cnv.setAttribute("selectable","true");
+		cnv.setAttribute("bordered","false");
 		//cnv.onclick = function(e) { selectSaveCanvas(this); }
 		document.getElementById("saves").appendChild(cnv);
 	}

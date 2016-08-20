@@ -1,12 +1,11 @@
 function combo()
 {
-	
+	// search for true-bordered canvas
 	var cnv = null;
-	var list = document.getElementsByTagName('canvas');
+	var list = document.querySelector("canvas[bordered]");
 	for(var i=0;i<list.length;i++)
 	{
-		if(list[i].id=="canvas") continue;
-		if(!list[i].style.border == '') 
+		if(list[i]['bordered']=="true") 
 		{	
 			cnv = list[i];
 			break;

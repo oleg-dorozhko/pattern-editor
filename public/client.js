@@ -188,15 +188,7 @@ window.onload = function()
 			var el = ev.target;
 			if(isSelectable(el))
 			{
-				if(el.style.border == '') 
-				{
-					unselectAll();
-					selectSelectableElement(el);
-				}
-				else
-				{
-					unselectAll();
-				}
+				selectSelectableElement(el);
 				
 			}
 		};
@@ -210,7 +202,7 @@ window.onload = function()
 
 function isSelectable(el)
 {
-	if ( el.hasAttribute('selectable') || el.parentElement.hasAttribute('selectable') ) return true;
+	if ( el.hasAttribute('bordered') || el.parentElement.hasAttribute('bordered') ) return true;
 	return false;
 }
 
@@ -224,6 +216,7 @@ function unselectAll()
 		if( isSelectable(list[i]) )
 		{
 			list[i].style.border = '';
+			list[i].setAttribute("bordered","false");
 		}
 	}
 	
@@ -234,20 +227,23 @@ function unselectAll()
 		if( isSelectable(list[i]) )
 		{
 			list[i].style.border = '';
+			list[i].setAttribute("bordered","false");
 		}
 	}
 }
 
-function selectSelectableElement(_el)
+function selectSelectableElement(el)
 {
-	
-	if(_el.style.border == '')
+	if(el.getAttribute("bordered") == "false") 
 	{
-		_el.style.border = "1px solid red";
+		unselectAll();
+		
+		el.style.border = "1px solid red";
+		el.setAttribute("bordered","true");
 	}
 	else
 	{
-		_el.style.border = '';
+		unselectAll();
 	}
 	
 }

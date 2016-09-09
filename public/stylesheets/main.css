@@ -37,6 +37,7 @@
 	position: absolute; 
 	left: 1030px; 
 	top: 165px;
+	z-index: 999;
 }
 
 #buttons_list
@@ -44,6 +45,7 @@
 	position: absolute; 
 	left: 1025px; 
 	top: 37px;
+	z-index: 999;
 }
 
 input

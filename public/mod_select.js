@@ -35,7 +35,7 @@ function selectSelectableElement(el)
 	if(el.getAttribute("bordered") == "false") 
 	{
 		unselectAll();
-		if(e.tagName=="img")
+		if(el.tagName=="img")
 		{
 			el.style.border = "2px solid white";
 		}

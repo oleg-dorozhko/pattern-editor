@@ -55,16 +55,12 @@ function sendBlobToServerForCopy(blob)
 						
 }
 
+
 function sendCopyToServer()
 {
-	var ind=null;
-	var list = document.getElementsByTagName('img');
-	for(var i=0;i<list.length;i++)
-	{
-		if(!list[i].style.border == '') {ind= i; break;}
-	}
-	
-	if(ind!=null)
+	var seed_img = getSelectedBorderedSeedImage();
+		
+	if(seed_img!=null)
 	{
 		
 		var canvas = document.getElementById("canvas");
@@ -80,18 +76,13 @@ function sendCopyToServer()
 			
 			
 		}
-		img.src=list[i].src;
+		img.src=seed_img.src;
 		return;
 	}
 	
-	var list = document.getElementsByTagName('canvas');
-	for(var i=0;i<list.length;i++)
-	{
-		if(list[i].id=="pixels") continue;
-		if(!list[i].style.border == '') {ind= i; break;}
-	}
+	var cnv = getSelectedBorderedSaveCanvas();
 	
-	if(ind != null) return list[ind].toBlob(sendBlobToServerForCopy);	
+	if(cnv != null) return cnv.toBlob(sendBlobToServerForCopy);	
 		
 	return null;
 	

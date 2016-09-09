@@ -3,18 +3,10 @@ function destroy()
 	var ans = confirm("Are you sure? (If cancel or close operation will be canceled)");
 	if(ans)
 	{
-		var ind = null;
-		var list = document.getElementsByTagName('canvas');
-		for(var i=0;i<list.length;i++)
+		var cnv = getSelectedBorderedSaveCanvas();
+		if(cnv != null)
 		{
-			if(list[i].id=="pixels") continue;
-			if(list[i].id=="canvas") continue;
-			if(list[i].style.border != '') {ind= i; break;}
-		}
-		
-		if(ind != null)
-		{
-			var id = list[ind].id;
+			var id = cnv.id;
 			console.log("Will be deleted: "+id);
 			document.body.removeChild(document.getElementById(""+id));
 			console.log("Removed from body: "+id);

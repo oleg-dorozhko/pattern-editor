@@ -217,53 +217,7 @@ function clearSelection() {
     }
   }
 
-function isSelectable(el)
-{
-	if ( el.hasAttribute('bordered') || el.parentElement.hasAttribute('bordered') ) return true;
-	return false;
-}
 
-
-function unselectAll()
-{
-	var list = document.getElementsByTagName('img');
-	for(var i=0;i<list.length;i++)
-	{
-		 
-		if( isSelectable(list[i]) )
-		{
-			list[i].style.border = '';
-			list[i].setAttribute("bordered","false");
-		}
-	}
-	
-	list = document.getElementsByTagName('canvas');
-	for(var i=0;i<list.length;i++)
-	{
-		 
-		if( isSelectable(list[i]) )
-		{
-			list[i].style.border = '';
-			list[i].setAttribute("bordered","false");
-		}
-	}
-}
-
-function selectSelectableElement(el)
-{
-	if(el.getAttribute("bordered") == "false") 
-	{
-		unselectAll();
-		
-		el.style.border = "1px solid red";
-		el.setAttribute("bordered","true");
-	}
-	else
-	{
-		unselectAll();
-	}
-	
-}
 
 window.onerror = function(message, url, lineNumber) {
     alert("Поймана ошибка, выпавшая в глобальную область!\n" + "Сообщение: " + message + "\n(" + url + ":" + lineNumber + ")");

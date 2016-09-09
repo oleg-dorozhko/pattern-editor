@@ -102,7 +102,7 @@ function setEventListenersOnTri_Btns()
 		{
 			
 			server_crop(glob_x_left_top,glob_y_left_top,1);
-			document.getElementById("scale_div").style.border == '';
+			//document.getElementById("scale_div").style.border = '';
 			document.getElementById("scale_div").style.visibility = 'hidden';
 			
 			
@@ -113,7 +113,7 @@ function setEventListenersOnTri_Btns()
 		{
 			
 			server_crop(glob_x_left_top,glob_y_left_top,2);
-			document.getElementById("scale_div").style.border == '';
+			//document.getElementById("scale_div").style.border = '';
 			document.getElementById("scale_div").style.visibility = 'hidden';
 			
 		}
@@ -121,7 +121,7 @@ function setEventListenersOnTri_Btns()
 		var btn = document.getElementById("btn_esc");
 		btn.onclick = function()
 		{
-			document.getElementById("scale_div").style.border == '';
+			//document.getElementById("scale_div").style.border = '';
 			document.getElementById("scale_div").style.visibility = 'hidden'; //visible
 		
 		}

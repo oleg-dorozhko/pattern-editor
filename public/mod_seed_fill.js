@@ -1,57 +1,77 @@
 function send_seed()
 {
 	
-	var img = null;
-	var list = document.getElementsByTagName('img');
-	for(var i=0;i<list.length;i++)
-	{
-		if(!list[i].style.border == '') 
-		{	
+	var img = getSelectedBorderedSeedImage();
+	
+	if(img != null) { // or check for selected save canvas
+	
+		var canvas =  document.createElement("canvas");
+		var ctx = canvas.getContext("2d");
+		
+		var newimg = new Image();
+		newimg.onload = function()
+		{
+			canvas.width = this.width;
+			canvas.height = this.height;
+			ctx.drawImage(img, 0, 0,canvas.width,canvas.height);
+			
+			
+			canvas.toBlob( function( blob) {
+			
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', '/send_seed', true);
+				xhr.onload = function(e) {  
 				
-				img = list[i];
-				break;
+					if (xhr.readyState != 4) return;
+					
+					if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
+				 
+					transform("canvas",'/fill');
+					
+				}
+				xhr.send(blob);
+				
+					
+			});
+			
+			
 			
 		}
+		newimg.src = img.src;
 	}
-	
-	if(img == null) return; // or check for selected save canvas
-	
-	var canvas =  document.createElement("canvas");
-	var ctx = canvas.getContext("2d");
-	
-	var newimg = new Image();
-	newimg.onload = function()
+	else
 	{
-		canvas.width = this.width;
-		canvas.height = this.height;
-		ctx.drawImage(img, 0, 0,canvas.width,canvas.height);
+		var cnv = getSelectedBorderedSaveCanvas();
+	
+		if(cnv != null) { 
 		
-		
-		canvas.toBlob( function( blob) {
-		
-			var xhr = new XMLHttpRequest();
-			xhr.open('POST', '/send_seed', true);
-			xhr.onload = function(e) {  
-			
-				if (xhr.readyState != 4) return;
-				
-				if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
-			 
-				transform("canvas",'/fill');
-				
-			}
-			xhr.send(blob);
 			
 				
-		});
-		
-		
-		
-	}
-	newimg.src = img.src;
+				cnv.toBlob( function( blob) {
+				
+					var xhr = new XMLHttpRequest();
+					xhr.open('POST', '/send_seed', true);
+					xhr.onload = function(e) {  
+					
+						if (xhr.readyState != 4) return;
+						
+						if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
+					 
+						transform("canvas",'/fill');
+						
+					}
+					xhr.send(blob);
+					
+						
+				});
+				
+				
+		}
+	}		
 	
 }
 
+/********
 function old_send_seed() //when sends on server increased image 20x20
 {
 	
@@ -98,3 +118,5 @@ function old_send_seed() //when sends on server increased image 20x20
 	
 	
 }
+
+*******/

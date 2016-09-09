@@ -1,22 +1,10 @@
 function combo()
 {
 	// search for true-bordered canvas
-	var cnv = null;
-	var list = document.getElementsByTagName("canvas");
-	for(var i=0;i<list.length;i++)
+	var cnv = getSelectedBorderedSaveCanvas();
+	
+	if(cnv != null) 
 	{
-		if(isSelectable(list[i])) 
-		{	
-			if(list[i].getAttribute("bordered")=="true") 
-			{
-				cnv = list[i];
-				break;
-			}	
-		}
-	}
-	
-	if(cnv == null) return; // or check for selected save canvas
-	
 
 		
 		
@@ -39,5 +27,21 @@ function combo()
 		});
 		
 		 
+	}
+	
+	
+	else 
+		
+	{
+	
+		
+			
+	}	
+	
+	
+	
+	
+	
+	
 	
 }

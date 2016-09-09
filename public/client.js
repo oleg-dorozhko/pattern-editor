@@ -195,7 +195,7 @@ window.onload = function()
 	
 		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
 		
-		document.onselectstart = function() {return false}
+		document.onselectstart = function(e) {e.preventDefault();return false;}
 		
 	});
 	

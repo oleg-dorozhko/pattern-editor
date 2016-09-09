@@ -35,8 +35,14 @@ function selectSelectableElement(el)
 	if(el.getAttribute("bordered") == "false") 
 	{
 		unselectAll();
-		
-		el.style.border = "2px solid white";
+		if(e.tagName=="img")
+		{
+			el.style.border = "2px solid white";
+		}
+		else
+		{
+			el.style.border = "2px solid red";
+		}
 		el.setAttribute("bordered","true");
 	}
 	else

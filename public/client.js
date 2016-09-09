@@ -126,6 +126,11 @@ window.onload = function()
 		  dragObject.downX = e.pageX;
 		  dragObject.downY = e.pageY;
 		  
+		  
+		  clearSelection();
+		  
+		  return false;
+		  
 		}
 		
 		
@@ -191,6 +196,8 @@ window.onload = function()
 				selectSelectableElement(el);
 				
 			}
+			
+			clearSelection();
 		};
 	
 		var CLIPBOARD = new CLIPBOARD_CLASS("canvas", true);
@@ -201,6 +208,14 @@ window.onload = function()
 	
 	
 }
+
+function clearSelection() {
+    if (window.getSelection) {
+      window.getSelection().removeAllRanges();
+    } else { // старый IE
+      document.selection.empty();
+    }
+  }
 
 function isSelectable(el)
 {

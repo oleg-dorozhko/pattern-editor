@@ -670,6 +670,89 @@ function random( req, res )
 }
 
 
+
+
+function axes( req, res )
+{
+
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+
+		
+		var newpng = new PNG ( {
+			
+				width: this.width-1,
+				height: this.height-1,
+				filterType: 4
+		} );
+		
+		var dx = this.width/2|0; 
+		var dy = this.height/2|0;
+		
+		//7/2 = 3 //012[3]456
+		//8/2 = 4 //012[3][4]567
+		
+			for (var y = 0; y < this.height; y++) {
+				
+				if(y == dy) continue;
+				
+				for (var x = 0; x < this.width; x++) {
+					
+					if(x == dx) continue;
+					
+					var idx = (this.width * y + x) << 2;
+					
+					var new_idx1 = 0;
+					
+					if(x < dx && y < dy)
+					{			
+						new_idx1 = newpng.width * y + x << 2;
+					}	
+					else if(x > dx && y < dy)
+					{
+						new_idx1 = newpng.width * y + (x-1) << 2;
+					}
+					else if(x > dx && y > dy)
+					{
+						new_idx1 = newpng.width * (y-1) + (x-1) << 2;
+					}
+					else if(x < dx && y > dy)
+					{
+						new_idx1 = newpng.width * (y-1) + x << 2;
+					}
+					
+						newpng.data[new_idx1+0] = this.data[idx+0];
+						newpng.data[new_idx1+1] = this.data[idx+1];
+						newpng.data[new_idx1+2] = this.data[idx+2];
+						newpng.data[new_idx1+3] = this.data[idx+3];
+						
+					
+					
+					
+				}
+				
+			}
+			
+		
+			
+			sendImage(newpng,res,'\nImage was axed\n');
+			
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	var crop_settings = null;
 	
 	
@@ -1347,6 +1430,7 @@ app.post('/mdown', mdown );
 app.post('/mright', mright );
 app.post('/rotate', rotate );
 app.post('/median', median );
+app.post('/axes', axes );
 app.post('/multiply', multiply );
 app.post('/plus', plus );
 app.post('/minus', minus );

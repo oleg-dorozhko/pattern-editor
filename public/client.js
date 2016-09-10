@@ -68,6 +68,11 @@ function showHide(el)
 	 }
 }
 
+function axes()
+{
+	transform("canvas", '/axes');
+}
+
 window.onload = function()
 {
 	loadDivFirst( function() {
@@ -78,6 +83,7 @@ window.onload = function()
 	
 		$("#upload").click( function() { alert('Not implemented yet'); } );
 		$("#paste").click( function() { alert('Not implemented yet'); } );
+		$("#axes").click( axes );
 		$("#destroy").click( destroy );
 		$("#save").click( function() { save_pattern(); } );
 		$("#copy").click( sendCopyToServer );

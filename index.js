@@ -500,29 +500,25 @@ function vortex( req, res )
 		
 		
 		
+		
+			
 		var newpng = new PNG ( {
 			
-				width: this.width,
-				height: this.height*2,
+				width: this.width*2,
+				height: this.height,
 				filterType: 4
 		} );
 		
-		var m=0;
 		
-		for (var x = 0; x < newpng.width; x++) {
-			
-			m=0;
-			
+
 			for (var y = 0; y < newpng.height; y++) {
 				
-				
-				
+				n=0;
+				for (var x = 0; x < newpng.width; x++) {
 					
 					var idx = 0;
-					
 					var new_idx1 = newpng.width * y + x << 2;
-					
-					if(y < this.height)
+					if(x < this.width)
 					{
 					
 						idx = (this.width * y + x) << 2;
@@ -531,18 +527,18 @@ function vortex( req, res )
 						newpng.data[new_idx1+1] = this.data[idx+1];
 						newpng.data[new_idx1+2] = this.data[idx+2];
 						newpng.data[new_idx1+3] = this.data[idx+3];
-						m++;
+						n++;
 					}
 					else
 					{
-						idx = (this.width * (m-1) + x) << 2;
+						idx = (this.width * y + (n-1)) << 2;
 						
 						newpng.data[new_idx1+0] = this.data[idx+0];
 						newpng.data[new_idx1+1] = this.data[idx+1];
 						newpng.data[new_idx1+2] = this.data[idx+2];
 						newpng.data[new_idx1+3] = this.data[idx+3];
 						
-						m--;
+						n--;
 
 					}
 					
@@ -552,19 +548,16 @@ function vortex( req, res )
 				
 			}
 			
-			//sendImage(newpng,res,'\nImage mirror downed\n');
+		
+		
+		
+		
+		
+		
+		var newpng2 = new PNG ( {
 			
-			
-			
-			
-			
-			
-			
-			
-			var newpng2 = new PNG ( {
-			
-				width: newpng.width*2,
-				height: newpng.height,
+				width: this.width,
+				height: this.height*2,
 				filterType: 4
 		} );
 		
@@ -613,6 +606,14 @@ function vortex( req, res )
 				
 			}
 			
+			//sendImage(newpng,res,'\nImage mirror downed\n');
+			
+			
+			
+			
+			
+			
+		
 			sendImage(newpng2,res,'\nImage vortexed\n');
 			
 			

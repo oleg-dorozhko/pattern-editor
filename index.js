@@ -556,8 +556,8 @@ function vortex( req, res )
 		
 		var newpng2 = new PNG ( {
 			
-				width: this.width,
-				height: this.height*2,
+				width: newpng.width,
+				height: newpng.height*2,
 				filterType: 4
 		} );
 		

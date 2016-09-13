@@ -491,6 +491,174 @@ function rotate( req, res )
 }
 
 
+
+
+
+function vortex( req, res )
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		
+		var newpng = new PNG ( {
+			
+				width: this.width,
+				height: this.height*2,
+				filterType: 4
+		} );
+		
+		var m=0;
+		
+		for (var x = 0; x < newpng.width; x++) {
+			
+			m=0;
+			
+			for (var y = 0; y < newpng.height; y++) {
+				
+				
+				
+					
+					var idx = 0;
+					
+					var new_idx1 = newpng.width * y + x << 2;
+					
+					if(y < this.height)
+					{
+					
+						idx = (this.width * y + x) << 2;
+						
+						newpng.data[new_idx1+0] = this.data[idx+0];
+						newpng.data[new_idx1+1] = this.data[idx+1];
+						newpng.data[new_idx1+2] = this.data[idx+2];
+						newpng.data[new_idx1+3] = this.data[idx+3];
+						m++;
+					}
+					else
+					{
+						idx = (this.width * (m-1) + x) << 2;
+						
+						newpng.data[new_idx1+0] = this.data[idx+0];
+						newpng.data[new_idx1+1] = this.data[idx+1];
+						newpng.data[new_idx1+2] = this.data[idx+2];
+						newpng.data[new_idx1+3] = this.data[idx+3];
+						
+						m--;
+
+					}
+					
+					
+					
+				}
+				
+			}
+			
+			//sendImage(newpng,res,'\nImage mirror downed\n');
+			
+			
+			
+			
+			
+			
+			
+			
+			var newpng2 = new PNG ( {
+			
+				width: newpng.width*2,
+				height: newpng.height,
+				filterType: 4
+		} );
+		
+		var m=0;
+		
+		for (var x = 0; x < newpng2.width; x++) {
+			
+			m=0;
+			
+			for (var y = 0; y < newpng2.height; y++) {
+				
+				
+				
+					
+					var idx = 0;
+					
+					var new_idx1 = newpng2.width * y + x << 2;
+					
+					if(y < newpng.height)
+					{
+					
+						idx = (newpng.width * y + x) << 2;
+						
+						newpng2.data[new_idx1+0] = newpng.data[idx+0];
+						newpng2.data[new_idx1+1] = newpng.data[idx+1];
+						newpng2.data[new_idx1+2] = newpng.data[idx+2];
+						newpng2.data[new_idx1+3] = newpng.data[idx+3];
+						m++;
+					}
+					else
+					{
+						idx = (newpng.width * (m-1) + x) << 2;
+						
+						newpng2.data[new_idx1+0] = newpng.data[idx+0];
+						newpng2.data[new_idx1+1] = newpng.data[idx+1];
+						newpng2.data[new_idx1+2] = newpng.data[idx+2];
+						newpng2.data[new_idx1+3] = newpng.data[idx+3];
+						
+						m--;
+
+					}
+					
+					
+					
+				}
+				
+			}
+			
+			sendImage(newpng2,res,'\nImage vortexed\n');
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function mdown( req, res )
 {
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
@@ -1428,6 +1596,7 @@ app.post('/precrop', precrop );
 app.post('/random', random );
 app.post('/mdown', mdown );
 app.post('/mright', mright );
+app.post('/vortex', vortex );
 app.post('/rotate', rotate );
 app.post('/median', median );
 app.post('/axes', axes );

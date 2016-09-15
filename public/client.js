@@ -89,6 +89,7 @@ window.onload = function()
 		$("#copy").click( sendCopyToServer );
 		$("#combo").click( combo );
 		$("#vortex").click( function() { transform("canvas", '/vortex'); } );
+		$("#borderminus").click( function() { transform("canvas", '/borderminus'); } );
 		$("#inv").click( function() { transform("canvas", '/inverse'); } );
 		$("#plus").click( function() { transform("canvas", '/plus'); } );
 		$("#minus").click( function() { transform("canvas", '/minus'); } );

@@ -173,6 +173,46 @@ function multiply(req, res)
 		});
 }
 
+
+function borderminus(req, res)
+{
+	
+		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		
+			var newpng = new PNG ( {
+				
+					width: this.width-2,
+					height: this.height-2,
+					filterType: 4
+			} );
+		
+		
+
+			for (var y = 1; y < this.height-2; y++) {
+				
+				for (var x = 1; x < newpng.width-2; x++) {
+					
+					var idx = this.width * y + x << 2;
+					
+					var new_idx1 = newpng.width * (y-1) + (x-1) << 2;
+					
+					newpng.data[new_idx1+0] = this.data[idx];
+					newpng.data[new_idx1+1] = this.data[idx+1];
+					newpng.data[new_idx1+2] = this.data[idx+2];
+					newpng.data[new_idx1+3] = this.data[idx+3];
+					
+				}
+				
+			}
+			
+			sendImage(newpng, res, "\nImage border minused\n" );
+			
+			
+		});
+}
+
 function minus( req, res )
 {
 
@@ -1605,6 +1645,7 @@ app.post('/multiply', multiply );
 app.post('/plus', plus );
 app.post('/minus', minus );
 app.post('/inverse', inverse );
+app.post('/borderminus', borderminus );
 
 app.post('/paste',function(request, response) {
 

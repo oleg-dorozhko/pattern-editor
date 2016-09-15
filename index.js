@@ -190,9 +190,9 @@ function borderminus(req, res)
 		
 		
 
-			for (var y = 1; y < this.height-2; y++) {
+			for (var y = 1; y < this.height-1; y++) {
 				
-				for (var x = 1; x < this.width-2; x++) {
+				for (var x = 1; x < this.width-1; x++) {
 					
 					var idx = this.width * y + x << 2;
 					

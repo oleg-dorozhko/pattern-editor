@@ -1,0 +1,26 @@
+span 
+{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-right: 10px;
+}
+
+.colorinpalette[cpstate="nonselected"]
+{
+	border: 2px solid gray;
+}
+
+.colorinpalette[cpstate="selected"]
+{
+	border: 2px solid red;
+}
+
+.red-bordered
+{
+	border: 2px solid red;
+}
+
+.blue-bordered
+{
+	border: 2px solid blue;
+}

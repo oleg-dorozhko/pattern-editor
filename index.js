@@ -53,7 +53,9 @@ app.get('/', function(request, response) {
   response.render('pages/index');
 });
 
-
+app.get('/palette', function(request, response) {
+  response.render('pages/palette');
+});
 
 
 function getSeedListFromFS()

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/palette_header.ejs %>
+</head>
+
+<body>
+
+<table border=1>
+<tr>
+<td><canvas id="canvas"></canvas></td>
+</tr>
+<tr>
+<td id="palette_td"></td>
+</tr>
+<tr>
+<td><canvas id="palette_canvas"></canvas></td>
+</tr>
+
+<tr>
+<td colspan="3"> <div id="palette_div"></div> </td>
+
+</tr>
+</table>
+<br>
+
+<!---
+<span>left top: <input type="checkbox" value=" lt " id="lefttop"></span>
+<span>right bottom: <input type="checkbox" value=" rb " id="rightbottom"></span>
+--->
+<span>
+<input type="number" id="diap" min="0" max="255" step="1" value="0">
+<input type="button" value=" get palette " id="getpalette">
+<input type="button" value=" clear palette " id="clearpalette">
+<input type="button" value=" get color " id="getcolor">
+<input type="button" value=" set one pixel " id="setonepixel">
+<input type="button" value=" use palette " id="usepalette">
+<input type="button" value=" rem palette " id="rempalette">
+<input type="button" value=" change one pixel " id="changeonepixel">
+<input type="button" value=" change all pixels " id="changeallpixels">
+</span>
+
+<br>
+
+
+<hr>
+<div><canvas id="canvasResult" width="50" height="50"></canvas></div>
+<input type="number" id="diapazon" min="1" max="256" step="1" value="1"><input type="button" id="btn" value="+"><input type="button" id="btnMin" value="-">
+<div id="divcolors_0_table"></div>
+<div id="divcolors_1_table"></div>
+<div id="divcolors_2_table"></div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-82642367-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

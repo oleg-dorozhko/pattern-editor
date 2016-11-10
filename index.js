@@ -228,22 +228,46 @@ function minus( req, res )
 				filterType: 4
 		} );
 		
+		if(this.width %2==0)
+		{
 
-		for (var y = 0; y < this.height; y+=2) {
-			for (var x = 0; x < this.width; x+=2) {
-				
-				var idx = (this.width * y + x) << 2;
-				
-				var new_idx = newpng.width * (y/2) + (x/2) << 2;
-				//var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
-				
-				newpng.data[new_idx] = this.data[idx];
-				newpng.data[new_idx+1] = this.data[idx+1];
-				newpng.data[new_idx+2] = this.data[idx+2];
-				newpng.data[new_idx+3] = this.data[idx+3];
+			for (var y = 0; y < this.height; y+=2) {
+				for (var x = 0; x < this.width; x+=2) {
+					
+					var idx = (this.width * y + x) << 2;
+					
+					var new_idx = newpng.width * (y/2) + (x/2) << 2;
+					//var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
+					
+					newpng.data[new_idx] = this.data[idx];
+					newpng.data[new_idx+1] = this.data[idx+1];
+					newpng.data[new_idx+2] = this.data[idx+2];
+					newpng.data[new_idx+3] = this.data[idx+3];
 
-				
-				
+					
+					
+				}
+			}
+		
+		}
+		else
+		{
+			for (var y = 1; y < this.height-1; y+=2) {
+				for (var x = 1; x < this.width-1; x+=2) {
+					
+					var idx = (this.width * y + x) << 2;
+					
+					var new_idx = newpng.width * (y/2) + (x/2) << 2;
+					//var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
+					
+					newpng.data[new_idx] = this.data[idx];
+					newpng.data[new_idx+1] = this.data[idx+1];
+					newpng.data[new_idx+2] = this.data[idx+2];
+					newpng.data[new_idx+3] = this.data[idx+3];
+
+					
+					
+				}
 			}
 		}
 		

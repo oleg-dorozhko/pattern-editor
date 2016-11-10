@@ -221,85 +221,29 @@ function minus( req, res )
 	req.pipe( new PNG ( {filterType: 4} ) ).on('parsed', function() {
 		
 		//here we create new png (same as result bufferedImage (in java))
-		
-		var newpng = null;
-		if(this.width %2==0)
-		{
-			 newpng = new PNG ( {
+		var newpng = new PNG ( {
 			
-				width: this.width/2,
-				height: this.height/2,
+				width: this.width/2|0,
+				height: this.height/2|0,
 				filterType: 4
-		    } );
+		} );
 		
-			for (var y = 0; y < this.height; y+=2) {
-				for (var x = 0; x < this.width; x+=2) {
-					
-					var idx = (this.width * y + x) << 2;
-					
-					var new_idx = newpng.width * (y/2) + (x/2) << 2;
-					//var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
-					
-					newpng.data[new_idx] = this.data[idx];
-					newpng.data[new_idx+1] = this.data[idx+1];
-					newpng.data[new_idx+2] = this.data[idx+2];
-					newpng.data[new_idx+3] = this.data[idx+3];
 
-					
-					
-				}
-			}
-		
-		}
-		else
-		{
-			var w2 = (this.width/2|0);
-			var h2 = (this.height/2|0);
-			if(w2%2==0)
-			{
-				newpng = new PNG ( {
-			
-				width: w2,
-				height: h2,
+		for (var y = 0; y < this.height; y+=2) {
+			for (var x = 0; x < this.width; x+=2) {
 				
-				filterType: 4
+				var idx = (this.width * y + x) << 2;
 				
-				} );
-			}
-			else
-			{
-				newpng = new PNG ( {
-			
-				width: w2,
-				height: h2,
+				var new_idx = newpng.width * (y/2) + (x/2) << 2;
+				//var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
 				
-				filterType: 4
+				newpng.data[new_idx] = this.data[idx];
+				newpng.data[new_idx+1] = this.data[idx+1];
+				newpng.data[new_idx+2] = this.data[idx+2];
+				newpng.data[new_idx+3] = this.data[idx+3];
+
 				
-				} );
-			}
-			 
-			
-			var m=0;
-			var n=0;
-			for (var y = 1; y < this.height-1; y+=2) {      
-				for (var x = 1; x < this.width-1; x+=2) {
-					
-					var idx = (this.width * y + x) << 2;
-					
-					var new_idx = newpng.width * m + n << 2;
-					//var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
-					
-					newpng.data[new_idx] = this.data[idx];
-					newpng.data[new_idx+1] = this.data[idx+1];
-					newpng.data[new_idx+2] = this.data[idx+2];
-					newpng.data[new_idx+3] = this.data[idx+3];
-					
-					n++;
-					
-					
-				}
-				n=0;
-				m++;
+				
 			}
 		}
 		

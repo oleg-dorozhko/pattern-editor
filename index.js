@@ -221,16 +221,17 @@ function minus( req, res )
 	req.pipe( new PNG ( {filterType: 4} ) ).on('parsed', function() {
 		
 		//here we create new png (same as result bufferedImage (in java))
-		var newpng = new PNG ( {
+		
+		var newpng = null;
+		if(this.width %2==0)
+		{
+			 newpng = new PNG ( {
 			
 				width: this.width/2|0,
 				height: this.height/2|0,
 				filterType: 4
-		} );
+		    } );
 		
-		if(this.width %2==0)
-		{
-
 			for (var y = 0; y < this.height; y+=2) {
 				for (var x = 0; x < this.width; x+=2) {
 					
@@ -252,6 +253,14 @@ function minus( req, res )
 		}
 		else
 		{
+			
+			 newpng = new PNG ( {
+			
+				width: this.width/2|0+1,
+				height: this.height/2|0+1,
+				filterType: 4
+		    } );
+			
 			var m=0;
 			var n=0;
 			for (var y = 1; y < this.height-1; y+=2) {

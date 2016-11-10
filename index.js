@@ -227,8 +227,8 @@ function minus( req, res )
 		{
 			 newpng = new PNG ( {
 			
-				width: this.width/2|0,
-				height: this.height/2|0,
+				width: this.width/2,
+				height: this.height/2,
 				filterType: 4
 		    } );
 		
@@ -253,17 +253,35 @@ function minus( req, res )
 		}
 		else
 		{
+			var w2 = (this.width/2|0);
+			var h2 = (this.height/2|0);
+			if(w2%2==0)
+			{
+				newpng = new PNG ( {
 			
-			 newpng = new PNG ( {
-			
-				width: this.width/2|0+1,
-				height: this.height/2|0+1,
+				width: w2,
+				height: h2,
+				
 				filterType: 4
-		    } );
+				
+				} );
+			}
+			else
+			{
+				newpng = new PNG ( {
+			
+				width: w2,
+				height: h2,
+				
+				filterType: 4
+				
+				} );
+			}
+			 
 			
 			var m=0;
 			var n=0;
-			for (var y = 1; y < this.height-1; y+=2) {
+			for (var y = 1; y < this.height-1; y+=2) {      
 				for (var x = 1; x < this.width-1; x+=2) {
 					
 					var idx = (this.width * y + x) << 2;
@@ -280,6 +298,7 @@ function minus( req, res )
 					
 					
 				}
+				n=0;
 				m++;
 			}
 		}

@@ -96,6 +96,7 @@ window.onload = function()
 		$("#multiply").click( function() { transform("canvas", '/multiply'); } );
 		$("#median").click( function() { transform("canvas", '/median'); } );
 		$("#rotate").click( function() { transform("canvas", '/rotate'); } );
+		$("#rotateff").click( function() { transform("canvas", '/rotateff'); } );
 		$("#mirror_down").click( function() { transform("canvas", '/mdown'); } );
 		$("#mirror_right").click( function() { transform("canvas", '/mright'); } );
 		$("#random").click( function() { transform("canvas", '/random'); } );

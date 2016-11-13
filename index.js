@@ -1545,6 +1545,95 @@ function axes( req, res )
 
 	var crop_settings = null;
 	
+	function newcroplt(req, res)
+	{
+		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+			
+			var xw = crop_settings.x;
+			var yh = crop_settings.y;
+			var w = crop_settings.w;
+		    var h = crop_settings.h;
+			
+			var newpng = new PNG ( {
+													
+				width: w-xw,
+				height: h-yh,
+				filterType: 4
+				
+			} );
+
+			
+			var m=0;
+			for (var y = 0; y < this.height; y++) {
+				
+				var n=0;
+				for (var x = 0; x < this.width; x++) {
+					
+					console.log("x="+x);
+					console.log("y="+y);
+					console.log("n="+n);
+					console.log("m="+m);
+					if( x>=xw  && y>=yh )
+					{
+						var idx = (this.width * y + x) << 2;
+						
+						var newidx = (newpng.width * m + n) << 2;
+
+						newpng.data[newidx+0] = this.data[idx+0];
+						newpng.data[newidx+1] = this.data[idx+1];
+						newpng.data[newidx+2] = this.data[idx+2];
+						newpng.data[newidx+3] = this.data[idx+3];
+						
+						n++;
+					}
+				}
+				
+				if(y>=yh) m++;
+			}
+
+
+			sendImage(newpng,res,'\nImage was LT croped \n');
+
+		});
+											
+	}
+	
+	function newcroprb(req, res)
+	{
+		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+			
+			var xw = crop_settings.x;
+			var yh = crop_settings.y;
+			
+			var newpng = new PNG ( {
+													
+				width: xw+1,
+				height: yh+1,
+				filterType: 4
+				
+			} );
+
+			for (var y = 0; y < newpng.height; y++) {
+				
+				for (var x = 0; x < newpng.width; x++) {
+					
+					var idx = (this.width * y + x) << 2;
+					var newidx = (newpng.width * y + x) << 2;
+
+					newpng.data[newidx+0] = this.data[idx+0];
+					newpng.data[newidx+1] = this.data[idx+1];
+					newpng.data[newidx+2] = this.data[idx+2];
+					newpng.data[newidx+3] = this.data[idx+3];
+				}
+			}
+
+
+			sendImage(newpng,res,'\nImage was RB croped \n');
+
+		});
+											
+	}
+	
 	
 	
 	function crop( req, res )
@@ -1563,11 +1652,6 @@ function axes( req, res )
 				
 		
 		
-		var a1x = 0;
-		var a1y = 0;
-		var a2x = 0;
-		var a2y = 0;
-		
 		var flag = crop_settings.flag;
 		
 		
@@ -1580,92 +1664,21 @@ function axes( req, res )
 		
 		if(flag==1)
 		{
-			a1x = crop_settings.x;
-			a1y = crop_settings.y;
-			a2x = crop_settings.w;
-			a2y = crop_settings.h;	
+			
+		
+			newcroplt(req,res);
+			
 			
 		}
 		
 		else if(flag==2)
 		{
 			
-			a2x = crop_settings.x+1;
-			a2y = crop_settings.y+1;
+			
+			newcroprb(req,res);
 		}
 		
 		
-		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
-	
-
-	
-	
-						
-						
-						if((a1x >= 0) && (a1y >=0) && (a2x >= 1) && (a2y >= 1) )
-						{
-							
-		
-							
-								var x0 = Math.min(a1x,a2x);
-								var x1 = Math.max(a1x,a2y);
-								
-								var y0 = Math.min(a1y,a2y);
-								var y1 = Math.max(a1y,a2y);
-								
-								var w = Math.abs(x1-x0);
-								var h = Math.abs(y1-y0);
-			
-								if(w>0 && h>0)
-								{
-									 
-									
-											var arr = [ x0, y0, w, h ];
-						
-							
-											var newpng = new PNG ( {
-												
-													width: w,
-													height: h,
-													filterType: 4
-											} );
-											
-											
-											var limy = arr[1]+arr[3];
-											var limx = arr[0]+arr[2];
-											var n=0;
-											var m=0;
-
-											for (var y = arr[1]; y < limy; y++) {
-												n=0;
-												for (var x = arr[0]; x < limx; x++) {
-													var idx = (this.width * y + x) << 2;
-													var idx2 = (newpng.width * m + n) << 2;
-													
-													
-													newpng.data[idx2] = this.data[idx];
-													//console.log(typeof(newpng.data[idx2]));
-													newpng.data[idx2+1] = this.data[idx+1];
-													newpng.data[idx2+2] = this.data[idx+2];
-													
-													newpng.data[idx2+3] = this.data[idx+3];
-													n++;
-												}
-												m++;
-											}
-							 
-								
-											crop_settings = null;
-											
-											
-											sendImage(newpng, res, '\nImage cropped\n');
-									
-								}
-						}		
-							
-		
-		});
-							
 		
 		
 		

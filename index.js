@@ -1569,10 +1569,12 @@ function axes( req, res )
 				var n=0;
 				for (var x = 0; x < this.width; x++) {
 					
+					/***
 					console.log("x="+x);
 					console.log("y="+y);
 					console.log("n="+n);
 					console.log("m="+m);
+					***/
 					if( x>=xw  && y>=yh )
 					{
 						var idx = (this.width * y + x) << 2;

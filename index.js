@@ -523,7 +523,7 @@ function __rotateff( oldpng, newpng )
 		}
 		
 		counter++;
-		console.log("counter="+counter);
+		//console.log("counter="+counter);
 		if(counter>=newpng.height/2+1) break;
 		
 	/******
@@ -544,14 +544,14 @@ function __rotateff( oldpng, newpng )
 	
 				
 	
-	console.log("n="+n);
+	//console.log("n="+n);
 	
-	console.log("counter="+counter);
+	//console.log("counter="+counter);
 	
-	console.log("x1="+x1);
-	console.log("y1="+y1);
+	//console.log("x1="+x1);
+	//console.log("y1="+y1);
 	
-	console.log(arr_points[n]);
+	//console.log(arr_points[n]);
 	
 	
 
@@ -582,8 +582,8 @@ function __rotateff( oldpng, newpng )
 			n++;
 			
 			
-			console.log(n);
-			console.log(arr_points.length);
+			//console.log(n);
+			//console.log(arr_points.length);
 			
 			 
 	

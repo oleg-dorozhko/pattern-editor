@@ -200,6 +200,15 @@ window.onload = function()
 		document.onclick = function (ev) { 
 		
 			var el = ev.target;
+			
+			/****
+			if(ev.target.id == "console")	{
+				el.focus();
+				ev.stopPropagation();
+				ev.preventDefault();
+			}
+			****/
+			
 			if(isSelectable(el))
 			{
 				selectSelectableElement(el);
@@ -213,7 +222,23 @@ window.onload = function()
 		
 		document.onselectstart = function(e) {e.preventDefault();return false;}
 		
+		/***
+		document.addEventListener("contextmenu", function(e)
+		{
+			if(e.target.id == "canvas")	{
+				//alert('test ok');
+				
+				mod_console_js_showConsole(e);
+				document.getElementById("console").focus();
+				e.stopPropagation();
+				e.preventDefault();
+			}
+		});
+		***/
+		
 	});
+	
+	
 	
 	
 }

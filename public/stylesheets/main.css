@@ -1,3 +1,4 @@
+/*
 .jumbotron {
   background: #532F8C;
   color: white;
@@ -24,33 +25,83 @@
     border: 2px solid white; }
     .jumbotron .lang-logo img {
       max-width: 100%; }
+	  */
 
+	  #desktop
+	  {
+		  padding: 5px;
+		  width: 2000px;
+		  height: 2000px;
+	  }
+	  
 #canvas
 {
-	position: absolute; 
+	/*position: absolute; 
 	left: 10px; 
-	top: 10px;
+	top: 10px;*/
 }
+
+img
+{
+	margin: 5px;	
+}
+
+.save-canvas-class
+{
+	
+}
+
+.save-canvas-bordered
+{
+	margin: 3px;	
+	border: 2px solid red;
+}
+
+.save-canvas-unbordered
+{
+	margin: 5px;	
+	border: 0px solid red;
+}
+
+
+
+.seed-bordered
+{
+	margin: 3px;	
+	border: 2px solid red;
+}
+
+.seed-unbordered
+{
+	margin: 5px;	
+	border: 0px solid red;
+}
+
 
 #seed_list
 {
-	position: absolute; 
+	/*position: absolute; 
 	left: 1030px; 
 	top: 165px;
 	z-index: 999;
+	*/
 }
 
 #buttons_list
 {
+	/*
 	position: absolute; 
 	left: 1025px; 
 	top: 37px;
 	z-index: 999;
+	*/
 }
 
 input
 {
-	margin: 2px;
+	margin-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 progress

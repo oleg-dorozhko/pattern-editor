@@ -1,11 +1,14 @@
 function combo()
 {
 	// search for true-bordered canvas
-	var cnv = getSelectedBorderedSaveCanvas();
+	// var cnv = getSelectedBorderedSaveCanvas();
 	
-	if(cnv != null) 
-	{
-
+	if(glob_last_selected_canvas_id==null) return;
+	
+	if(document.getElementById(glob_last_selected_canvas_id).classList.contains("save-canvas-class")==false) return;
+	
+	var cnv = document.getElementById(glob_last_selected_canvas_id);	
+	
 		
 		
 		cnv.toBlob( function( blob) {
@@ -27,17 +30,6 @@ function combo()
 		});
 		
 		 
-	}
-	
-	
-	else 
-		
-	{
-	
-		
-			
-	}	
-	
 	
 	
 	

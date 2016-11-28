@@ -1,3 +1,58 @@
+function rgba(ctx,i,j)
+{
+	var imgData = ctx.getImageData(i,j,1,1);
+	var red = imgData.data[0];
+	var green = imgData.data[1];
+	var blue = imgData.data[2];
+	var alpha = imgData.data[3];
+	return "rgba("+red+","+green+","+blue+","+alpha+")";
+}
+
+function setSeedList(arr)
+{
+	var div = document.getElementById("seed_list");
+	div.innerHTML = "";
+	for(var ii=0;ii<arr.length;ii++)
+	{
+		var img = new Image();
+		img.onload = function()
+		{
+			var n = Math.floor(20/this.width);
+			
+			var cnv = document.createElement("canvas");
+			cnv.width = this.width;
+			cnv.height = this.height;
+			var ctx = cnv.getContext("2d");
+			ctx.drawImage(this,0,0);
+			
+			var cnv2 = document.createElement("canvas");
+			cnv2.width = this.width*n;
+			cnv2.height = this.height*n;
+			var ctx2 = cnv2.getContext("2d");
+			for(var j=0;j<cnv2.height;j+=n)
+			{
+				for(var i=0;i<cnv2.width;i+=n)
+				{
+					ctx2.fillStyle = rgba(ctx,i/n,j/n);
+					ctx2.fillRect(i,j,n,n);
+				}
+			}
+			cnv2.id="seed-canvas-"+this.id;
+			cnv2.classList.toggle("seed-unbordered");
+			cnv2.src = this.src;
+			
+			//if(cnv2 == undefined) return;
+			div.appendChild(cnv2);
+			
+		}
+		img.src = '/sims/'+arr[ii];
+		img.id = ""+ii;
+		 
+	}	
+	
+	
+}
+
 function loadDivFirst(callback)
 {
 		  
@@ -12,6 +67,10 @@ function loadDivFirst(callback)
 			if (xhr.status != 200) {    alert(xhr.status + ': ' + xhr.statusText); return;  }
 				
 			document.getElementById("first").innerHTML = xhr.responseText;
+			
+			var arr = JSON.parse(document.getElementById("seed_list").innerHTML);
+			
+			setSeedList(arr);
 			
 			callback();
 	
@@ -73,16 +132,79 @@ function axes()
 	transform("canvas", '/axes');
 }
 
+var glob_last_selected_canvas_id = null;
+
+function selectSeed(e)
+{
+	
+		if(e.target.classList.contains("seed-bordered"))
+		{
+			e.target.classList.toggle("seed-unbordered");
+			e.target.classList.toggle("seed-bordered");
+			return;
+		}
+		
+		var div = document.getElementById("seed_list");	
+		for(var i=0;i<div.childNodes.length;i++)
+		{
+			if(div.childNodes[i].classList.contains("seed-bordered"))
+			{
+				div.childNodes[i].classList.toggle("seed-unbordered");
+				div.childNodes[i].classList.toggle("seed-bordered");
+			}
+		}
+		
+		e.target.classList.toggle("seed-unbordered");
+		e.target.classList.toggle("seed-bordered");
+		
+		glob_last_selected_canvas_id = e.target.id;
+		
+	
+}
+
+
+function selectSaveCanvas(e)
+{
+	if(e.target.classList.contains("seed-bordered"))
+	{
+		e.target.classList.toggle("seed-unbordered");
+		e.target.classList.toggle("seed-bordered");
+		return;
+	}
+		
+	var cnvs = document.getElementsByClassName("save-canvas-class");	
+	for(var i=0;i<cnvs.length;i++)
+	{
+		if(cnvs[i].classList.contains("seed-bordered"))
+		{
+			cnvs[i].classList.toggle("seed-unbordered");
+			cnvs[i].classList.toggle("seed-bordered");
+		}
+	}
+		
+	e.target.classList.toggle("seed-unbordered");
+	e.target.classList.toggle("seed-bordered");
+	
+	glob_last_selected_canvas_id = e.target.id;
+		
+	
+}
+
+
+
 window.onload = function()
 {
 	loadDivFirst( function() {
 	
 		setInitialImageToCanvas();
-		moveDraggableOnOwnPlace();
+		//moveDraggableOnOwnPlace();
 		initModPixels();
 	
-		$("#upload").click( function() { alert('Not implemented yet'); } );
-		$("#paste").click( function() { alert('Not implemented yet'); } );
+		//$("#upload").click( function() { alert('Not implemented yet'); } );
+		//$("#paste").click( function() { alert('Not implemented yet'); } );
+		//$("#seed_list").click( selectSeed );
+		//$("#desktop").click( selectSaveCanvas );
+		
 		$("#axes").click( axes );
 		$("#destroy").click( destroy );
 		$("#save").click( function() { save_pattern(); } );
@@ -135,14 +257,13 @@ window.onload = function()
 		  dragObject.downX = e.pageX;
 		  dragObject.downY = e.pageY;
 		  
+
 		  
 		  clearSelection();
 		  
 		  return false;
 		  
 		}
-		
-		
 		
 		
 		
@@ -196,6 +317,9 @@ window.onload = function()
 		  dragObject = {};
 		}
 		
+
+		
+		
 				
 		document.onclick = function (ev) { 
 		
@@ -209,12 +333,19 @@ window.onload = function()
 			}
 			****/
 			
+			if(ev.target.tagName=="CANVAS")
+			{
+				if(ev.target.classList.contains("save-canvas-class")) selectSaveCanvas(ev);
+				else selectSeed(ev);
+			}
+			
+			/*****
 			if(isSelectable(el))
 			{
 				selectSelectableElement(el);
 				
 			}
-			
+			****/
 			clearSelection();
 		};
 	

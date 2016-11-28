@@ -1,19 +1,54 @@
 function send_seed()
 {
 	
-	var img = getSelectedBorderedSeedImage();
-	
-	if(img != null) { // or check for selected save canvas
-	
+	if(glob_last_selected_canvas_id==null) return;
+	if(document.getElementById(glob_last_selected_canvas_id).classList.contains("save-canvas-class"))
+	{
+		var cnv = document.getElementById(glob_last_selected_canvas_id);	
+		
+			
+				cnv.toBlob( function( blob) {
+				
+					var xhr = new XMLHttpRequest();
+					xhr.open('POST', '/send_seed', true);
+					xhr.onload = function(e) {  
+					
+						if (xhr.readyState != 4) return;
+						
+						if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
+					 
+						transform("canvas",'/fill');
+						
+					}
+					xhr.send(blob);
+					
+						
+				});
+				
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	else
+	{
+		
 		var canvas =  document.createElement("canvas");
 		var ctx = canvas.getContext("2d");
+		
+		var cnv = document.getElementById(glob_last_selected_canvas_id);
+			
 		
 		var newimg = new Image();
 		newimg.onload = function()
 		{
 			canvas.width = this.width;
 			canvas.height = this.height;
-			ctx.drawImage(img, 0, 0,canvas.width,canvas.height);
+			ctx.drawImage(this, 0, 0,canvas.width,canvas.height);
 			
 			
 			canvas.toBlob( function( blob) {
@@ -37,7 +72,18 @@ function send_seed()
 			
 			
 		}
-		newimg.src = img.src;
+		newimg.src = cnv.src;
+		
+		
+	}
+	
+	
+	
+	var img = getSelectedBorderedSeedImage();
+	
+	if(img != null) { // or check for selected save canvas
+	
+		
 	}
 	else
 	{
@@ -46,25 +92,7 @@ function send_seed()
 		if(cnv != null) { 
 		
 			
-				
-				cnv.toBlob( function( blob) {
-				
-					var xhr = new XMLHttpRequest();
-					xhr.open('POST', '/send_seed', true);
-					xhr.onload = function(e) {  
-					
-						if (xhr.readyState != 4) return;
-						
-						if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
-					 
-						transform("canvas",'/fill');
-						
-					}
-					xhr.send(blob);
-					
-						
-				});
-				
+			
 				
 		}
 	}		

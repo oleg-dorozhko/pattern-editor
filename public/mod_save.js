@@ -35,7 +35,9 @@ function save_pattern()
 		cnv.className = "draggable";
 		cnv.id = id;
 		cnv.alt = ""+n;
-		cnv.setAttribute("bordered","false");
+		cnv.classList.toggle("save-canvas-class");
+		cnv.classList.toggle("seed-unbordered");
+		//cnv.setAttribute("bordered","false");
 
 		document.getElementById("saves").appendChild(cnv);
 	}

@@ -1,48 +1,56 @@
 
-		<div id="seed_list" class="draggable" bordered >[seed-list]</div>
-		<div id="buttons_list" class="draggable" >
+		<div id="seed_list"  >[seed-list]</div>
+		<div id="buttons_list"  >
+		<input type="button" id="plus" value="plus">
+		<input type="button" id="minus" value="minus">
+		<input type="button" id="median" value="median">		
+		<input type="button" id="vortex" value="vortex">
+		<input type="button" id="axes" value="axes">
+		<input type="button" id="borderminus" value="border-">
+
 		<!--
-		<input type="button" id="paste" value=" paste ">
-		-->
 		<input type="button" id="upload" value=" upload ">
 		<input type="button" id="axesplus" value=" axes+ ">
 		<input type="button" id="axesminus" value=" axes- ">
-		<input type="button" id="borderminus" value=" border- ">
-		<input type="button" id="inv" value=" inverse ">
-		<input type="button" id="random" value=" random ">
-		<input type="button" id="plus" value=" plus ">
-		<input type="button" id="minus" value=" minus ">
+		---->
+		<input type="button" id="fill" value=" fill ">
+		<input type="button" id="combo" value=" combo ">
+		
+		<input type="button" id="random" value="random">
+		<input type="button" id="inv" value="inverse">
+		
+		<input type="button" id="copy" value="copy">
+		<input type="button" id="save" value="save">
+		<input type="button" id="destroy" value=" destroy ">
 		<input type="button" id="multiply" value=" multiply ">
-		<input type="button" id="median" value=" median ">
-		<input type="button" id="axes" value=" axes ">
+		
 		<input type="button" id="rotateff" value=" rotate 45 ">
 		<input type="button" id="mirror_right" value=" mirror right ">
 		<input type="button" id="mirror_down" value=" mirror down ">
-		<input type="button" id="vortex" value=" vortex ">
-		<input type="button" id="fill" value=" fill ">
-		<input type="button" id="combo" value=" combo ">
-		<input type="button" id="copy" value=" copy ">
-		<input type="button" id="save" value=" save ">
-		<input type="button" id="destroy" value=" destroy ">
+		
+				
 		</div>
-		<progress id="progress"  class="draggable" value="0" max="100" hidden></progress> 
+		<div><progress id="progress" value="0" max="100" hidden></progress></div> 
 		<!--
 		<input type="button" id="save" value=" twit ">
 		-->
-		<br><br>
-		<table><tr>
-		<td><canvas id="canvas" width="100" height="100" init-path="[init-path]"></canvas></td>
-		<td id="td_pixels" valign="top"></td>
-		</tr></table>
-		<br><br><br><br>
+		<div><canvas id="canvas" width="100" height="100" init-path="[init-path]"></canvas></div>
 		<div id="saves"></div>
 		
 		<div id="scale_div" class="draggable"  >		
-		<table id="table_scale_div"><tr><td align="left" valign="top"><input type="button" id="btn_lt" value=" LT "></td> 
-		<td align="center" valign="top"><input type="button" id="btn_rb" value=" RB "></td>		
-		<td align="right" valign="top"><input type="button" id="btn_esc" value=" X "></td>
-		</tr><tr><td align="center" valign="middle" colspan="3">
-		<canvas id="pixels" width="150" height="150" style="cursor:crosshair;border: 1px solid gold;z-index: 990"></canvas>
-		</td></tr></table>
+		
+		<table id="table_scale_div">
+			<tr>
+				<td align="left" valign="top"><input type="button" id="btn_lt" value=" LT "></td> 
+				<td align="center" valign="top"><input type="button" id="btn_rb" value=" RB "></td>		
+				<td align="right" valign="top"><input type="button" id="btn_esc" value=" X "></td>
+			</tr>
+			<tr>
+				<td align="center" valign="middle" colspan="3">
+					<canvas id="pixels" width="150" height="150" style="cursor:crosshair;border: 1px solid gold;z-index: 990"></canvas>
+				</td>
+			</tr>
+		</table>
+		
 		</div>
 		

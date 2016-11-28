@@ -58,6 +58,34 @@ function sendBlobToServerForCopy(blob)
 
 function sendCopyToServer()
 {
+	if(glob_last_selected_canvas_id==null) return;
+	if(document.getElementById(glob_last_selected_canvas_id).classList.contains("save-canvas-class"))
+	{
+		document.getElementById(glob_last_selected_canvas_id).toBlob(sendBlobToServerForCopy);	
+	}
+	else
+	{
+		var cnv2 = document.getElementById(glob_last_selected_canvas_id);
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var img = new Image();
+		img.onload = function()
+		{
+		
+		canvas.width = this.width;
+		canvas.height = this.height;
+		ctx.drawImage(this,0,0);
+		
+		}
+		img.src = cnv2.src;
+		
+		//transform("canvas", "/paste");
+		
+		
+		
+	}
+	
+	/******
 	var seed_img = getSelectedBorderedSeedImage();
 		
 	if(seed_img!=null)
@@ -85,5 +113,5 @@ function sendCopyToServer()
 	if(cnv != null) return cnv.toBlob(sendBlobToServerForCopy);	
 		
 	return null;
-	
+	*****/
 }

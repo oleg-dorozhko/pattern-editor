@@ -69,7 +69,7 @@ function getSeedListFromFS()
 		img_tmpl = img_tmpl.replace("[img-path]", '/sims/'+arr[i]);
 		s += img_tmpl;
 	}
-	return s;
+	return JSON.stringify(arr);
 }
 
 
@@ -2154,13 +2154,23 @@ function fill( req, res )
 
 	}
 	
+	
+	
 	var small_image = fill_settings.seed; 
 	
 	var big_image = new PNG({filterType: 4});
 	
 	req.pipe(big_image).on('parsed', function() {
 		
-		
+		if(big_image.width > 50 || small_image.width > 50 || big_image.height > 50 ||  small_image.height > 50 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("fill: error: too big size (width or height > 50)");
+			req.connection.destroy();
+			return;
+			
+		}
 					var newpng = new PNG ( {
 						
 							width: big_image.width * small_image.width,

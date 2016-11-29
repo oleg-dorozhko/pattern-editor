@@ -2162,11 +2162,11 @@ function fill( req, res )
 	
 	req.pipe(big_image).on('parsed', function() {
 		
-		if(big_image.width > 50 || small_image.width > 50 || big_image.height > 50 ||  small_image.height > 50 )
+		if(big_image.width * small_image.width > 800 || big_image.height *  small_image.height > 800 )
 		{
 			
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
-			res.end("fill: error: too big size (width or height > 50)");
+			res.end("fill: error: too big size (need result width * height <= 800)");
 			req.connection.destroy();
 			return;
 			

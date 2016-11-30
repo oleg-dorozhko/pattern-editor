@@ -335,6 +335,7 @@ window.onload = function()
 			
 			if(ev.target.tagName=="CANVAS")
 			{
+				if(ev.target.id=="canvas") return;
 				if(ev.target.classList.contains("save-canvas-class")) selectSaveCanvas(ev);
 				else selectSeed(ev);
 			}

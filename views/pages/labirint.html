@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title> Palette 3 </title>
+<link rel="stylesheet" href="css/mod_palette.css">
+<script type="text/javascript" src="js/mod_palette.js"></script>
+<script type="text/javascript" src="js/mod_copy_paste.js"></script>
+<script type="text/javascript" src="js/paletter.js"></script>
+<script type="text/javascript" src="js/colorspicker.js"></script>
+</head>
+<body>
+
+<table border=1>
+<tr>
+<td><canvas id="canvas"></canvas></td>
+</tr>
+<tr>
+<td id="palette_td"></td>
+</tr>
+<tr>
+<td><canvas id="palette_canvas"></canvas></td>
+</tr>
+
+<tr>
+<td colspan="3"> <div id="palette_div"></div> </td>
+
+</tr>
+</table>
+<br>
+
+<!---
+<span>left top: <input type="checkbox" value=" lt " id="lefttop"></span>
+<span>right bottom: <input type="checkbox" value=" rb " id="rightbottom"></span>
+--->
+<span>
+<input type="number" id="diap" min="0" max="255" step="1" value="0">
+<input type="button" value=" get palette " id="getpalette">
+<input type="button" value=" clear palette " id="clearpalette">
+<input type="button" value=" get color " id="getcolor">
+<input type="button" value=" set one pixel " id="setonepixel">
+<input type="button" value=" use palette " id="usepalette">
+<input type="button" value=" rem palette " id="rempalette">
+<input type="button" value=" change one pixel " id="changeonepixel">
+<input type="button" value=" change all pixels " id="changeallpixels">
+</span>
+
+<br>
+
+
+<hr>
+<div><canvas id="canvasResult" width="50" height="50"></canvas></div>
+<input type="number" id="diapazon" min="1" max="256" step="1" value="1"><input type="button" id="btn" value="+"><input type="button" id="btnMin" value="-">
+<div id="divcolors_0_table"></div>
+<div id="divcolors_1_table"></div>
+<div id="divcolors_2_table"></div>
+
+
+<!----
+<input type="button" value=" random " id="random">
+---->
+</body>
+</html>

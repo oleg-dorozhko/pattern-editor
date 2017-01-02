@@ -1,11 +1,31 @@
+var global_seed_size = 21;
+
 function loadLabirint()
 {
+	var imgpath = "images/labirint.png";
+	imgpath = "images/labirint_size_17_size.png";
+	global_seed_size = Number( (""+imgpath.replace("images/labirint_size_","")).replace("_size.png",""));
+	alert(global_seed_size);
+	
 	var img = new Image();
 	img.onload = function()
 	{
 		var canvas = document.getElementById("left_canvas");
 		canvas.width = this.width;
 		canvas.height = this.height;
+		
+		if(canvas.width != canvas.height)
+		{
+			alert("image width should be equal image height");
+			return;
+		}
+		
+		if(canvas.width % global_seed_size != 0)
+		{
+			alert("image width should be equal some N*global_seed_size ");
+			return;
+		}
+		
 		var context = canvas.getContext("2d");
 		context.drawImage(this,0,0);
 
@@ -21,11 +41,11 @@ function loadLabirint()
 		
 		
 	}
-	img.src = "images/labirint.png";
+	img.src = imgpath;
 
 }
 
-var global_seed_size = 21;
+
 var global_selected_seed = null;
 
 function get_selected_seed(e)
@@ -207,6 +227,7 @@ function whenUserLeftClickOnRightCanvas()
 
 window.onload = function()
 {
+	CLIPBOARD_CLASS("left_canvas", true);
 	loadLabirint();
 	document.getElementById("left_canvas").onclick = whenUserLeftClickOnLeftCanvas;
 	document.getElementById("right_canvas").onclick = whenUserLeftClickOnRightCanvas;

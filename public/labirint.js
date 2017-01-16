@@ -1,4 +1,51 @@
 var global_seed_size = 21;
+var global_selected_seed = null;
+var global_arr_objects = null;
+var glob_colors = null;
+
+function copyPasteFinished()
+{
+	var canvas = document.getElementById("left_canvas");
+	if(canvas.width != canvas.height)
+	{
+		alert("image width should be equal image height");
+		return;
+	}
+	
+	
+	
+			
+		
+		
+		var n = Math.sqrt(canvas.width);
+		var s = prompt("Enter seed size",""+n);
+		if(s==null) return;
+		var n = Number(s);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+		if(n>2 && n<50)
+		{
+			global_seed_size = n;
+			if(canvas.width % global_seed_size != 0)
+			{
+				alert("image width should be equal some N*global_seed_size ");
+				return;
+			}
+			
+			fill_global_arr_objects();
+			
+		}
+		
+		
+}
 
 function loadLabirint()
 {
@@ -46,12 +93,11 @@ function loadLabirint()
 }
 
 
-var global_selected_seed = null;
 
 function get_selected_seed(e)
 {
 	e = (e) ? e : event;   
-	if(e.button == 0) 
+	if(e.button == 0 || e.button==2) 
 	{
 		
 		var x = e.offsetX==undefined?e.layerX:e.offsetX;
@@ -188,6 +234,172 @@ function put_one_seed_into_right_canvas()
 	}
 }
 
+
+function findImageDataInArrObjects( arrObjects, data )
+{
+	for(var i=0;i<arrObjects.length;i++)
+	{
+		var obj_data = arrObjects[i].data;
+		if(obj_data.length != data.length) continue;
+		var result = true;
+		for(var j=0;j<data.length;j++)
+		{
+			if(obj_data[j] != data[j])  
+			{
+				result=false;
+				break;
+			}
+		}
+		if(result==true) return i;
+	}
+	return null;
+}
+
+function cloneImageData(data)
+{
+	var data1 = [];
+	for(var j=0;j<data.length;j++)
+	{
+		data1.push(data[j]);
+	}
+	return data1;
+}
+
+// Возвращает случайное целое число между min (включительно) и max (не включая max)
+// Использование метода Math.round() даст вам неравномерное распределение!
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min)) + min;
+}
+function getRndColor()
+{
+	var r = getRandomInt(0, 256);
+	var g = getRandomInt(0, 256);
+	var b = getRandomInt(0, 256);
+	var a = 255;
+	
+	var s = "rgba("+r+","+g+","+b+","+a+")";
+	if(glob_colors == null)
+	{
+		glob_colors = [];
+		glob_colors.push(s);
+		return s;
+	}
+	else
+	{
+		if(glob_colors.indexOf(s)==-1) { glob_colors.push(s); return s; }
+		else return getRndColor();
+	}
+	
+}
+	
+	function fill_global_arr_objects()
+	{
+	
+		var arrObjects = [];
+		var canvas = document.getElementById("left_canvas");
+		var context = canvas.getContext("2d");
+				
+		for(var j=0;j<canvas.height;j+=global_seed_size)
+		{
+			for(var i=0;i<canvas.width;i+=global_seed_size)
+			{
+				var imageData = context.getImageData(i,j,global_seed_size,global_seed_size);
+				var result = findImageDataInArrObjects( arrObjects, imageData.data );
+				if(result==null)
+				{
+					var obj = {};
+					obj.points = [[i,j]];
+					obj.data = cloneImageData(imageData.data);
+					arrObjects.push(obj);
+				}
+				else
+				{
+					arrObjects[result].points.push([i,j]);
+				}
+				
+			}
+		}
+		
+		global_arr_objects = arrObjects;
+	
+	
+	}
+	
+	//I have the sword of Azeroth! I am master of battle!
+
+function findAllCellByColor(cnv, color)
+{
+	fill_global_arr_objects();
+	
+	var canvas2 = document.createElement("canvas");
+	canvas2.width = global_seed_size;
+	canvas2.height = global_seed_size;
+	canvas2.getContext("2d").fillStyle = color;
+	canvas2.getContext("2d").fillRect(0,0,global_seed_size,global_seed_size);
+	var imgData = canvas2.getContext("2d").getImageData( 0,0,global_seed_size,global_seed_size);
+	
+	var result = findImageDataInArrObjects( global_arr_objects, imgData.data );
+	if(result!=null)
+	{
+		var canvas = document.getElementById("left_canvas");
+	    var context = canvas.getContext("2d");
+		//alert(global_arr_objects[result].points);	
+		var imgData2 = cnv.getContext("2d").getImageData(0,0,cnv.width,cnv.height);
+		for(var i=0;i<global_arr_objects[result].points.length;i++)
+		{
+			var p = global_arr_objects[result].points[i];
+			context.putImageData(imgData2, p[0],p[1]);
+			
+			
+		}
+		
+		document.body.removeChild(cnv);
+	}
+}
+
+function whenUserRightClickOnLeftCanvas(e)
+{
+	//alert('test ok');
+	global_selected_seed = get_selected_seed(e);
+	
+	
+	var canvas = document.getElementById("left_canvas");
+	var context = canvas.getContext("2d");
+	var n = global_selected_seed[2];
+	var m = global_selected_seed[3];
+	var imgData = context.getImageData(n*global_seed_size,m*global_seed_size,global_seed_size,global_seed_size);
+	
+	var canvas2 = document.createElement("canvas");
+	canvas2.width = global_seed_size;
+	canvas2.height = global_seed_size;
+	canvas2.getContext("2d").putImageData(imgData, 0,0);
+	canvas2.onclick = function()
+	{
+		//alert(this.getAttribute("data-color"));
+		var points = findAllCellByColor(this, this.getAttribute("data-color"));
+	}
+	document.body.appendChild(canvas2);
+	
+	fill_global_arr_objects();
+	var result = findImageDataInArrObjects( global_arr_objects, imgData.data );
+	if(result!=null)
+	{
+		var color = getRndColor();
+		canvas2.setAttribute("data-color", color);
+		//alert(global_arr_objects[result].points);	
+		for(var i=0;i<global_arr_objects[result].points.length;i++)
+		{
+			var p = global_arr_objects[result].points[i];
+			context.fillStyle = color;
+			context.fillRect(p[0],p[1],global_seed_size,global_seed_size);
+			
+			
+		}
+	}
+	
+	e.preventDefault();
+}
+
 function whenUserLeftClickOnLeftCanvas(e)
 {
 	//alert('left');
@@ -229,6 +441,9 @@ window.onload = function()
 {
 	CLIPBOARD_CLASS("left_canvas", true);
 	loadLabirint();
+	fill_global_arr_objects();
+	
 	document.getElementById("left_canvas").onclick = whenUserLeftClickOnLeftCanvas;
+	document.getElementById("left_canvas").oncontextmenu = whenUserRightClickOnLeftCanvas;
 	document.getElementById("right_canvas").onclick = whenUserLeftClickOnRightCanvas;
 }

@@ -1,6 +1,6 @@
 var glob_colors = null;
 
-
+var global_copy_area_mode = false;
 
 function decreaseOnlyLast(num, tid)
 {
@@ -1334,7 +1334,53 @@ function getPalette()
 			//glob_left_top[0]--; 
 			//glob_left_top[1]--;
 	}		
+		
+	if( global_copy_area_mode == true )		
+	{
+		//alert('test copy_area_mode');
+		
+			var canvas = document.getElementById("canvas");
+			var context = canvas.getContext("2d");
+			var w = Math.max(glob_left_top[0],glob_right_bottom[0])-Math.min(glob_left_top[0],glob_right_bottom[0])+1;
+			var h = Math.max(glob_left_top[1],glob_right_bottom[1])-Math.min(glob_left_top[1],glob_right_bottom[1])+1;
+			var imgData = context.getImageData(glob_left_top[0],glob_left_top[1],w,h);
 			
+			var cnv = document.getElementById("palette_canvas");
+			cnv.width = w;
+			cnv.height = h;
+			cnv.getContext("2d").putImageData(imgData,0,0);
+			
+			/*********
+			var arr = [];
+			
+			for(var j=glob_left_top[1]; j<=glob_right_bottom[1]; j++)
+			{
+				for(var i=glob_left_top[0]; i<=glob_right_bottom[0]; i++)
+				{
+					var imgData = context.getImageData(i,j,1,1);
+					var arr4 = imgData.data;
+					var s = arr4.join(","); 
+					if( arr.indexOf(s)=== -1 ) 
+					{
+						arr.push(s);
+						//glob_colors[0] = arr4[0];
+						//glob_colors[1] = arr4[1];
+						//glob_colors[2] = arr4[2];
+						//addColorInPalette();
+					}
+					
+					if(s == "0,0,0,0")
+					{ 
+						console.log(s+": "+i+","+j); 
+					}
+					
+					//if()
+				}
+			}
+			*******/
+			
+		return;
+	}
 				
 				var canvas = document.getElementById("canvas");
 			var context = canvas.getContext("2d");
@@ -1765,6 +1811,16 @@ window.onload = function()
 	{
 		
 		getPalette();
+		
+		
+	}
+	
+	var btnSaveArea = document.getElementById("savearea");
+	btnSaveArea.onclick = function()
+	{
+		global_copy_area_mode = true;
+		getPalette();
+		global_copy_area_mode = false;
 		
 		
 	}

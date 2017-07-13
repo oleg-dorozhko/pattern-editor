@@ -152,6 +152,15 @@ function multiply(req, res)
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
 		
+		if(this.width * 2 > 1200 || this.height * 2 > 1200 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("multi: error: too big size (need result width * height <= 1200)");
+			req.connection.destroy();
+			return;
+			
+		}
 		
 		var newpng = new PNG ( {
 			
@@ -1151,7 +1160,15 @@ function vortex( req, res )
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
 		
-		
+		if(this.width * 2 > 1200 || this.height * 2 > 1200 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("multi: error: too big size (need result width * height <= 1200)");
+			req.connection.destroy();
+			return;
+			
+		}
 		
 			
 		var newpng = new PNG ( {
@@ -2193,7 +2210,7 @@ function fill( req, res )
 	
 	req.pipe(big_image).on('parsed', function() {
 		
-		if(big_image.width * small_image.width > 800 || big_image.height *  small_image.height > 800 )
+		if(big_image.width * small_image.width > 1200 || big_image.height *  small_image.height > 1200 )
 		{
 			
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );

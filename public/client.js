@@ -239,9 +239,11 @@ window.onload = function()
 		
 		
 		//drag and drop implementation
-		
+		/******
 		document.onmousedown = function(e) {
 
+		/*********
+		
 		  if (e.which != 1) { // если клик правой кнопкой мыши
 			return; // то он не запускает перенос
 		  }
@@ -318,7 +320,7 @@ window.onload = function()
 		}
 		
 
-		
+		********/
 		
 				
 		document.onclick = function (ev) { 

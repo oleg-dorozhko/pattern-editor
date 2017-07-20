@@ -206,16 +206,20 @@ window.onload = function()
 		//$("#desktop").click( selectSaveCanvas );
 		
 		$("#axes").click( axes );
-		$("#destroy").click( destroy );
+		$("#clean").click( clean );
 		$("#save").click( function() { save_pattern(); } );
 		$("#copy").click( sendCopyToServer );
 		$("#combo").click( combo );
+		$("#xcombo").click( xcombo );
 		$("#vortex").click( function() { transform("canvas", '/vortex'); } );
 		$("#borderminus").click( function() { transform("canvas", '/borderminus'); } );
+		$("#borderplus").click( function() { transform("canvas", '/borderplus'); } );
+		$("#blackwhite").click( function() { transform("canvas", '/blackwhite'); } );
 		$("#inv").click( function() { transform("canvas", '/inverse'); } );
 		$("#plus").click( function() { transform("canvas", '/plus'); } );
 		$("#minus").click( function() { transform("canvas", '/minus'); } );
 		$("#multiply").click( function() { transform("canvas", '/multiply'); } );
+		$("#half").click( function() { transform("canvas", '/half'); } );
 		$("#median").click( function() { transform("canvas", '/median'); } );
 		$("#rotate").click( function() { transform("canvas", '/rotate'); } );
 		$("#rotateff").click( function() { transform("canvas", '/rotateff'); } );
@@ -225,6 +229,8 @@ window.onload = function()
 		$("#fill").click( function() { send_seed(); } );
 		
 		$("#canvas").click( function(ev) { whenClickedOnCanvas(ev); } );
+		
+		document.getElementById("filter").onclick = whenClickedOnFilter;
 		
 		document.onkeypress = function(e)
 		{

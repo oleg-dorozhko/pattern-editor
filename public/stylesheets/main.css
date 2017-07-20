@@ -41,6 +41,18 @@
 	top: 10px;*/
 }
 
+#scale_div
+{
+	margin: 0px 10px;
+}
+
+#canvas_width_height
+{
+	font-size: 24px;
+	font-family: Arial;
+	
+}
+
 img
 {
 	margin: 5px;	

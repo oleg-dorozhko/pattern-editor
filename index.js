@@ -156,8 +156,7 @@ function multiply(req, res)
 		{
 			
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
-			res.end("multi: error: too big size (need result width * height <= 1200)");
-			req.connection.destroy();
+			res.end("multi: error: too big size (need result width * 2 or height * 2 <= 1200)");
 			return;
 			
 		}
@@ -729,7 +728,14 @@ function rotateff(req, res)
 {
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
-		
+		if(this.width * 2 > 1200 || this.height * 2 > 1200 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("rotateff: error: too big size (need result width * 2 or height * 2 <= 1200)");
+			return;
+			
+		}
 		
 		var newpng = new PNG ( {
 			
@@ -790,6 +796,71 @@ function rotateff(req, res)
 			
 			
 			*********/
+			
+			
+		});
+}
+
+
+function borderplus(req, res)
+{
+	
+		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		if(this.width + 2 > 1200 || this.height + 2 > 1200 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			console.log("borderplus: error: too big size (need result width * height <= 1200)");
+			res.end("borderplus: error: too big size (need result width * height <= 1200)");
+			//req.connection.destroy();
+			return;
+			
+		}
+		
+			var newpng = new PNG ( {
+				
+					width: this.width+2,
+					height: this.height+2,
+					filterType: 4
+			} );
+		
+			for (var y = 0; y < newpng.height; y++) {
+				
+				for (var x = 0; x < newpng.width; x++) {
+					
+					
+					
+					var new_idx1 = newpng.width * (y) + (x) << 2;
+					
+					newpng.data[new_idx1+0] = 255;
+					newpng.data[new_idx1+1] = 255;
+					newpng.data[new_idx1+2] = 255;
+					newpng.data[new_idx1+3] = 255;
+					
+				}
+				
+			}
+		
+
+			for (var y = 0; y < this.height; y++) {
+				
+				for (var x = 0; x < this.width; x++) {
+					
+					var idx = this.width * y + x << 2;
+					
+					var new_idx1 = newpng.width * (y+1) + (x+1) << 2;
+					
+					newpng.data[new_idx1+0] = this.data[idx];
+					newpng.data[new_idx1+1] = this.data[idx+1];
+					newpng.data[new_idx1+2] = this.data[idx+2];
+					newpng.data[new_idx1+3] = this.data[idx+3];
+					
+				}
+				
+			}
+			
+			sendImage(newpng, res, "\nImage border minused\n" );
 			
 			
 		});
@@ -879,6 +950,14 @@ function plus( req, res)
 
 		req.pipe( new PNG({filterType: 4}) ).on('parsed', function() {
 			
+		if(this.width * 2 > 1200 || this.height * 2 > 1200 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("plus: error: too big size (need result width * 2 <= 1200 or height * 2 <= 1200 )");
+			return;
+			
+		}
 			
 			//here we create new png (same as result bufferedImage (in java))
 		var newpng = new PNG ( {
@@ -928,7 +1007,7 @@ function plus( req, res)
 			newpng.pipe(res);
 			newpng.on('end', function() {
 				
-				console.log("returning new canvas image name (plused) ");
+				console.log("Image plused");
 				
 			});
 			
@@ -945,6 +1024,67 @@ function plus( req, res)
 
 
 
+
+function blackwhite( req, res )
+{
+	
+		
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+			
+			var result_png = new PNG ( {
+						
+							width: this.width,
+							height: this.height,
+							filterType: 4
+					} );
+
+			for (var y = 0; y < this.height; y++) {
+				for (var x = 0; x < this.width; x++) {
+					var idx = (this.width * y + x) << 2;
+
+					
+					var maxind = -1;
+					var maxred = 0;
+					
+					var arr = [];
+					arr[0] = this.data[idx];
+					arr[1] = this.data[idx+1];
+					arr[2] = this.data[idx+2];
+					
+					for(var n=0;n<3;n++)
+					{
+						if(arr[n]>=maxred)
+						{
+							maxind=n;
+							maxred = arr[n];
+						}
+					}
+					
+					result_png.data[idx] = arr[maxind];
+					result_png.data[idx+1] = arr[maxind];
+					result_png.data[idx+2] = arr[maxind];
+					result_png.data[idx+3] = this.data[idx+3];
+					
+					
+				}
+			}
+			
+			
+			result_png.pack();
+			
+			res.writeHead( 200, {  'Content-Type': 'blob' } );
+			
+			result_png.pipe(res);
+			
+			result_png.on('end', function(){
+				
+				console.log("Image blackwhited");
+				
+			});
+			
+	});
+		
+}
 
 
 
@@ -995,7 +1135,7 @@ function inverse( req, res )
 			
 			result_png.on('end', function(){
 				
-				console.log("retu 12345 rning new canvas image name (inverted) ");
+				console.log("Image inverted");
 				
 			});
 			
@@ -1108,6 +1248,60 @@ function median( req, res )
 
 
 
+function half( req, res )
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		//var arr = get_coordinates(this.width, this.height);
+		//if(arr == null) return; 
+		
+		var n=0;
+		if(( this.width%2 == 0  ) && (this.height%2 == 0)) { n = this.width/2; m = this.height/2; }
+		else 
+		{
+			var err = "width %2 != 0 or height %2 != 0 ";
+			console.log(err);
+			res.writeHead(500, {  'Content-Type': 'text/html' } );
+			res.end("/half: error: "+err);
+			return;
+			
+		}	
+
+
+		
+		
+		var newpng = new PNG ( {
+			
+				width: n,
+				height: m,
+				filterType: 4
+		} );
+		
+		
+
+			for (var y = 0; y < m; y++) {
+				
+				for (var x = 0; x < n; x++) {
+					
+					var idx = (this.width * y + x) << 2;
+					var idx2 = (newpng.width * y + x) << 2;
+					
+					newpng.data[idx2] = this.data[idx];
+					newpng.data[idx2+1] = this.data[idx+1];
+					newpng.data[idx2+2] = this.data[idx+2];
+					newpng.data[idx2+3] = this.data[idx+3];
+					
+				}
+			}
+			
+			sendImage(newpng,res,"\nImage was halfed\n");
+						
+		});
+}
+
+
+
 function rotate( req, res )
 {
 	
@@ -1160,12 +1354,11 @@ function vortex( req, res )
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
 		
-		if(this.width * 2 > 1200 || this.height * 2 > 1200 )
+		if(this.width * 2 > 3000 || this.height * 2 > 3000 )
 		{
 			
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
-			res.end("multi: error: too big size (need result width * height <= 1200)");
-			req.connection.destroy();
+			res.end("vortex: error: too big size (need result width * 2 or height * 2 <= 1200)");
 			return;
 			
 		}
@@ -1290,24 +1483,6 @@ function vortex( req, res )
 			
 			
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 	});
 }
 
@@ -1333,7 +1508,14 @@ function mdown( req, res )
 {
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
-		
+		if( this.height * 2 > 1200 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("mdown: error: too big size (need result height * 2 <= 1200)");
+			return;
+			
+		}
 		
 		var newpng = new PNG ( {
 			
@@ -1401,6 +1583,15 @@ function mright( req, res )
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
 		
+		if( this.width * 2 > 1200 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("mright: error: too big size (need result width * 2 <= 1200)");
+			return;
+			
+		}
+			
 		
 		var newpng = new PNG ( {
 			
@@ -1812,7 +2003,7 @@ function error( req, res, msg )
 {
 	res.writeHead( 500, { 'Content-Type':'text/plain' } );
 	res.end( msg );
-	req.connection.destroy();
+	//req.connection.destroy();
 	return;	
 }
 
@@ -2164,6 +2355,407 @@ function combo( req, res )
 }
 	
 
+	
+	
+	
+	
+	/*********** XCOMBO **********/
+	
+	
+	
+var xcombo_settings = null;
+
+function prepare_xcombo(req, res)
+{
+	console.log('\nIn prepare_xcombo(...)\n');
+	
+	var second_image = new PNG({filterType: 4});
+	
+	req.pipe(second_image).on( 'parsed', function()  {
+				
+		
+		xcombo_settings = {};
+		xcombo_settings.second_image = this;
+		
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end("ok");
+					
+	});				
+					
+}
+
+
+function slozhenie_cvetov_nql(a,b)
+{
+	
+	if(a == b) return a;
+	
+	var c = 0;
+	
+	if((a+b) > 255) c = (a+b) - 255;
+	else c = (a+b);
+	
+	c /= 2;
+	
+	return c;
+}	
+	
+	
+	
+	
+function xcombo( req, res )
+{
+	
+	console.log('\nIn xcombo(...)\n');
+		
+	if(xcombo_settings == null)
+	{
+		
+		res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("xcombo: error: call /prepare_xcombo before");
+		//req.connection.destroy();
+		return;
+
+	}
+	
+	var old_png = xcombo_settings.second_image; 
+	
+	var big_image = new PNG({filterType: 4});
+	
+	req.pipe(big_image).on('parsed', function() {
+		
+		
+				
+					
+					
+					
+			if(old_png.width != old_png.height) 
+			{
+				error( req, res, "xcombo: error: old_png.width != old_png.height");
+				return;
+				
+			}
+			
+			if(this.width != this.height) {
+				error( req, res, "xcombo: error: this.width != this.height");
+				
+				return;  
+			}
+				
+			console.log("old_png.width= " +old_png.width);	
+			console.log("this.width= " +this.width);	
+			
+			if((old_png.width % 2 == 0) && (this.width % 2 ==  0))
+			{
+				
+				//even
+				if(old_png.width > this.width)
+				{
+					
+					
+					
+					var result_png = new PNG ( {
+						
+							width: old_png.width,
+							height: old_png.height,
+							filterType: 4
+					} );
+					
+
+					var t4 = (old_png.width-this.width)/2;
+					var k4 = (old_png.height-this.height)/2;
+					
+				
+					
+					for(var j=0;j<old_png.height;j++)
+					{
+						for(var i=0;i<old_png.width;i++)
+						{
+							if( (i>=t4) && (i<(t4+this.width)) && (j>=k4) && (j<(k4+this.height))	)
+							{
+								
+								
+								
+								var idx = (old_png.width * j + i) << 2;
+								
+								var n=i-t4;
+								var m=j-k4;
+								
+								var new_idx1 = this.width * m + n << 2;
+						
+								result_png.data[idx+0] = this.data[new_idx1+0];
+								result_png.data[idx+1] = this.data[new_idx1+1];
+								result_png.data[idx+2] = this.data[new_idx1+2];
+								result_png.data[idx+3] = 255;
+								
+								
+								
+							}
+							else
+							{
+								
+								
+								var idx = (old_png.width * j + i) << 2;
+								
+								result_png.data[idx+0] = old_png.data[idx+0];
+								result_png.data[idx+1] = old_png.data[idx+1];
+								result_png.data[idx+2] = old_png.data[idx+2];
+								result_png.data[idx+3] = 255;
+								
+							}
+						}
+					}
+					
+					
+					
+					
+					
+
+				}
+				else
+				{
+					
+					var result_png = new PNG ( {
+						
+							width: this.width,
+							height: this.height,
+							filterType: 4
+					} );
+					
+					
+					
+					
+					
+					var t4 = (this.width-old_png.width)/2;
+					var k4 = (this.height-old_png.height)/2;
+					
+					
+					
+					for(var j=0;j<this.height;j++)
+					{
+						for(var i=0;i<this.width;i++)
+						{
+							if( (i>=t4) && (i<(t4+old_png.width)) && (j>=k4) && (j<(k4+old_png.height))	)
+							{
+								
+								
+								
+								var idx = (this.width * j + i) << 2;
+								
+								var n=i-t4;
+								var m=j-k4;
+								
+								var idx2 = (old_png.width * n + m) << 2;
+						
+								result_png.data[idx+0] = old_png.data[idx2+0];
+								result_png.data[idx+1] = old_png.data[idx2+1];
+								result_png.data[idx+2] = old_png.data[idx2+2];
+								result_png.data[idx+3] = 255;
+								
+								
+								
+							}
+							else
+							{
+								
+								
+								var idx = (this.width * j + i) << 2;
+								
+								result_png.data[idx+0] = this.data[idx+0];
+								result_png.data[idx+1] = this.data[idx+1];
+								result_png.data[idx+2] = this.data[idx+2];
+								result_png.data[idx+3] = 255;
+								
+							}
+						}
+					}
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+				}
+				
+						
+				
+				
+				sendImage(result_png,res,'\nImages xcombined\n');
+				
+				
+				
+			}
+			else if ((old_png.width % 2 == 1) && (this.width % 2 ==  1))
+			{
+				//odd
+				if(old_png.width > this.width)
+				{
+					
+					
+					var result_png = new PNG ( {
+						
+							width: old_png.width,
+							height: old_png.height,
+							filterType: 4
+					} );
+					
+					var middle_of_bigger_w = old_png.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_smaller_w = this.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
+					
+					var begin_w = middle_of_bigger_w - middle_of_smaller_w;
+					var end_w = begin_w + this.width; //and (not include) end
+					
+					var middle_of_bigger_h = old_png.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_smaller_h = this.height / 2 | 0; 
+					
+					var begin_h = middle_of_bigger_h - middle_of_smaller_h;
+					var end_h = begin_h + this.height; 	
+					
+					
+					for(var j=0;j<old_png.height;j++)
+					{
+						for(var i=0;i<old_png.width;i++)
+						{
+							var idx = (old_png.width * j + i) << 2;	
+							
+							if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
+							{
+							
+								var n =	i - begin_w;
+								var m = j - begin_h;
+								
+								var idx2 = this.width * m + n << 2;
+								
+								result_png.data[idx+0] = this.data[idx2+0];
+								result_png.data[idx+1] = this.data[idx2+1];
+								result_png.data[idx+2] = this.data[idx2+2];
+								result_png.data[idx+3] = 255;
+								
+								
+							}
+							else
+							{
+							
+								result_png.data[idx+0] = old_png.data[idx+0];
+								result_png.data[idx+1] = old_png.data[idx+1];
+								result_png.data[idx+2] = old_png.data[idx+2];
+								result_png.data[idx+3] = 255;
+							}
+						}
+					}
+					
+					
+					
+					
+				}
+				else
+				{
+					
+					var result_png = new PNG ( {
+						
+							width: this.width,
+							height: this.height,
+							filterType: 4
+					} );
+					
+					var middle_of_bigger_w = this.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_smaller_w = old_png.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
+					
+					var middle_of_bigger_h = this.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_smaller_h = old_png.height / 2 | 0; 
+					
+					var begin_w = middle_of_bigger_w - middle_of_smaller_w;
+					var end_w = begin_w + old_png.width; //and (not include) end
+					
+					var begin_h = middle_of_bigger_h - middle_of_smaller_h;
+					var end_h = begin_h + old_png.height; 	
+				
+					for(var j=0;j<this.height;j++)
+					{
+						for(var i=0;i<this.width;i++)
+						{
+							var idx = (this.width * j + i) << 2;	
+							
+							if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
+							{
+								
+								var n =	i - begin_w;
+								var m = j - begin_h;
+								
+								var idx2 = old_png.width * m + n << 2;
+								
+								result_png.data[idx+0] = old_png.data[idx2+0];
+								result_png.data[idx+1] = old_png.data[idx2+1];
+								result_png.data[idx+2] = old_png.data[idx2+2];
+								result_png.data[idx+3] = 255;
+								
+								
+							}
+							else
+							{
+								
+								
+								result_png.data[idx+0] = this.data[idx+0];
+								result_png.data[idx+1] = this.data[idx+1];
+								result_png.data[idx+2] = this.data[idx+2];
+								result_png.data[idx+3] = 255;
+							}
+						}
+					}
+				}
+				
+				
+				
+				
+				
+				sendImage(result_png,res,'\nImages xcombined\n');
+				
+				
+				
+				
+				
+				
+			}
+			else  
+			{
+				
+				error( req, res, "xcombo: error: odd first image but even second image. need both odd or even");
+				
+				return; //need error processing
+			}
+			
+		
+		
+	});
+	
+}
+	
+
+	
+	
+	
+	
+	/********** END OF XCOMBO ***************/
+	
+	
+	
+	
+	
+	
+	
+	
 
 var fill_settings = null;
 
@@ -2214,8 +2806,9 @@ function fill( req, res )
 		{
 			
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
-			res.end("fill: error: too big size (need result width * height <= 800)");
-			req.connection.destroy();
+			console.log("fill: error: too big size (need result width * height <= 1200)");
+			res.end("fill: error: too big size (need result width * height <= 1200)");
+			//req.connection.destroy();
 			return;
 			
 		}
@@ -2285,6 +2878,8 @@ function fill( req, res )
 app.post('/fill', fill );	
 app.post('/prepare_combo', prepare_combo );	
 app.post('/combo', combo );	
+app.post('/prepare_xcombo', prepare_xcombo );	
+app.post('/xcombo', xcombo );	
 app.post('/send_seed', get_seed );
 app.post('/crop', crop );
 app.post('/precrop', precrop );
@@ -2293,13 +2888,16 @@ app.post('/mdown', mdown );
 app.post('/mright', mright );
 app.post('/vortex', vortex );
 app.post('/rotate', rotate );
+app.post('/half', half );
 app.post('/median', median );
 app.post('/axes', axes );
 app.post('/multiply', multiply );
 app.post('/rotateff', rotateff );
 app.post('/plus', plus );
 app.post('/minus', minus );
+app.post('/blackwhite', blackwhite );
 app.post('/inverse', inverse );
+app.post('/borderplus', borderplus );
 app.post('/borderminus', borderminus );
 
 app.post('/paste',function(request, response) {

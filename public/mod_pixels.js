@@ -89,7 +89,11 @@ function showScaleDiv(target,x,y)
 	var el = document.getElementById('scale_div');
 	el.style.border = "";
     el.style.visibility='visible';
-	
+	el.style.display="inline-block";
+	document.getElementById('canvas_width_height').innerHTML = ""+document.getElementById('canvas').width+"x"+document.getElementById('canvas').height;
+	//el.style.position='fixed';
+	//el.style.left="200px";
+	//el.style.top="200px";
 	
 }
 

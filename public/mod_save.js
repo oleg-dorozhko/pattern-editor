@@ -17,7 +17,36 @@ function getNewSaveNumber()
 
 
 
-function save_pattern()
+function selectSaveCanvas(e)
+{
+	if(e.target.classList.contains("seed-bordered"))
+	{
+		e.target.classList.toggle("seed-unbordered");
+		e.target.classList.toggle("seed-bordered");
+		return;
+	}
+		
+	var cnvs = document.getElementsByClassName("save-canvas-class");	
+	for(var i=0;i<cnvs.length;i++)
+	{
+		if(cnvs[i].classList.contains("seed-bordered"))
+		{
+			cnvs[i].classList.toggle("seed-unbordered");
+			cnvs[i].classList.toggle("seed-bordered");
+		}
+	}
+		
+	e.target.classList.toggle("seed-unbordered");
+	e.target.classList.toggle("seed-bordered");
+	
+	glob_last_selected_canvas_id = e.target.id;
+		
+	
+}
+
+
+
+function save()
 {
 	
 	var canvas = document.getElementById("canvas");
@@ -26,6 +55,8 @@ function save_pattern()
 	var n = getNewSaveNumber();
 	
 	var id = "save_canvas"+n;
+	
+	console.log("save id="+id);
 	
 	var cnv = document.getElementById(id);
 	
@@ -37,8 +68,11 @@ function save_pattern()
 		cnv.alt = ""+n;
 		cnv.classList.toggle("save-canvas-class");
 		cnv.classList.toggle("seed-unbordered");
+		
 		//cnv.setAttribute("bordered","false");
-
+		
+		cnv.onclick = selectSaveCanvas;
+		
 		document.getElementById("saves").appendChild(cnv);
 	}
 	

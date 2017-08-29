@@ -1,4 +1,4 @@
-var opbeat = require('opbeat').start()
+//var opbeat = require('opbeat').start()
 
 var PNG = require('pngjs').PNG;
 var express = require('express');
@@ -28,7 +28,7 @@ app.post('/api/users', function(req, res) {
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
-app.use(opbeat.middleware.express())
+//app.use(opbeat.middleware.express())
 
 app.use(function(err, req, res, next) {
   // log the error, treat it like a 500 internal server error

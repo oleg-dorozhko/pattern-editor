@@ -56,9 +56,31 @@ function sendBlobToServerForCopy(blob)
 }
 
 
-function sendCopyToServer()
+function copy()
 {
 	if(glob_last_selected_canvas_id==null) return;
+	
+	
+	
+	var cnv2 = document.getElementById(glob_last_selected_canvas_id);
+	var ctx2 = cnv2.getContext("2d");
+	
+	var im = ctx2.getImageData(0,0,cnv2.width,cnv2.height);
+	
+	var canvas = document.getElementById("canvas");
+	
+	canvas.width = cnv2.width;
+	canvas.height = cnv2.height;
+	
+	var context = canvas.getContext("2d");
+	
+	context.putImageData(im,0,0);
+			
+			setTimeout( function(){
+				logg("copy id="+glob_last_selected_canvas_id); //after or before? what question
+			}, 200 );	
+			
+	/********
 	if(document.getElementById(glob_last_selected_canvas_id).classList.contains("save-canvas-class"))
 	{
 		document.getElementById(glob_last_selected_canvas_id).toBlob(sendBlobToServerForCopy);	
@@ -84,6 +106,7 @@ function sendCopyToServer()
 		
 		
 	}
+	*********/
 	
 	/******
 	var seed_img = getSelectedBorderedSeedImage();

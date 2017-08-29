@@ -5,6 +5,8 @@ function combo()
 	
 	if(glob_last_selected_canvas_id==null) return;
 	
+	console.log("combo id="+glob_last_selected_canvas_id);
+	
 	if(document.getElementById(glob_last_selected_canvas_id).classList.contains("save-canvas-class")==false) return;
 	
 	var cnv = document.getElementById(glob_last_selected_canvas_id);	

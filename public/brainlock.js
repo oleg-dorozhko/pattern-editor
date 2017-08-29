@@ -22,7 +22,7 @@ function getImageFromBlob(blob, callback)
 		
 	newImg.onload = function() {	
 		
-		console.log("img loaded");
+	//	console.log("img loaded");
 		callback(this);
 			
 	}

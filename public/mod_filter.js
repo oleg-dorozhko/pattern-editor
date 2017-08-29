@@ -1,7 +1,10 @@
 function whenClickedOnFilter()
 {
-	document.getElementById("scale_div").style.visibility = "hidden";
-	document.getElementById("filter_div").style.visibility = "visible"; //or hidden
+	if(document.getElementById("filter_div").style.display == "none")
+	{
+	
+	//document.getElementById("scale_div").style.visibility = "hidden";
+	document.getElementById("filter_div").style.display = "block"; //or hidden
 	document.getElementById("min_red_range").onclick = min_range;
 	document.getElementById("max_red_range").onclick = max_range;
 	document.getElementById("min_green_range").onclick = min_range;
@@ -10,7 +13,14 @@ function whenClickedOnFilter()
 	document.getElementById("max_blue_range").onclick = max_range;
 	document.getElementById("min_alpha_range").onclick = min_range;
 	document.getElementById("max_alpha_range").onclick = max_range;
+	
 	setInputFilterValue(document.getElementById("min_alpha_range"), 255);
+	
+	}
+	else
+	{
+		document.getElementById("filter_div").style.display = "none";
+	}
 }
 
 function getInputFilterValue(el)

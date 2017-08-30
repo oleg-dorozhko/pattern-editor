@@ -1,4 +1,4 @@
-function send_seed()
+function fill()
 {
 	
 	if(glob_last_selected_canvas_id==null) return;

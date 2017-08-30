@@ -202,6 +202,8 @@ window.onload = function()
 					if (ch == 'i')  process_console_text();
 					else if (ch == 's')  save_desktop_to_local_store();
 					else if (ch == 'l')  load_desktop_from_local_store();
+					else if (ch == 'p')  print_buttons();
+					else if (ch == 'h')  help();
 						
 				}
 			  }

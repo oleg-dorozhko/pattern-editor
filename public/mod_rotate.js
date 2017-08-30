@@ -1,4 +1,4 @@
-function rotate90()
+function rotate_plus_90()
 {
 	var n = 1;// Number( document.getElementById("cell_size").value);
 	
@@ -9,8 +9,8 @@ function rotate90()
 	var context2 = canvas2.getContext("2d");
 	
 	var canvas4 = document.createElement("canvas");
-	canvas4.width = w;
-	canvas4.height = h;
+	canvas4.width = h;
+	canvas4.height = w;
 	var context4 = canvas4.getContext("2d");
 	
 	var im0 = context2.getImageData(0,0,canvas2.width,canvas2.height);
@@ -22,7 +22,7 @@ function rotate90()
 		{
 			
 			var idx0 = w*j+i <<2;
-			var idx1 = w*i+j <<2;
+			var idx1 = h*i+j <<2;
 			
 			im.data[idx1] = im0.data[idx0];
 			im.data[idx1+1] = im0.data[idx0+1];

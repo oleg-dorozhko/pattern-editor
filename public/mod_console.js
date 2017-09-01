@@ -142,7 +142,7 @@
 			if (check (cmd))
 			{
 				var sp = document.createElement('span');
-				sp.className = "history";
+				sp.className = "flex-item";
 				sp.innerHTML = cmd;
 				
 				sp.onclick = function(e) { 

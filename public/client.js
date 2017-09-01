@@ -162,14 +162,12 @@ function selectSeed(e)
 	
 }
 
-
-
-
 window.onload = function()
 {
 	loadDivFirst( function() {
 	
-		setInitialImageToCanvas();
+		if (localStorage.getItem("desktop")==null) setInitialImageToCanvas();
+		
 		//moveDraggableOnOwnPlace();
 		initModPixels();
 	
@@ -200,9 +198,11 @@ window.onload = function()
 					//console.log("ordinary "+String.fromCharCode(ev.which)); // остальные
 					ch = String.fromCharCode(ev.which);
 					if (ch == 'i')  process_console_text();
-					else if (ch == 's')  save_desktop_to_local_store();
-					else if (ch == 'l')  load_desktop_from_local_store();
-					else if (ch == 'p')  print_buttons();
+					//else if (ch == 's')  save_desktop_to_local_store();
+					//else if (ch == 'l')  load_desktop_from_local_store();
+					else if (ch == 'p')  print_all();
+					else if (ch == 'l')  load_all();
+					//else if (ch == 'b')  print_buttons();
 					else if (ch == 'h')  help();
 						
 				}
@@ -338,7 +338,7 @@ window.onload = function()
 		
 		document.onselectstart = function(e) {e.preventDefault();return false;}
 		
-		load_desktop_from_local_store();
+		loadDesktop();
 		
 		/***
 		document.addEventListener("contextmenu", function(e)

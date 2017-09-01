@@ -372,6 +372,7 @@ function clearSelection() {
 
 
 window.onerror = function(message, url, lineNumber) {
-    alert("Поймана ошибка, выпавшая в глобальную область!\n" + "Сообщение: " + message + "\n(" + url + ":" + lineNumber + ")");
+	alert (message);
+    console.log("Поймана ошибка, выпавшая в глобальную область!\n" + "Сообщение: " + message + "\n(" + url + ":" + lineNumber + ")");
 }
 

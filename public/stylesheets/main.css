@@ -13,12 +13,14 @@
 	padding: 5px;***/
 }
 
+/****
 .history
 {
 	margin: 5px;
 	padding: 5px 10px;
 	border: 2px solid blue;
 }
+****/
 
 .flex-container {
     display: -webkit-flex;
@@ -30,11 +32,17 @@
     /***background-color: lightgrey;****/
 }
 
+.history
+{
+	margin: 5px;
+	padding: 5px 10px;
+	border: 2px solid blue;
+}
+
 .flex-item {
-    background-color: cornflowerblue;
-  /***  width: 100px;
-    height: 100px; ***/
-    margin: 10px;
+   
+
+   
 }
 
 #history_div

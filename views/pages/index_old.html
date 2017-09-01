@@ -1,0 +1,219 @@
+        <div><progress id="progress" value="0" max="100" hidden></progress></div>
+		<div id="seed_list"  >[seed-list]</div>
+		
+		<!--- 
+		
+		<div>med=>median</div>
+		<div>
+		<input type="text" id="console_text" placeholder="enter cmd here" autocomplete="on">
+		
+		</div>
+		
+		<div>
+		<input type="button" id="fill" value=" fill ">
+		<input type="button" id="gen" value="gen">
+		<input type="button" id="gov" value="gov">
+		</div>
+		
+		<div><input type="button" id="lighter3" value="r-10">
+		
+		<!--- 
+		
+		<input type="button" id="lighter4" value="g-10">
+		<input type="button" id="lighter5" value="b-10">
+		<input type="button" id="lighter6" value="a-10">
+		<input type="button" id="lighter" value="lighter"> 
+		<input type="button" id="lighter2" value="r+10"> 
+		<input type="button" id="lighter2" value="g+10">
+		<input type="button" id="lighter2" value="b+10">
+		<input type="button" id="lighter2" value="a+10">
+		---->
+		
+		<!---
+		<input type="number" id="red"  min="0" max="512" >
+		<input type="number" id="green"  min="0" max="512" >
+		<input type="number" id="blue"  min="0" max="512" >
+		<input type="button" id="add_cyclic" value="add cyclic">
+		<input type="button" id="colors_divider" value="colors/2">
+		<input type="button" id="colors_loader" value="load palette">
+		<input type="button" id="blackwhite" value="black white">
+		</div>
+		
+		
+		<div id="buttons_list"  >
+		
+		<input type="button" id="vaxem" value="|axe-">
+		<input type="button" id="haxem" value="--axe-">
+		
+		<input type="button" id="vaxep" value="|axe+">
+		<input type="button" id="haxep" value="--axe+">
+		
+		<input type="button" id="leftborderminus" value="left border-">
+		<input type="button" id="topborderminus" value="top border-">
+		<input type="button" id="rightborderminus" value="right border-">
+		<input type="button" id="bottomborderminus" value="bottom border-">		
+		
+		<input type="button" id="leftborderplus" value="left border+">
+		<input type="button" id="topborderplus" value="top border+">
+		<input type="button" id="rightborderplus" value="right border+">
+		<input type="button" id="bottomborderplus" value="bottom border+">			
+		
+		<!--- <input type="button" id="darker" value="darker"> ---->
+		
+		<!---
+		</div>
+		
+		<div>
+		<input type="button" id="combo" value=" combo ">
+		<input type="button" id="xcombo" value=" xcombo ">
+		
+		
+		<input type="button" id="axesp" value="axes+">
+		<input type="button" id="axes" value="axes-">
+		<input type="button" id="borderminus" value="border-">
+		<input type="button" id="borderplus" value="border+">
+		</div>
+		
+		
+		<div id="buttons_list2">
+		<input type="button" id="plus" value="plus">
+		<input type="button" id="minus" value="minus">
+		<input type="button" id="median" value="median">		
+		<input type="button" id="half" value="half">
+		<input type="button" id="vortex" value="vortex">
+		<!--
+		<input type="button" id="upload" value=" upload ">
+		<input type="button" id="axesplus" value=" axes+ ">
+		<input type="button" id="axesminus" value=" axes- ">
+		---->
+		
+		<!---
+		<input type="button" id="random" value="random">
+		
+		<input type="button" id="inv" value="inverse">
+		
+		
+		<input type="button" id="multiply" value=" multiply ">
+		
+		<input type="button" id="rotateff" value=" rotate 45 ">
+		<input type="button" id="rotate_plus_90" value=" rotate +90 ">
+		<input type="button" id="mirror_right" value=" mirror right ">
+		<input type="button" id="mirror_down" value=" mirror down ">
+		
+				
+		</div>
+		
+		<div>
+		<input type="button" id="copy" value="copy">
+		<input type="button" id="save" value="save">
+		<input type="button" id="compare" value="compare">
+		<input type="button" id="save_on_server_btn" value="save on server">
+		<input type="button" id="clean" title="Select saved canvas before" value=" clean ">
+		</div>
+		 
+		<!--
+		<input type="button" id="save" value=" twit ">
+		-->
+	<!---
+	<table style="border:2px solid brown">
+	<tr>
+		<td>
+		--->
+		<table>
+		<tr><td valign="top" colspan="3" style="vertical-align:middle;"><!---<input class="history" type="button" id="console_enter" value="   enter   ">--->
+		<div id="history_div" class="flex-container" ></div>
+		</td></tr>
+		<tr>
+		<!---
+		<td><div id="history_div" style="overflow:scroll; width:200px; height:500px; text-align:center;"><ul id="history"><li>history</li></ul></div></td>
+		--->
+		<td></td>
+
+		<td><div id="canvas_div"><canvas id="canvas" width="100" height="100" init-path="[init-path]"></canvas></div></td>
+		<td><div id="scale_div" class="draggable" >	
+		<div><span id="canvas_width_height">300x300</span></div>
+			<div>
+			
+			<input type="button" id="btn_lt" value=" LT ">
+			<input type="button" id="btn_rb" value=" RB ">
+			<input type="button" id="btn_esc" value=" X ">
+			
+			</div> 
+			
+		<div><canvas id="pixels" width="150" height="150" style="cursor:crosshair;border: 1px solid gold;z-index: 990"></canvas></div>
+		
+		</div>
+		
+		
+		
+		</td></tr></table>
+		<!---
+		</td>
+		<td>
+		--->
+		
+	
+		
+		<!---
+		</td>
+		<td>
+		<div id="clear_fix"></div>
+		<div >
+		<div id="filter_div" style="display:none;">
+	
+		
+		
+		<div>
+		
+<input type="button" id="min_red_range" value=" - ">
+<input type="range" id="range_red" min="0" max="255" step="1" value="0" onchange="user_change_r_color()">
+<input type="text" id="red" value="0"  >
+<input type="button" id="max_red_range" value=" + ">
+</div>
+
+<div>
+<input type="button" id="min_green_range" value=" - ">
+<input type="range" id="range_green" min="0" max="255" step="1" value="0" onchange="user_change_g_color()">
+<input type="text" id="green" value="0"  >
+<input type="button" id="max_green_range" value=" + ">
+</div>
+
+<div>
+<input type="button" id="min_blue_range" value=" - ">
+<input type="range" id="range_blue" min="0" max="255" step="1" value="0" onchange="user_change_b_color()">	
+<input type="text" id="blue" value="0"  >
+<input type="button" id="max_blue_range" value=" + ">
+</div>
+
+<div>
+<input type="button" id="min_alpha_range" value=" - ">
+<input type="range" id="range_alpha" min="0" max="255" step="1" value="0" onchange="user_change_a_color()">	
+<input type="text" id="alpha" value="0"  >
+<input type="button" id="max_alpha_range" value=" + ">
+</div>
+<!----
+<div>Cyclic? <input type="checkbox" id="cyclic" checked></div> 
+
+<div><input type="button" id="update_colors_btn" value="Update colors" onclick="update_colors()"></div>
+		
+		
+		</div>
+		
+		</div>
+		
+	
+		
+		</td>
+		</tr>
+	</table>
+	</div>
+	--->
+	
+	
+		
+		<div id="saves"></div>
+		
+		
+		
+		
+		

@@ -198,7 +198,7 @@ window.onload = function()
 					//console.log("ordinary "+String.fromCharCode(ev.which)); // остальные
 					ch = String.fromCharCode(ev.which);
 					if (ch == 'i')  process_console_text();
-					//else if (ch == 's')  save_desktop_to_local_store();
+					else if (ch == 's')  modsld_saveDesktop();
 					//else if (ch == 'l')  load_desktop_from_local_store();
 					else if (ch == 'p')  print_all();
 					else if (ch == 'l')  load_all();

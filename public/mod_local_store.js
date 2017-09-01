@@ -25,7 +25,7 @@ function load_desktop_from_local_store()
 			if (check (btn))
 			{
 				var sp = document.createElement('span');
-				sp.className = "history";
+				sp.className = "flex-item history";
 				sp.innerHTML = btn;
 				
 				sp.onclick = function(e) { 

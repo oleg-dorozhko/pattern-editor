@@ -29,7 +29,7 @@ function loadDesktop()
 			if (check (btn))
 			{
 				var sp = document.createElement('span');
-				sp.className = "history";
+				sp.className = "flex-item history";
 				sp.innerHTML = btn;
 				
 				sp.onclick = function(e) { 
@@ -127,7 +127,7 @@ function print_all()
 			//btn.innerHTML = "Save";
 			btn.onclick = parseTextAreaAndSaveToLocalStore;
 			
-			localStorage.clear();
+			//localStorage.clear();
 			var lst = document.getElementById('history_div').childNodes;
 			var s = [];
 			
@@ -159,7 +159,7 @@ function print_all()
 			obj.canvas = s3;
 			
 			div.getElementsByTagName("textarea")[0].innerHTML = JSON.stringify (obj);
-			
+			div.getElementsByTagName("textarea")[0].addEventListener('paste', handlePaste);
 			
 			
 			
@@ -204,6 +204,52 @@ function load_all()
 	
 }
 
+function modsld_saveDesktop()
+{
+	var lst = document.getElementById('history_div').childNodes;
+			var s = [];
+			
+			for (var i=0;i<lst.length;i++)
+			{
+				var value = lst[i].innerHTML;
+				s.push(value);
+			}
+			
+			var lst2 = document.getElementById('saves').childNodes;
+			var s2 = [];
+			
+			for (var i=0;i<lst2.length;i++)
+			{
+				var key = "saves_div_"+lst2[i].id;
+				var value = lst2[i].toDataURL();
+				s2.push ([key, value]);
+			}
+			
+			var canvas = document.getElementById("canvas");
+			var context = canvas.getContext("2d");
+			var dataURL = canvas.toDataURL(); 
+			
+			s3 = ["desktop_canvas",dataURL];
+			
+			var obj = {};
+			obj.buttons = s;
+			obj.saves = s2;
+			obj.canvas = s3;
+			
+			var json = JSON.stringify (obj);
+			
+			localStorage.clear();
+			localStorage.setItem("desktop",json);
+			
+		//	div.getElementsByTagName("textarea")[0].innerHTML = JSON.stringify (obj);
+		//	div.getElementsByTagName("textarea")[0].addEventListener('paste', handlePaste);
+			
+			
+			
+			alert('saved');
+			
+}
+
 
 
 function parseTextAreaAndSaveToLocalStore()
@@ -241,7 +287,7 @@ function parseTextAreaAndSaveToLocalStore()
 				if (check (btn))
 				{
 					var sp = document.createElement('span');
-					sp.className = "history";
+					sp.className = "flex-item history";
 					sp.innerHTML = btn;
 					
 					sp.onclick = function(e) { 
@@ -321,7 +367,7 @@ function parseTextAreaAndSaveToLocalStore()
 					}
 					img.src = s4[1]; 
 		
-			
+			localStorage.clear();
 			localStorage.setItem("desktop",s0);
 			
 			

@@ -6,6 +6,27 @@
 		/**  height: 2000px; **/
 }
 
+.hint
+{
+	
+  padding:  10px 10px;
+      position: fixed;
+	  text-align: center;
+      right: 20px;
+      top: 10px;
+      width: 160px;
+      height: 40px;
+	  background-color: lightgrey;
+	  border: 2px solid blue;
+      -webkit-transition: all 1s;
+      -moz-transition: all 1s;
+      -o-transition: all 1s;
+      -ms-transition: all 1s;
+      transition: all 1s;
+    
+  
+}
+
 #seed_list
 {
 	margin-left: 5px;

@@ -1,7 +1,7 @@
 1. Copy all JSON lines and press 'l'
 2. Paste all JSON lines (use mouse) in modal window and click 'save' 
 3. Press 'i' if you want more and know how.
-4. And you can to watch my videos on youtube: https://youtube.com
+4. And you can to watch my videos on youtube: https://youtu.be/BiTvJoetk6A
 5. Or you can write letter to me: oleg.dorozhko@gmail.com
 6. Or you can to connect to me with help Skype, where my nikname is: dov_php_programmer   
 

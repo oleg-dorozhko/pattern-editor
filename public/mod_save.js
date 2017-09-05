@@ -81,6 +81,11 @@ function save()
 	
 	var save_context = cnv.getContext("2d"); 
 	save_context.putImageData(context.getImageData(0,0,canvas.width,canvas.height),0,0);
+	
+	setTimeout( function(){
+				logg('save as '+cnv.id); //after or before? what question
+			}, 100 );	
+			
 		
 }
 

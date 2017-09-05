@@ -36,5 +36,8 @@ function half()
 		
 	}
 		
-
+	setTimeout( function(){
+				logg('half '); //after or before? what question
+			}, 100 );	
+			
 }

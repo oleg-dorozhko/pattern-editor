@@ -37,6 +37,11 @@ function rotate_plus_90()
 	canvas2.height = canvas4.height;
 	canvas2.getContext("2d").putImageData(im,0,0);
 	
+	setTimeout( function(){
+				logg('rotate 90 degree'); //after or before? what question
+			}, 100 );	
+			
+	
 }
 
 
@@ -594,7 +599,11 @@ function rotate_plus_45()
 	canvas2.width = canvas4.width;
 	canvas2.height = canvas4.height;
 	canvas2.getContext("2d").putImageData(im,0,0);
-		
+	
+	setTimeout( function(){
+				logg('rotate 45 degree'); //after or before? what question
+			}, 100 );	
+				
 		
 }
 

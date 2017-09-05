@@ -19,6 +19,11 @@ function border_minus()
 	canvas.width = w-2;
 	canvas.height = h-2;
 	canvas.getContext("2d").putImageData(im,0,0);
+	
+	setTimeout( function(){
+				logg('border minus'); //after or before? what question
+			}, 100 );	
+			
 }
 
 function border_plus()
@@ -53,4 +58,9 @@ function border_plus()
 	canvas.width = w+2;
 	canvas.height = h+2;
 	canvas.getContext("2d").putImageData(im,0,0);
+	
+	setTimeout( function(){
+				logg('border plus'); //after or before? what question
+			}, 100 );	
+			
 }

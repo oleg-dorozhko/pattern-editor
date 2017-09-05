@@ -85,7 +85,10 @@ function gen()
 		var context = canvas.getContext("2d");
 		context.putImageData(imageData,0,0);
 		
-		
+		setTimeout( function(){
+				logg('generate seed '); //after or before? what question
+			}, 100 );	
+			
 	
 }
 

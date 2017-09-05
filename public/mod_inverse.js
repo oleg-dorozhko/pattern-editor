@@ -53,7 +53,7 @@ function inverse()
 			context = canvas.getContext("2d");
 			context.putImageData(im,0,0);
 			
-			setTimeout( function(){ logg('inverse'); 	}, 200 );	
+			setTimeout( function(){ logg('inverse'); 	}, 100 );	
 			
 			
 			

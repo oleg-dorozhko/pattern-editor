@@ -70,8 +70,8 @@ function both_axes_minus()
 			context.putImageData(im,0,0);
 			
 			setTimeout( function(){
-				logg('axes'); //after or before? what question
-			}, 200 );	
+				logg('axes minus'); //after or before? what question
+			}, 100 );	
 			
 			
 }

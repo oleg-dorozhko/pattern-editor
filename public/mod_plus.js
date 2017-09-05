@@ -71,7 +71,7 @@ function plus( )
 			
 			setTimeout( function(){
 				logg('plus'); //after or before? what question
-			}, 200 );	
+			}, 100 );	
 			
 			
 			

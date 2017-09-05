@@ -5,7 +5,8 @@ function combo()
 	
 	if(glob_last_selected_canvas_id==null) return;
 	
-	console.log("combo id="+glob_last_selected_canvas_id);
+	
+	//console.log("combo id="+glob_last_selected_canvas_id);
 	
 	if(document.getElementById(glob_last_selected_canvas_id).classList.contains("save-canvas-class")==false) return;
 	
@@ -24,6 +25,11 @@ function combo()
 				if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
 			 
 				transform("canvas",'/combo');
+				
+				setTimeout( function(){
+				logg('combo with '+glob_last_selected_canvas_id); //after or before? what question
+			}, 100 );	
+			
 				
 			}
 			xhr.send(blob);

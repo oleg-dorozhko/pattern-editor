@@ -90,10 +90,11 @@ function showScaleDiv(target,x,y)
 	el.style.border = "";
     el.style.visibility='visible';
 	el.style.display="inline-block";
-	document.getElementById('canvas_width_height').innerHTML = ""+document.getElementById('canvas').width+"x"+document.getElementById('canvas').height;
+	document.getElementById('canvas_width_height').innerHTML = ""+document.getElementById('canvas').width+" x "+document.getElementById('canvas').height;
 	//el.style.position='fixed';
 	//el.style.left="200px";
 	//el.style.top="200px";
+	document.getElementById('selected_x_y').innerHTML = ""+x+", "+y;
 	
 }
 
@@ -160,6 +161,8 @@ function redrawPixels_main(context, x,y)
 			
 		}
 	}
+	
+	document.getElementById('selected_x_y').innerHTML = ""+x+", "+y;
 	
 }
 

@@ -77,8 +77,8 @@ function copy()
 	context.putImageData(im,0,0);
 			
 			setTimeout( function(){
-				logg("copy id="+glob_last_selected_canvas_id); //after or before? what question
-			}, 200 );	
+				logg("copy from "+glob_last_selected_canvas_id); //after or before? what question
+			}, 100 );	
 			
 	/********
 	if(document.getElementById(glob_last_selected_canvas_id).classList.contains("save-canvas-class"))

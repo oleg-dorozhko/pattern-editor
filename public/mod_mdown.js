@@ -1,4 +1,4 @@
-function mdown ()
+function mirror_down ()
 {
 	
 	var canvas = document.getElementById("canvas");
@@ -73,8 +73,8 @@ function mdown ()
 			context.putImageData(im,0,0);
 			
 			setTimeout( function(){
-				logg('mdown'); //after or before? what question
-			}, 200 );	
+				logg('mirror down'); //after or before? what question
+			}, 100 );	
 			
 			
 }

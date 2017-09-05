@@ -130,6 +130,13 @@ div .column {
 	
 }
 
+#selected_x_y
+{
+	font-size: 24px;
+	font-family: Arial;
+	
+}
+
 img
 {
 	margin: 5px;	

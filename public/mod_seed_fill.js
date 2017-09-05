@@ -19,6 +19,11 @@ function fill()
 					 
 						transform("canvas",'/fill');
 						
+						setTimeout( function(){
+							logg('fill with '+glob_last_selected_canvas_id); //after or before? what question
+						}, 100 );	
+			
+						
 					}
 					xhr.send(blob);
 					

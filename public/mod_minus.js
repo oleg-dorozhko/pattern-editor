@@ -55,7 +55,7 @@ function minus( )
 			
 			setTimeout( function(){
 				logg('minus'); //after or before? what question
-			}, 200 );	
+			}, 100 );	
 			
 			
 			

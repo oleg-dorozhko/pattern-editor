@@ -163,7 +163,7 @@ function add_cyclic()
 			
 			setTimeout( function(){
 				logg('random('+r+','+g+','+b+',255)'); //after or before? what question
-			}, 200 );	
+			}, 100 );	
 			
 			
 			

@@ -28,7 +28,11 @@ function clean()
 			var id = cnv.id;
 			console.log("Will be deleted: "+id);
 			document.getElementById("saves").removeChild(document.getElementById(""+id));
-			console.log("Removed from body: "+id);
+			setTimeout( function(){
+				logg('remove  '+id); //after or before? what question
+			}, 100 );	
+			
+			//console.log("Removed from body: "+id);
 			
 		}
 		else

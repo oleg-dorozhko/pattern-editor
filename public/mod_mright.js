@@ -1,4 +1,4 @@
-function mright ()
+function mirror_right ()
 {
 	
 	var canvas = document.getElementById("canvas");
@@ -67,8 +67,8 @@ function mright ()
 			context.putImageData(im,0,0);
 			
 			setTimeout( function(){
-				logg('mright'); //after or before? what question
-			}, 200 );	
+				logg('mirror right'); //after or before? what question
+			}, 100 );	
 			
 			//sendImage(newpng, res, '\nImage mirror righted\n');	
 	

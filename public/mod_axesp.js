@@ -56,8 +56,8 @@ function both_axes_plus()
 	document.body.removeChild(cnv);
 	
 	setTimeout( function(){
-				logg('axesp'); //after or before? what question
-			}, 200 );
+				logg('axes plus'); //after or before? what question
+			}, 100 );
 	
 	
 }

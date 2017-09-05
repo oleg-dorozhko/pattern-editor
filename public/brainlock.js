@@ -91,7 +91,7 @@ function stopProgress()
 	clearInterval(glob_intervalID); 
 }
 
-function transform(canvas_id, action)
+function transform(canvas_id, action, callback)
 {
 	startProgress();
 	getImageFromCanvas( canvas_id, function(blob) { 
@@ -99,6 +99,7 @@ function transform(canvas_id, action)
 			getImageFromBlob( blob_from_server, function(img) {
 				imageToCanvas(img, canvas_id, function() { 
 					stopProgress();
+					if (callback) callback();
 				});	
 				
 			});	

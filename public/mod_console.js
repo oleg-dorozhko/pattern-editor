@@ -29,6 +29,7 @@
 		$("#borderplus").click( function() {transform("canvas", '/borderplus'); logg('borderplus');  } );
 		$("#blackwhite").click( function() {  transform("canvas", '/blackwhite');logg('blackwhite');} );
 		$("#inv").click( function() {  transform("canvas", '/inverse'); console.log('inverse');} );
+		$("#execute_script").click( execute_script );
 		$("#plus").click( plus );
 		$("#gen").click( generate_seed );
 		$("#minus").click( minus );// function() { transform("canvas", '/minus'); console.log('minus'); } );
@@ -66,7 +67,10 @@
 		
 		function exec1(cmd)
 		{
+			if (check(cmd)==false ) { global_client_typing_mode = false; return; }
+			
 			if (cmd=='median') median();
+			else if (cmd == 'execute script') execute_script();
 			else if (cmd == 'axes minus') both_axes_minus();
 			else if (cmd == 'axes plus') both_axes_plus();
 			//else if (cmd == 'vertical axe minus') vertical_axe_minus();
@@ -94,14 +98,20 @@
 			else if (cmd == 'fill')  fill();  
 			else 
 			{
-				alert('Unknown error');
+				global_client_typing_mode = false;
+				alert('Unknown error .2 '+cmd);
 				return;
 			}
+			
+			global_client_typing_mode = false;
 		}
 		
 		function check(cmd)
 		{
+			console.log('check: ['+cmd+']');
+			if(cmd=='') { global_client_typing_mode = false; return; }
 			if (cmd=='median') return true;
+			else if (cmd == 'execute script') return true;
 			else if (cmd == 'axes minus')  return true;
 			else if (cmd == 'axes plus')  return true;
 			//else if (cmd == 'vertical axe minus')  return true;
@@ -129,9 +139,11 @@
 			else if (cmd == 'fill')   return true;
 			else 
 			{
-				alert('Unknown error');
+				global_client_typing_mode = false;
+				alert('Unknown error .1');
 				return false;
 			}
+			global_client_typing_mode = false;
 		}
 		
 		function xcmd(cmd)
@@ -163,7 +175,7 @@
 function process_console_text()
 {
 	var con = prompt('enter cmd');
-	if(con==null) return;
+	if(con==null) { global_client_typing_mode=false; return; }
 	var cmd = con.trim();
 	xcmd(cmd);
 	

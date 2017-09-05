@@ -38,7 +38,7 @@ function rotate_plus_90()
 	canvas2.getContext("2d").putImageData(im,0,0);
 	
 	setTimeout( function(){
-				logg('rotate 90 degree'); //after or before? what question
+				logg('rotate(90)'); //after or before? what question
 			}, 100 );	
 			
 	
@@ -46,7 +46,11 @@ function rotate_plus_90()
 
 
 
-
+function rotate(n)
+{
+	if(n==45) rotate_plus_45();
+	else if(n==90) rotate_plus_90();
+}
 
 
 
@@ -221,7 +225,7 @@ function __rotateff( oldpng, newpng )
 	}	
 		
 	
-	console.log("Data of rotated image inputed");
+	// console.log("Data of rotated image inputed");
 	
 	/******************************************************************************/
 	/******************************************************************************/
@@ -574,7 +578,7 @@ function rotate_plus_45()
 		{
 			
 			
-			console.log("rotate plus 45: error: too big size (need result width * 2 or height * 2 <= 1200)");
+			errror("rotate plus 45: error: too big size (need result width * 2 or height * 2 <= 1200)");
 			return;
 			
 		}
@@ -601,7 +605,7 @@ function rotate_plus_45()
 	canvas2.getContext("2d").putImageData(im,0,0);
 	
 	setTimeout( function(){
-				logg('rotate 45 degree'); //after or before? what question
+				logg('rotate(45)'); //after or before? what question
 			}, 100 );	
 				
 		

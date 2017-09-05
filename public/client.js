@@ -1,3 +1,4 @@
+var global_client_typing_mode = false;
 function rgba(ctx,i,j)
 {
 	var imgData = ctx.getImageData(i,j,1,1);
@@ -184,6 +185,8 @@ window.onload = function()
 		{
 			var ch = '';
 			
+			if (global_client_typing_mode == false)
+			{		
 			
 			  if (ev.which != 0 && ev.charCode != 0) 
 			  { 
@@ -196,17 +199,21 @@ window.onload = function()
 				else
 				{
 					//console.log("ordinary "+String.fromCharCode(ev.which)); // остальные
+					
+					
 					ch = String.fromCharCode(ev.which);
-					if (ch == 'i')  process_console_text();
+					if (ch == 'i')   { global_client_typing_mode = true; process_console_text(); }
 					else if (ch == 's')  modsld_saveDesktop();
 					//else if (ch == 'l')  load_desktop_from_local_store();
 					else if (ch == 'p')  print_all();
-					else if (ch == 'l')  load_all();
+					else if (ch == 'l')  { global_client_typing_mode = true; load_all(); }
 					//else if (ch == 'b')  print_buttons();
+					else if (ch == 'e')   { global_client_typing_mode = true; execute_script(); }
 					else if (ch == 'h')  help();
 						
 				}
 			  }
+			}
 			
 			//var ch = getChar(e);
 			//if(ch == null) return;

@@ -167,7 +167,7 @@ window.onload = function()
 {
 	loadDivFirst( function() {
 	
-		if (localStorage.getItem("desktop")==null) setInitialImageToCanvas();
+		
 		
 		//moveDraggableOnOwnPlace();
 		initModPixels();
@@ -345,7 +345,16 @@ window.onload = function()
 		
 		document.onselectstart = function(e) {e.preventDefault();return false;}
 		
+		if (localStorage.getItem("desktop")==null) 
+		{
+			setInitialButtonsToCanvas();
+			setInitialImageToCanvas();
+		}
+			
 		loadDesktop();
+		
+		
+		
 		
 		/***
 		document.addEventListener("contextmenu", function(e)

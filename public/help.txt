@@ -1,9 +1,19 @@
-1. Copy all JSON lines and press 'l'
-2. Paste all JSON lines (use mouse) in modal window and click 'save' 
-3. Press 'i' if you want more and know how.
-4. And you can to watch my videos on youtube: https://youtu.be/BiTvJoetk6A
-5. Or you can write letter to me: oleg.dorozhko@gmail.com
-6. Or you can to connect to me with help Skype, where my nikname is: dov_php_programmer   
+1. Press 'i' if you want to add single button. For example, press 'i' and type median.
 
-You need copy and paste next line:
-{"buttons":["plus","minus","half","median","vortex","axes minus","axes plus","combo","border minus","border plus","rotate 45 degree","fill","random","inverse","black white","save","copy","clean"],"saves":[],"canvas":[]}
+2. You can also to watch my training videos on youtube: https://youtu.be/BiTvJoetk6A
+
+3. Press 'e' if you want to execute line of commands. 
+
+4. Press 'p' for copy current desktop and then you can save it when paste in your notepad. For example:  median, inverse, vortex, plus
+
+5. Below is default JSON - you can edit it and then load - press 'l' for this. When paste in modal window use mouse and then click 'save'
+
+{"buttons":["plus","minus","half","median","vortex","axes minus","axes plus","combo","border minus","border plus","colors","min colors","rotate 45 degree","fill","random","inverse","black white","save","copy","clean"],"saves":[],"canvas":[]}
+
+6. Contact to me: email: oleg.dorozhko@gmail.com or Skype: dov_php_programmer
+  
+7. Donation ( for financing implementation many other cool buttons and colorfull ideas): 
+
+	3Kd5JY5KwYimF8C6R1a2hfHwT3CyALiyJp
+	
+This is project bitcoin wallet.

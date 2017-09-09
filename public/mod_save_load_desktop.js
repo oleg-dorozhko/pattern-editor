@@ -56,43 +56,24 @@ function loadDesktop()
 		//all remove need
 		
 		
-		
-		
-		for (var i=0;i<s2.length;i++)
+		for (var i=0;i<s2.length; i++)
 		{
-			var arr = s2[i];
-			var id = arr[0];
-			var dataUrl = arr[1];
-			
-			
-
-			//console.log("save id="+id);
-			
-			
-				var cnv =  document.createElement("canvas");
-				cnv.className = "draggable";
-				cnv.id = id;
-				cnv.alt = ""+i;
-				cnv.classList.toggle("save-canvas-class");
-				cnv.classList.toggle("seed-unbordered");
 				
-				//cnv.setAttribute("bordered","false");
+				setTimeout( function(s22, n){
 				
-				cnv.onclick = selectSaveCanvas;
-				
-				document.getElementById("saves").appendChild(cnv);
-			
-				var img = new Image();
-				img.onload = function()
-				{
 					
-					cnv.width = this.width;
-					cnv.height = this.height;
-					cnv.getContext("2d").drawImage(this,0,0); 
-				}
-				img.src = dataUrl;
-							
-			
+					var arr = s22[n];
+					var id = arr[0];
+					var dataUrl = arr[1];
+					
+					return function(){
+						
+						loadSave( n, id, dataUrl );
+					}
+					
+				}(s2, i), 100 ); 
+		
+		
 			
 		}
 		
@@ -113,6 +94,39 @@ function loadDesktop()
 		}, 500);
 		
 	
+}
+
+function loadSave( i, id, dataUrl )
+{
+	
+		
+				
+				var cnv =  document.createElement("canvas");
+				cnv.className = "draggable";
+				cnv.id = id;
+				cnv.alt = ""+i;
+				cnv.classList.toggle("save-canvas-class");
+				cnv.classList.toggle("seed-unbordered");
+				
+				//cnv.setAttribute("bordered","false");
+				
+				cnv.onclick = selectSaveCanvas;
+				
+				
+			
+				var img = new Image();
+				img.onload = function()
+				{
+					
+					cnv.width = this.width;
+					cnv.height = this.height;
+					cnv.getContext("2d").drawImage(this,0,0); 
+					
+					document.getElementById("saves").appendChild(cnv);
+					
+				}
+				img.src = dataUrl;
+							
 }
 
 
@@ -250,6 +264,19 @@ function modsld_saveDesktop()
 			
 }
 
+
+
+function setInitialButtonsToCanvas()
+{
+
+			
+			var json = '{"buttons":["plus","minus","half","median","vortex","axes minus","axes plus","combo","border minus","border plus","colors","min colors","rotate 45 degree","fill","random","inverse","black white","save","copy","clean"],"saves":[],"canvas":[]}';
+			
+			localStorage.clear();
+			localStorage.setItem("desktop",json);
+	
+			
+}
 
 
 function parseTextAreaAndSaveToLocalStore()

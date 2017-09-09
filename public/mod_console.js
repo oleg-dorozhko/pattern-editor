@@ -78,6 +78,10 @@
 			else if (cmd == 'save') save();
 			else if (cmd == 'copy') copy();
 			else if (cmd == 'clean') clean();
+			else if (cmd == 'colors') get_array_of_colors();
+			else if (cmd == 'floor colors') floor_colors();
+			else if (cmd == 'min colors') min_colors();
+			else if (cmd == 'normal colors') normal_colors();
 			else if (cmd == 'combo') combo();
 			//else if (cmd == 'xcombo') xcombo();
 			else if (cmd == 'inverse') inverse();
@@ -108,7 +112,7 @@
 		
 		function check(cmd)
 		{
-			console.log('check: ['+cmd+']');
+			//console.log('check: ['+cmd+']');
 			if(cmd=='') { global_client_typing_mode = false; return; }
 			if (cmd=='median') return true;
 			else if (cmd == 'execute script') return true;
@@ -119,6 +123,10 @@
 			else if (cmd == 'save')  return true;
 			else if (cmd == 'copy')  return true;
 			else if (cmd == 'clean')  return true;
+			else if (cmd == 'colors') return true;
+			else if (cmd == 'floor colors') return true;
+			else if (cmd == 'normal colors') return true;
+			else if (cmd == 'min colors') return true;
 			else if (cmd == 'combo')  return true;
 			//else if (cmd == 'xcombo')  return true;
 			else if (cmd == 'inverse')  return true;

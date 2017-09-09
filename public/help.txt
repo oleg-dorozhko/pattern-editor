@@ -2,9 +2,9 @@
 
 2. You can also to watch my training videos on youtube: https://youtu.be/BiTvJoetk6A
 
-3. Press 'e' if you want to execute line of commands. 
+3. Press 'e' if you want to execute line of commands.  For example:  median, inverse, vortex, plus
 
-4. Press 'p' for copy current desktop and then you can save it when paste in your notepad. For example:  median, inverse, vortex, plus
+4. Press 'p' for copy current desktop and then you can save it when paste in your notepad.
 
 5. Below is default JSON - you can edit it and then load - press 'l' for this. When paste in modal window use mouse and then click 'save'
 

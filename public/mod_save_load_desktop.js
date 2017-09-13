@@ -78,17 +78,21 @@ function loadDesktop()
 		}
 		
 		setTimeout ( function(){
-			
-			
-		var img = new Image();
-		img.onload = function()
+		
+		if 	(s4.length>0)
 		{
-			var canvas = document.getElementById("canvas");
-			canvas.width = this.width;
-			canvas.height = this.height;
-			canvas.getContext("2d").drawImage(this,0,0); 
+			
+			var img = new Image();
+			img.onload = function()
+			{
+				var canvas = document.getElementById("canvas");
+				canvas.width = this.width;
+				canvas.height = this.height;
+				canvas.getContext("2d").drawImage(this,0,0); 
+			}
+			img.src = s4[1]; 
+		
 		}
-		img.src = s4[1]; 
 		
 			
 		}, 500);

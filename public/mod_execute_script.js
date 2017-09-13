@@ -24,12 +24,15 @@ function hexecute_script(el)
 			var chld = el.getElementsByTagName("p")[1].childNodes[0];
 			el.getElementsByTagName("textarea")[0].addEventListener('paste', handlePaste);
 			chld.onclick = function() { 
+			localStorage.setItem("last_script",el.getElementsByTagName("textarea")[0].value.trim());
 			execute_t_script(el);
 			}
 			chld.innerHTML = "Execute";
 			//el.getElementsByTagName("p")[1].removeChild(chld);
 				//console.log(el.getElementsByTagName("textarea")[0].innerHTML);
 			el.getElementsByTagName("textarea")[0].placeholder = "Paste your script here";	
+			var scr = localStorage.getItem("last_script");
+			if (scr != null) el.getElementsByTagName("textarea")[0].value = scr;
 			
 	/******		
 		}
@@ -88,6 +91,8 @@ function execute_t_script(el)
 		global_ec_vars_arr_index=null;
 		global_ec_vars_arr_length=0;
 		global_client_typing_mode = false;
+		
+	
 	}
 	
 	
@@ -118,6 +123,22 @@ function execute_instruction ( instr, callback)
 		instr = instr.trim();
 				
 		combo_with_name(instr, callback);
+	}
+	else if (instr.match(/generate\sseed\(\d{1,2}\)/))
+	{
+		instr = instr.replace ("generate seed(","");
+		instr = instr.replace (")","");
+		instr = instr.trim();
+				
+		generate_seed_with_param(instr, callback);
+	}
+	else if (instr.match(/axes\sminus\(\d{1,2}\)/))
+	{
+		instr = instr.replace ("axes minus(","");
+		instr = instr.replace (")","");
+		instr = instr.trim();
+				
+		both_axes_minus_with_param(instr, callback);
 	}
 	else if (instr.match(/save\(save_canvas[0-9]+\)/))
 	{

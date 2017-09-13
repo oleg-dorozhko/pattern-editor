@@ -1,3 +1,15 @@
+function both_axes_minus_with_param( s, callback )
+{
+	var n = Number(s.trim());
+	if(isNaN(n)) return;
+	for (var i = 0; i < n; i++) {
+		
+		both_axes_minus();
+		
+	}
+	callback();
+}
+
 function both_axes_minus()
 {
 	var canvas = document.getElementById("canvas");

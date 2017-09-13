@@ -99,6 +99,8 @@
 			else if (cmd == 'mirror down') mirror_down (); 
 			else if (cmd == 'mirror right') mirror_right (); 
 			else if (cmd == 'random') random();	
+			else if (cmd == 'rgb++') rgb_plus_plus();
+			else if (cmd == 'rgb--') rgb_minus_minus();
 			else if (cmd == 'fill')  fill();  
 			else 
 			{
@@ -144,6 +146,8 @@
 			else if (cmd == 'mirror down')  return true;
 			else if (cmd == 'mirror right') return true; 
 			else if (cmd == 'random')  return true;
+			else if (cmd == 'rgb++') return true;
+			else if (cmd == 'rgb--') return true;
 			else if (cmd == 'fill')   return true;
 			else 
 			{

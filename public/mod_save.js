@@ -106,7 +106,7 @@ function save_with_name(name)
 		cnv =  document.createElement("canvas");
 		cnv.className = "draggable";
 		cnv.id = id;
-		cnv.alt = ""+n;
+		cnv.alt = ""+name;
 		cnv.classList.toggle("save-canvas-class");
 		cnv.classList.toggle("seed-unbordered");
 		

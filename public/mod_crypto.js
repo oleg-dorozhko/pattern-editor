@@ -38,7 +38,7 @@ function decripto_script()
 	{
 		if(arr[i]=='') continue;
 		arr[i]=arr[i].replace(/%/g,",");
-		arr2.push(dgcs(arr[i]));
+		arr2.push(dgcs(arr[i].trim()));
 	}
 	
 	global_ec_vars_arr = null;
@@ -121,6 +121,7 @@ function dgcs(cmd0) //get_decripto_symbol
 
 function gcs(cmd0) //get_cripto_symbol
 {
+	cmd0 = cmd0.trim();
 	var bbb = '';// here number in skobki
 
 	if (cmd0=='rotate(45)') return 'bf,';

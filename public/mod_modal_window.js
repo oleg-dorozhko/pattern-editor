@@ -17,6 +17,10 @@ function modal_window( callback )
 			document.body.appendChild(div);
 			document.getElementById("close_modal_window").onclick = function() 	{
 				document.body.removeChild(document.getElementById("modal_window0"));
+				global_ec_vars_arr = null;
+				global_ec_vars_arr_index=null;
+				global_ec_vars_arr_length=0;
+				global_client_typing_mode = false;
 			}
 			
 			if ( callback ) ( callback ( div ));

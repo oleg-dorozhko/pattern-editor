@@ -52,7 +52,7 @@ function execute_t_script(el)
 	if(global_ec_vars_arr_index==null)
 	{		
 		var s = el.getElementsByTagName("textarea")[0].value.trim();
-		
+		s = s.replace(/\s/g," ");
 		document.body.removeChild(document.getElementById("modal_window0"));
 		
 		///////////// processing random(100,100,100,255) ////////////////

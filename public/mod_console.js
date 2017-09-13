@@ -67,8 +67,9 @@
 		
 		function exec1(cmd)
 		{
-			if (check(cmd)==false ) { global_client_typing_mode = false; return; }
-			
+			if (check(cmd)==false ) return; 
+			if(cmd=='') return;
+			if(cmd==' ') return;
 			if (cmd=='median') median();
 			else if (cmd == 'execute script') execute_script();
 			else if (cmd == 'axes minus') both_axes_minus();
@@ -78,6 +79,7 @@
 			else if (cmd == 'save') save();
 			else if (cmd == 'copy') copy();
 			else if (cmd == 'clean') clean();
+			//else if (cmd == 'crypto') cripto();
 			else if (cmd == 'colors') get_array_of_colors();
 			else if (cmd == 'floor colors') floor_colors();
 			else if (cmd == 'min colors') min_colors();
@@ -105,8 +107,8 @@
 			else 
 			{
 				global_client_typing_mode = false;
-				alert('Unknown error .2 '+cmd);
-				return;
+				alert('mod_console:error: Unknown command ['+cmd+']');
+				return false;
 			}
 			
 			global_client_typing_mode = false;
@@ -115,8 +117,9 @@
 		function check(cmd)
 		{
 			//console.log('check: ['+cmd+']');
-			if(cmd=='') { global_client_typing_mode = false; return; }
-			if (cmd=='median') return true;
+			if(cmd=='') return true;
+			else if(cmd==' ') return true;
+			else if (cmd=='median') return true;
 			else if (cmd == 'execute script') return true;
 			else if (cmd == 'axes minus')  return true;
 			else if (cmd == 'axes plus')  return true;
@@ -125,6 +128,7 @@
 			else if (cmd == 'save')  return true;
 			else if (cmd == 'copy')  return true;
 			else if (cmd == 'clean')  return true;
+			//else if (cmd == 'cripto script')  return true;
 			else if (cmd == 'colors') return true;
 			else if (cmd == 'floor colors') return true;
 			else if (cmd == 'normal colors') return true;
@@ -152,7 +156,7 @@
 			else 
 			{
 				global_client_typing_mode = false;
-				alert('Unknown error .1');
+				alert('mod_console:error: Unknown command ['+cmd+']');
 				return false;
 			}
 			global_client_typing_mode = false;

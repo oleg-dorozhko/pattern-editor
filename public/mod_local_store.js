@@ -9,7 +9,7 @@ function save_desktop_to_local_store()
 		localStorage.setItem(key,value);
 	}
 	
-	alert('saved');
+	//alert('saved');
 }
 
 function load_desktop_from_local_store()

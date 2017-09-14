@@ -1,19 +1,28 @@
-1. Press 'i' if you want to add single button. For example, press 'i' and type median.
+1. You can to watch my training videos on youtube: https://youtu.be/BiTvJoetk6A
 
-2. You can also to watch my training videos on youtube: https://youtu.be/BiTvJoetk6A
+2. Press 'i' if you want to add single button. For example, press 'i' and type median.
 
 3. Press 'e' if you want to execute line of commands.  For example:  median, inverse, vortex, plus
 
 4. Press 'p' for copy current desktop and then you can save it when paste in your notepad.
 
-5. Below is default JSON - you can edit it and then load - press 'l' for this. When paste in modal window use mouse and then click 'save'
+5. Press 'c' for crypto... script.
+
+6. Press 'd' for decrypto... script
+
+7. For advanced users: Below is default JSON - you can edit it and then load - press 'l' for this. 
+When paste in modal window use mouse (not a mouse) and then click 'save'
 
 {"buttons":["plus","minus","half","median","vortex","axes minus","axes plus","combo","border minus","border plus","colors","min colors","rotate 45 degree","fill","random","inverse","black white","save","copy","clean"],"saves":[],"canvas":[]}
 
-6. Contact to me: email: oleg.dorozhko@gmail.com or Skype: dov_php_programmer
+8. Contact to me: email: oleg.dorozhko@gmail.com
   
-7. Donation ( for financing implementation many other cool buttons and colorfull ideas): 
+9. Donation ( for financing implementation many other cool buttons and colorfull ideas): 
 
 	3Kd5JY5KwYimF8C6R1a2hfHwT3CyALiyJp
 	
 This is project bitcoin wallet.
+
+10. You can save and load your desktop buttons and saved images and working canvas image. Just press 's' for save or 'l' for load.
+
+11. Press 'r' for restart all aplication. Danger. Save all you works before.

@@ -203,9 +203,10 @@ window.onload = function()
 					
 					ch = String.fromCharCode(ev.which);
 					if (ch == 'i')   { global_client_typing_mode = true; process_console_text(); }
-					else if (ch == 's')  modsld_saveDesktop();
+					else if (ch == 's')  { modsld_saveDesktop(); alert('saved'); }
 					else if (ch == 'c')  { global_client_typing_mode = true; cripto_script(); }
 					else if (ch == 'd')  { global_client_typing_mode = true; decripto_script(); }
+					else if (ch == 'r')  restart_all();
 					//else if (ch == 'l')  load_desktop_from_local_store();
 					else if (ch == 'p')  print_all();
 					else if (ch == 'l')  { global_client_typing_mode = true; load_all(); }
@@ -377,6 +378,11 @@ window.onload = function()
 	
 	
 	
+}
+
+function reload() 
+{
+	window.location = '/';
 }
 
 function clearSelection() {

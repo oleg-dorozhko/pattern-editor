@@ -93,6 +93,10 @@ function loadDesktop()
 			img.src = s4[1]; 
 		
 		}
+		else
+		{
+			setInitialImageToCanvas();
+		}
 		
 			
 		}, 500);
@@ -264,7 +268,6 @@ function modsld_saveDesktop()
 			
 			
 			
-			alert('saved');
 			
 }
 

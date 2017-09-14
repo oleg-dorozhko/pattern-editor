@@ -88,6 +88,7 @@
 			//else if (cmd == 'xcombo') xcombo();
 			else if (cmd == 'inverse') inverse();
 			else if (cmd == 'plus') plus();
+			else if (cmd == 'restart')  restart();
 			else if (cmd == 'minus') minus();
 			else if (cmd == 'generate seed') generate_seed();
 			else if (cmd == 'border minus') border_minus();
@@ -128,6 +129,7 @@
 			else if (cmd == 'save')  return true;
 			else if (cmd == 'copy')  return true;
 			else if (cmd == 'clean')  return true;
+			else if (cmd == 'restart')  return true;
 			//else if (cmd == 'cripto script')  return true;
 			else if (cmd == 'colors') return true;
 			else if (cmd == 'floor colors') return true;

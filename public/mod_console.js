@@ -85,6 +85,9 @@
 			else if (cmd == 'min colors') min_colors();
 			else if (cmd == 'normal colors') normal_colors();
 			else if (cmd == 'combo') combo();
+			else if (cmd == 'breath of chaos') breath_of_chaos();
+			else if (cmd == 'rio') rio();
+			
 			//else if (cmd == 'xcombo') xcombo();
 			else if (cmd == 'inverse') inverse();
 			else if (cmd == 'plus') plus();
@@ -136,6 +139,8 @@
 			else if (cmd == 'normal colors') return true;
 			else if (cmd == 'min colors') return true;
 			else if (cmd == 'combo')  return true;
+			else if (cmd == 'rio') return true;
+			else if (cmd == 'breath of chaos') return true;
 			//else if (cmd == 'xcombo')  return true;
 			else if (cmd == 'inverse')  return true;
 			else if (cmd == 'plus')  return true;

@@ -357,10 +357,10 @@ window.onload = function()
 		loadDesktop();
 		
 			document.getElementById('close_attention').onclick = function(){
-		fadeOut( document.getElementById('attention'), 100 );
+		fadeOut( document.getElementById('attention'), 50 );
 	}
 	
-	 fadeOut( document.getElementById('attention'), 20*1000 );
+	 fadeOut( document.getElementById('attention'), 10*1000 );
 	
 		
 		

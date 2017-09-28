@@ -356,7 +356,12 @@ window.onload = function()
 			
 		loadDesktop();
 		
-		
+			document.getElementById('close_attention').onclick = function(){
+		fadeOut( document.getElementById('attention'), 100 );
+	}
+	
+	 fadeOut( document.getElementById('attention'), 20*1000 );
+	
 		
 		
 		/***
@@ -374,12 +379,7 @@ window.onload = function()
 		***/
 		
 	});
-	document.getElementById('close_attention').onclick = function(){
-		fadeOut( document.getElementById('attention'), 100 );
-	}
-	
-	 fadeOut( document.getElementById('attention'), 20*1000 );
-	
+
 }
 
 function reload() 

@@ -27,6 +27,20 @@
   
 }
 
+#attention
+{
+	border: 2px solid red;
+	margin-left: 5px;
+	padding: 5px;
+}
+
+#close_attention
+{
+	border: 1px solid black;
+	margin-left: 5px;
+	padding: 5px;
+}
+
 #seed_list
 {
 	margin-left: 5px;

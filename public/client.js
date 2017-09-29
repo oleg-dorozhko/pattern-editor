@@ -359,8 +359,10 @@ window.onload = function()
 			document.getElementById('close_attention').onclick = function(){
 		fadeOut( document.getElementById('attention'), 50 );
 	}
-	
-	 fadeOut( document.getElementById('attention'), 20*1000 );
+	setTimeout(function(){
+		fadeOut( document.getElementById('attention'), 50 );
+	},20*1000);
+	 //fadeOut( document.getElementById('attention'), 20*1000 );
 	
 		
 		

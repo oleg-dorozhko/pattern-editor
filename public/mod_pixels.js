@@ -273,7 +273,7 @@ function server_crop(x,y,flag)
 		
 			if (xhr.readyState != 4) return;
 			
-			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; throw new Error(error);  }
+			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText+': '+xhr.response; throw new Error(error);  }
 
 			/*******
     

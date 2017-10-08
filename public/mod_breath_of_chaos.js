@@ -25,7 +25,7 @@ function breath_of_chaos()
 	var w = canvas.width;
 	var h = canvas.height;
 	var im = context.getImageData(0,0,w,h);
-	var n=5;
+	var n=500;
 	for(var i=0;i<n;i++)
 	{
 		var rx = getRandomInt(0, w);

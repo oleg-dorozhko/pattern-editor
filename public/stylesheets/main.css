@@ -249,3 +249,9 @@ progress
     background-color: #fff;    
     color: #000;
 }
+
+.collected_selected
+{
+	margin: 3px;	
+	border: 2px solid red;
+}

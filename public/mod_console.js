@@ -70,7 +70,9 @@
 			if (check(cmd)==false ) return; 
 			if(cmd=='') return;
 			if(cmd==' ') return;
-			if (cmd=='median') median();
+			if (cmd == 'labirint') labirint();
+			else if (cmd == 'map') map();
+			else if (cmd=='median') median();
 			else if (cmd == 'execute script') execute_script();
 			else if (cmd == 'axes minus') both_axes_minus();
 			else if (cmd == 'axes plus') both_axes_plus();
@@ -123,6 +125,8 @@
 			//console.log('check: ['+cmd+']');
 			if(cmd=='') return true;
 			else if(cmd==' ') return true;
+			else if (cmd == 'labirint') return true;
+			else if (cmd == 'map') return true;
 			else if (cmd=='median') return true;
 			else if (cmd == 'execute script') return true;
 			else if (cmd == 'axes minus')  return true;
@@ -179,7 +183,7 @@
 				var sp = document.createElement('span');
 				sp.className = "flex-item history";
 				sp.innerHTML = cmd;
-				
+				//sp.id='span_button_'+cmd;
 				sp.onclick = function(e) { 
 					
 					//var r = cmd.replace(' ','_');

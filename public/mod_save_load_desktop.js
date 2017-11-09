@@ -26,24 +26,7 @@ function loadDesktop()
 			
 			var btn = s[i];
 
-			if (check (btn))
-			{
-				var sp = document.createElement('span');
-				sp.className = "flex-item history";
-				sp.innerHTML = btn;
-				
-				sp.onclick = function(e) { 
-					
-					//var r = cmd.replace(' ','_');
-					//if( window[''+r] ) window[''+r]();
-					//document.getElementById('console_text').value = e.target.innerHTML;
-					exec1(this.innerHTML);
-				}
-				
-				sp.oncontextmenu = function(e){ e.preventDefault(); document.getElementById('history_div').removeChild(this);}	
-				
-				document.getElementById('history_div').appendChild(sp);
-			}
+			xcmd(btn)
 			
 		}
 		

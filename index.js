@@ -1,4 +1,9 @@
 //var opbeat = require('opbeat').start()
+var mod_rio = require('./lib/mod_rio');
+var mod_up = require('./lib/mod_up');
+var mod_mirror = require('./lib/mod_mirror');
+var mod_median = require('./lib/mod_median');
+var mod_step_colors = require('./lib/mod_step_colors');
 
 var PNG = require('pngjs').PNG;
 
@@ -1210,7 +1215,7 @@ function get_coordinates(w,h)
 	}
 }	
 
-function median( req, res )
+function old_median( req, res )
 {
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
@@ -1252,6 +1257,15 @@ function median( req, res )
 		});
 }
 
+function median(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_median.__median(this),res,"\nImage was medianed\n");
+		
+	});
+		
+}
 
 
 function half( req, res )
@@ -1523,6 +1537,15 @@ function mdown( req, res )
 			
 		}
 		
+		
+	
+				
+		sendImage( mod_mirror.mirror_down(this), res, 'mirror down' );
+					
+	
+		
+		/***
+		
 		var newpng = new PNG ( {
 			
 				width: this.width,
@@ -1575,7 +1598,9 @@ function mdown( req, res )
 				
 			}
 			
-			sendImage(newpng,res,'\nImage mirror downed\n');
+			***/
+			
+		//	sendImage(newpng,res,'\nImage mirror downed\n');
 			
 			
 	});
@@ -1598,7 +1623,7 @@ function mright( req, res )
 			
 		}
 			
-		
+		/***
 		var newpng = new PNG ( {
 			
 				width: this.width*2,
@@ -1645,7 +1670,11 @@ function mright( req, res )
 				
 			}
 			
-			sendImage(newpng, res, '\nImage mirror righted\n');		
+			sendImage(newpng, res, '\nImage mirror righted\n');	
+
+		***/
+		
+		sendImage(mod_mirror.mirror_right(this), res, 'mirror right');	
 			
 	});
 }
@@ -2756,10 +2785,42 @@ function xcombo( req, res )
 	/********** END OF XCOMBO ***************/
 	
 	
+function rio(req, res)
+{
+	//console.log('\nIn rio(...)\n');
+	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_rio.rioForImageData(this), res, 'rio' );
+					
+	});				
+					
+}
+
+function step_colors(req, res)
+{
+	//console.log('\nIn rio(...)\n');
+	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_step_colors.stepColorsForImageData(this), res, 'step colors' );
+					
+	});				
+					
+}
 	
 	
+function up(req, res)
+{
+	//console.log('\nIn rio(...)\n');
 	
-	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_up.upForImageData(this), res, 'up' );
+					
+	});				
+					
+}	
 	
 	
 
@@ -2885,13 +2946,16 @@ app.post('/fill', fill );
 app.post('/prepare_combo', prepare_combo );	
 app.post('/combo', combo );	
 app.post('/prepare_xcombo', prepare_xcombo );	
-app.post('/xcombo', xcombo );	
+app.post('/xcombo', xcombo );
+app.post('/rio', rio );	
+app.post('/step_colors', step_colors);	
 app.post('/send_seed', get_seed );
 app.post('/crop', crop );
 app.post('/precrop', precrop );
 app.post('/random', random );
 app.post('/mdown', mdown );
 app.post('/mright', mright );
+app.post('/up', up );
 app.post('/vortex', vortex );
 app.post('/rotate', rotate );
 app.post('/half', half );
@@ -2910,6 +2974,8 @@ app.post('/right_pixels', right_pixels );
 app.post('/set_collected_pixels',set_collected_pixels);	
 app.post('/init_pixels', init_pixels );
 app.post('/init_boh_pixels', init_boh_pixels );
+app.post('/init_labirint_settings', init_labirint_settings );
+app.get('/get_chaosed_labirint',get_chaosed_labirint);
 app.get('/get_collected', get_collected );
 app.post('/paste',function(request, response) {
 
@@ -3018,6 +3084,13 @@ function copy_image(oldpng)
 			
 }
 
+function get_chaosed_labirint(req, res)
+{
+	glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
+				
+	sendImage(copy_image(glob_pixelsPro_pg_main_image), res, '\n get_chaosed_labirint ok\n');	
+}
+
 function init_boh_pixels(req, res)
 {
 	console.log('\nIn init_boh_pixels(...)\n');
@@ -3029,8 +3102,7 @@ function init_boh_pixels(req, res)
 		}
 		else
 		{
-			glob_pixelsPro_pg_map_image = copy_image(glob_pixelsPro_pg_main_image);
-			glob_pixelsPro_collected = [];
+			
 			
 			var newpng = new PNG(
 			{
@@ -3056,7 +3128,7 @@ function init_boh_pixels(req, res)
 			}	
 			var w = glob_pixelsPro_pg_main_image.width;
 			var h = glob_pixelsPro_pg_main_image.height;
-			var n=500;
+			var n=glob_num_of_strawbery;
 			for(var i=0;i<n;i++)
 			{
 				var rx = getRandomInt(0, w);
@@ -3118,21 +3190,72 @@ function init_pixels(req, res)
 					glob_pixelsPro_pg_main_image.data[index+3]
 				];
 				glob_pixelsPro_pg_main_color=color;
-		// res.writeHead( 200, { 'Content-Type':'text/plain' } );
-		// res.end("ok");
+		glob_pixelsPro_pg_map_image = copy_image(glob_pixelsPro_pg_main_image);
+			glob_pixelsPro_collected = [];
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end("ok");
 		
-		init_boh_pixels(req, res);
 		
-		glob_pixelsPro_pg_main_image = setChaosPixels();
-		
-		var result_png = pixelsPro_redrawPixels_main(x,y);
-						
-		sendImage(result_png, res, '\nLabirint initiation success\n');	
-					
 	});				
 					
 }
 
+function init_labirint_settings(req, res)
+{
+	
+	var body = '';
+
+		req.on('data', function (data) {
+			
+			//console.log("when req.on data");
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("pixels(): error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+			
+			
+			
+		
+			var post = qs.parse(body);
+		
+			var x =  +post['x'];
+			var y =  +post['y'];
+			
+			console.log("x="+x);
+			console.log("y="+y);
+			
+			var nn =  +post['scale_koeficient'];
+			
+			glob_num_of_strawbery =  +post['num_of_strawbery'];
+				
+			init_boh_pixels(req, res);
+	
+			glob_pixelsPro_pg_main_image = setChaosPixels();
+				
+			var result_png = pixelsPro_redrawPixels_main(x,y);
+								
+			sendImage(result_png, res, '\nLabirint initiation step 2 success\n');	
+			
+			
+			
+			
+		});
+		
+	
+					
+}
 
 function setChaosPixels()
 {

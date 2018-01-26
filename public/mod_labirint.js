@@ -32,6 +32,8 @@ function labirint()
 			var scale_koeficient=2;
 			var params = 'x='+x+'&y='+y+'&scale_koeficient='+scale_koeficient+'&num_of_strawbery='+wh;	
 			
+			
+			
 			var xhr2 = new XMLHttpRequest();
 			xhr2.open('POST', '/init_labirint_settings', true);
 			xhr2.responseType = "blob";
@@ -50,7 +52,9 @@ function labirint()
 				newImg.onload = function() {	
 					
 					showScaleDiv(this,0,0);
-							
+					
+					
+					
 					var canvas = document.getElementById("pixels");
 					if(canvas == null) throw new Error("Canvas pixels not found");
 					
@@ -60,7 +64,7 @@ function labirint()
 					ctx.drawImage(newImg, 0, 0,canvas.width,canvas.height);
 					
 					
-					
+					getPassColor();
 				
 		
 					var pcnv = document.getElementById("pixels");
@@ -97,7 +101,7 @@ function labirint()
 								
 								pixelsPro_whenClickedOnLabirint(glob_x_left_top,glob_y_left_top);
 								
-								
+								getPassColor();
 								
 							}
 
@@ -177,6 +181,38 @@ function labirint()
 
 }
 
+function getPassColor()
+{
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '/get_color_for_pass', true);
+		xhr.onload = function() {  
+			
+			if (xhr.readyState != 4) return;
+
+			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText+': '+xhr.response; onerror(error); return; }
+			
+			if(document.getElementById("pcolor")) document.getElementById("pixels_buttons").removeChild(document.getElementById("pcolor"));
+					var arr=null;
+					if(xhr.responseText==',,,') arr=[255,255,255,255];
+					else arr=xhr.responseText.split(",");		
+					console.log(arr);
+					var canvas = document.createElement("canvas");
+					var ctx = canvas.getContext("2d");
+					canvas.id='pcolor';
+					canvas.width = 20;
+					canvas.height = 20;
+					canvas.style.margin="5px";
+					ctx.fillStyle='rgba('+arr[0]+','+arr[1]+','+arr[2]+','+arr[3]/255+')';
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+					document.getElementById("pixels_buttons").appendChild(canvas);
+					
+		}		
+				
+		
+		
+		xhr.send();
+}	
+
 function getChaosedLabirint()
 {
 		var xhr = new XMLHttpRequest();
@@ -205,6 +241,7 @@ function getChaosedLabirint()
 					canvas.height = newImg.height;
 					ctx.drawImage(newImg, 0, 0,canvas.width,canvas.height);
 					
+					getPassColor();
 			}		
 			newImg.src = imageUrl;			
 		}

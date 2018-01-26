@@ -65,53 +65,58 @@
 			return cmd;
 		}
 		
-		function exec1(cmd)
+		function exec1(cmd, params, callback)
 		{
 			if (check(cmd)==false ) return; 
 			if(cmd=='') return;
 			if(cmd==' ') return;
 			if (cmd == 'labirint') labirint();
 			else if (cmd == 'map') map();
-			else if (cmd=='median') s_median();
-			else if (cmd == 'execute script') execute_script();
-			else if (cmd == 'axes minus') both_axes_minus();
-			else if (cmd == 'axes plus') both_axes_plus();
-			//else if (cmd == 'vertical axe minus') vertical_axe_minus();
-			//else if (cmd == 'horizontal axe minus') horizontal_axe_minus();
-			else if (cmd == 'save') save();
-			else if (cmd == 'copy') copy();
-			else if (cmd == 'clean') clean();
+			else if (cmd=='median') s_median(params, callback);
+			else if (cmd == 'execute script') execute_script(params, callback);
+			else if (cmd == 'axes minus') both_axes_minus(params, callback);
+			else if (cmd == 'axes plus') both_axes_plus(params, callback);
+			else if (cmd == 'vertical axe minus') vertical_axe_minus(params, callback);
+			else if (cmd == 'horizontal axe minus') horizontal_axe_minus(params, callback);
+			else if (cmd == 'save') save(params, callback);
+			else if (cmd == 'copy') copy(params, callback);
+			else if (cmd == 'clean') clean(params, callback);
 			//else if (cmd == 'crypto') cripto();
-			else if (cmd == 'colors') get_array_of_colors();
-			else if (cmd == 'floor colors') floor_colors();
-			else if (cmd == 'min colors') min_colors();
-			else if (cmd == 'step colors') s_step_colors();
-			else if (cmd == 'normal colors') normal_colors();
-			else if (cmd == 'combo') combo();
-			else if (cmd == 'breath of chaos') breath_of_chaos();
-			else if (cmd == 'rio') s_rio();
-			else if (cmd == 'up') s_up();
+			else if (cmd == 'colors') s_colors(params, callback);
+			else if (cmd == 'floor colors') floor_colors(params, callback);
+			else if (cmd == 'razn colors') s_razn_colors(params, callback);
+			else if (cmd == 'min colors') min_colors(params, callback);
+			else if (cmd == 'step colors') s_step_colors(params, callback);
+			else if (cmd == 'join colors') s_join_colors(params, callback);
+			else if (cmd == 'odin dva colors') s_odin_dva_colors(params, callback);
+			else if (cmd == 'smooth') s_smooth(params, callback);
+			else if (cmd == 'xminus') xminus(params, callback);
+			else if (cmd == 'normal colors') normal_colors(params, callback);
+			else if (cmd == 'combo') combo(params, callback);
+			else if (cmd == 'breath of chaos') breath_of_chaos(params, callback);
+			else if (cmd == 'rio') s_rio(params, callback);
+			else if (cmd == 'up') s_up(params, callback);
 			else if(cmd == 'paste') paste();
 			//else if (cmd == 'xcombo') xcombo();
 			else if (cmd == 'inverse') inverse();
-			else if (cmd == 'plus') s_plus();
+			else if (cmd == 'plus') s_plus(params, callback);
 			else if (cmd == 'restart')  restart();
-			else if (cmd == 'minus') s_minus();
-			else if (cmd == 'generate seed') generate_seed();
-			else if (cmd == 'border minus') border_minus();
-			else if (cmd == 'border plus') border_plus();
+			else if (cmd == 'minus') s_minus(params, callback);
+			else if (cmd == 'generate seed') generate_seed(params, callback);
+			else if (cmd == 'border minus') border_minus(params, callback);
+			else if (cmd == 'border plus') border_plus(params, callback);
 			//else if (cmd == 'save on server') save_on_server();
 			else if (cmd == 'vortex') vortex();
 			else if (cmd == 'black white') black_white();
 			else if (cmd == 'half') half();
 			else if (cmd == 'rotate plus 90')  rotate_plus_90();
-			else if (cmd == 'rotate 45 degree')   rotate_plus_45();
-			else if (cmd == 'mirror down') s_mirror_down (); 
-			else if (cmd == 'mirror right') s_mirror_right (); 
-			else if (cmd == 'random') random();	
-			else if (cmd == 'rgb++') rgb_plus_plus();
-			else if (cmd == 'rgb--') rgb_minus_minus();
-			else if (cmd == 'fill')  fill();  
+			else if (cmd == 'rotate plus 45')   rotate_plus_45();
+			else if (cmd == 'mirror down') s_mirror_down (params, callback); 
+			else if (cmd == 'mirror right') s_mirror_right (params, callback); 
+			else if (cmd == 'random') random(params, callback);	
+			else if (cmd == 'rgb++') rgb_plus_plus(params, callback);
+			else if (cmd == 'rgb--') rgb_minus_minus(params, callback);
+			else if (cmd == 'fill')  fill(params, callback);  
 			else 
 			{
 				global_client_typing_mode = false;
@@ -141,11 +146,16 @@
 			else if (cmd == '<textarea id="ta77">paste</textarea>') return true;
 			else if (cmd == 'copy')  return true;
 			else if (cmd == 'clean')  return true;
+			else if (cmd == 'xminus') return true;
 			else if (cmd == 'restart')  return true;
 			//else if (cmd == 'cripto script')  return true;
 			else if (cmd == 'colors') return true;
+			else if (cmd == 'smooth') return true;
 			else if (cmd == 'floor colors') return true;
+			else if (cmd == 'razn colors')  return true;
 			else if (cmd == 'step colors') return true;
+			else if (cmd == 'join colors')  return true;
+			else if (cmd == 'odin dva colors') return true;
 			else if (cmd == 'normal colors') return true;
 			else if (cmd == 'min colors') return true;
 			else if (cmd == 'combo')  return true;
@@ -164,7 +174,7 @@
 			else if (cmd == 'black white') return true;
 			else if (cmd == 'half')  return true;
 			else if (cmd == 'rotate plus 90')  return true;
-			else if (cmd == 'rotate 45 degree')   return true;
+			else if (cmd == 'rotate plus 45')   return true;
 			else if (cmd == 'mirror down')  return true;
 			else if (cmd == 'mirror right') return true; 
 			else if (cmd == 'random')  return true;
@@ -191,6 +201,8 @@
 				sp.className = "flex-item history";
 				sp.oncontextmenu = function(e){ 
 					e.preventDefault(); 
+					var r = prompt("Are you sure? Choosen button will be removed. Press 'Ok' if yes");
+					if(r==null) return;
 					document.getElementById('history_div').removeChild(this);
 				}	
 				if(cmd=='paste'||cmd=='<textarea id="ta77">PASTE</textarea>'||cmd == '<textarea id="ta77">paste</textarea>')
@@ -204,10 +216,25 @@
 				sp.innerHTML = cmd;
 				//sp.id='span_button_'+cmd;
 				sp.onclick = function(e) { 
-					
+				
+				
+				if(cmd=='paste'||cmd=='<textarea id="ta77">PASTE</textarea>'||cmd == '<textarea id="ta77">paste</textarea>')
+				{
+					alert('Right click only');
+					return;
+				}
+				
+				
+				
+				
+					sp.style['background-color']='red';
+					setTimeout( function(){	
+					sp.style['background-color']='';
+					}, 100);
 					//var r = cmd.replace(' ','_');
 					//if( window[''+r] ) window[''+r]();
 					//document.getElementById('console_text').value = e.target.innerHTML;
+					console.log(this.innerHTML);
 					exec1(this.innerHTML);
 				}
 				

@@ -54,14 +54,14 @@ function execute_t_script(el)
 		var s = el.getElementsByTagName("textarea")[0].value.trim();
 		s = s.replace(/\s/g," ");
 		document.body.removeChild(document.getElementById("modal_window0"));
-	//	console.log("["+s+"]");
+		
 		///////////// processing random(100,100,100,255) ////////////////
-		var zam =  s.match(/\(\s*(\d{1,3},\d{1,3},*)+\s*\)/g); 
+		var zam =  s.match(/random\(\d{1,3},\d{1,3},\d{1,3},\d{1,3}\)/g); 
 		if (zam )
 		{
 			for (var i=0;i<zam.length;i++)
 			{
-				t = zam[i].replace(/,/g,"%!%!%");
+				t = zam[i].replace(/,/g,"%");
 				s = s.replace(zam[i], t); 
 			}
 		}
@@ -70,8 +70,6 @@ function execute_t_script(el)
 		global_ec_vars_arr = arr;
 		global_ec_vars_arr_index = 0;
 		global_ec_vars_arr_length = arr.length;
-		
-	//	console.log(arr);
 		
 		
 		
@@ -103,23 +101,7 @@ function execute_t_script(el)
 function execute_instruction ( instr, callback)
 {
 	instr = instr.trim();
-	instr = instr.replace(/%!%!%/g,",");
-	
-	var zam =  instr.match(/\(\s*((\d{1,3}(,\d{1,3})*)+)\s*\)/g); 
-	if (zam )
-		{
-			for (var i=0;i<zam.length;i++)
-			{
-				console.log(zam[i]);
-				//t = zam[i].replace(/,/g,"%!%!%");
-				//s = s.replace(zam[i], t); 
-			}
-		}
-		
-		callback();
-		
-	/***
-	
+	instr = instr.replace(/%/g,",");
 	if (instr.match(/random\(\d{1,3},\d{1,3},\d{1,3},\d{1,3}\)/))
 	{
 		instr = instr.replace ("random(","");
@@ -179,11 +161,9 @@ function execute_instruction ( instr, callback)
 	}
 	else
 	{
-		exec1(instr, params);
+		exec1(instr);
 		callback();
 	}
-	
-	****/
 }
 
 

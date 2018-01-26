@@ -4,6 +4,13 @@ var mod_up = require('./lib/mod_up');
 var mod_mirror = require('./lib/mod_mirror');
 var mod_median = require('./lib/mod_median');
 var mod_step_colors = require('./lib/mod_step_colors');
+var mod_odin_dva_colors = require('./lib/mod_odin_dva_colors');
+var mod_join_colors = require('./lib/mod_join_colors');
+var mod_colors = require('./lib/mod_colors');
+var mod_min_colors = require('./lib/mod_min_colors');
+var mod_razn_colors = require('./lib/mod_razn_colors');
+var mod_axes = require('./lib/mod_axes');
+var mod_smooth = require('./lib/mod_smooth');
 
 var PNG = require('pngjs').PNG;
 
@@ -155,6 +162,13 @@ function sendImage(result_png, res, msg)
 	result_png.on('end', function()	{
 		console.log(msg);
 	});
+}
+
+function sendText(result_text, response, msg)
+{
+	console.log(msg);
+	response.writeHead(200, {  'Content-Type': 'text/html' } );
+	response.end(result_text); 
 }
 
 function multiply(req, res)
@@ -1255,6 +1269,16 @@ function old_median( req, res )
 			sendImage(newpng,res,"\nImage was medianed\n");
 						
 		});
+}
+
+function smooth(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_smooth.smooth(this),res,"\nsmooth");
+		
+	});
+		
 }
 
 function median(req, res)
@@ -2797,6 +2821,94 @@ function rio(req, res)
 					
 }
 
+var num_colors=null;
+function set_num_colors(request, res)
+{
+	var body = [];
+  request.on('error', function (err) {
+    console.error(err);
+  });
+  
+  
+  request.on('data',  function (chunk){
+    body.push(chunk);
+  });
+  
+  
+   request.on('end', function() {
+    body = Buffer.concat(body).toString();
+	
+	 var obj = JSON.parse(body);
+	   num_colors=obj.num_colors;
+	   console.log(body);
+	   console.log(''+body);
+	    console.log(''+JSON.parse(body));
+		 console.log(''+JSON.parse(body).num_colors);
+	   sendText(""+num_colors, res, 'set num colors '+num_colors );
+	
+   });
+
+  
+   
+}
+
+function razn_colors(req, res)
+{
+	
+	
+	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_razn_colors.raznColors(this), res, 'razn colors' );
+					
+	});				
+					
+}
+
+
+function min_colors(req, res)
+{
+	
+	if(num_colors == null)
+	{
+		
+		res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("min_colors(): error: call /set_num_colors before");
+		req.connection.destroy();
+		return;
+
+	}
+	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage(mod_min_colors.minColors(num_colors,this), res, 'min colors '+num_colors );
+					
+	});				
+					
+}
+
+function axes(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( module.bothAxesMinus(this), res, 'axes' );
+					
+	});	
+
+}
+
+function colors(req, res)
+{
+	//console.log('\nIn rio(...)\n');
+	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendText(""+mod_colors.getCountOfColors(this), res, 'colors' );
+					
+	});				
+					
+}
+
 function step_colors(req, res)
 {
 	//console.log('\nIn rio(...)\n');
@@ -2809,6 +2921,29 @@ function step_colors(req, res)
 					
 }
 	
+function odin_dva_colors(req, res)
+{
+	//console.log('\nIn rio(...)\n');
+	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_odin_dva_colors.odinDvaColorsForImageData(this), res, 'odin dva colors' );
+					
+	});				
+					
+}
+
+function join_colors(req, res)
+{
+	//console.log('\nIn rio(...)\n');
+	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_join_colors.joinColorsForImageData(this), res, 'join colors' );
+					
+	});				
+					
+}
 	
 function up(req, res)
 {
@@ -2948,7 +3083,14 @@ app.post('/combo', combo );
 app.post('/prepare_xcombo', prepare_xcombo );	
 app.post('/xcombo', xcombo );
 app.post('/rio', rio );	
+app.post('/set_num_colors', set_num_colors);
+app.post('/min_colors', min_colors);
+app.post('/colors', colors);
+app.post('/smooth', smooth);
+app.post('/razn_colors', razn_colors);		
 app.post('/step_colors', step_colors);	
+app.post('/odin_dva_colors', odin_dva_colors);	
+app.post('/join_colors', join_colors);	
 app.post('/send_seed', get_seed );
 app.post('/crop', crop );
 app.post('/precrop', precrop );
@@ -2969,6 +3111,7 @@ app.post('/blackwhite', blackwhite );
 app.post('/inverse', inverse );
 app.post('/borderplus', borderplus );
 app.post('/borderminus', borderminus );
+app.get('/get_color_for_pass', get_color_for_pass );
 app.post('/pixels', pixels );
 app.post('/right_pixels', right_pixels );
 app.post('/set_collected_pixels',set_collected_pixels);	
@@ -3168,6 +3311,126 @@ function init_boh_pixels(req, res)
 					
 }
 
+function pixelsPro_getNeighborsColors(x,y,color)
+{
+	var x0=x-1;
+	var x1=x+1;
+	var y0=y-1;
+	var y1=y+1;
+	
+	
+	var colors=[color];
+		var index = glob_pixelsPro_pg_main_image.width * (y) + (x0) << 2;
+				color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+				
+				
+	var f=false;
+	for(var i=0;i<colors.length;i++)
+	{
+		if((colors[i][0]==color[0])&&(colors[i][1]==color[1])&&(colors[i][2]==color[2])&&(colors[i][3]==color[3]))
+		{
+			f=true;
+			break;
+		}
+	}
+	if(f==false) colors.push(color);
+				
+				index = glob_pixelsPro_pg_main_image.width * (y) + (x1) << 2;
+				color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+				
+				f=false;
+	for(var i=0;i<colors.length;i++)
+	{
+		if((colors[i][0]==color[0])&&(colors[i][1]==color[1])&&(colors[i][2]==color[2])&&(colors[i][3]==color[3]))
+		{
+			f=true;
+			break;
+		}
+	}
+	if(f==false) colors.push(color);
+				
+				index = glob_pixelsPro_pg_main_image.width * (y0) + (x) << 2;
+				color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+				
+				f=false;
+				for(var i=0;i<colors.length;i++)
+				{
+					if((colors[i][0]==color[0])&&(colors[i][1]==color[1])&&(colors[i][2]==color[2])&&(colors[i][3]==color[3]))
+					{
+						f=true;
+						break;
+					}
+				}
+				if(f==false) colors.push(color);
+				
+				index = glob_pixelsPro_pg_main_image.width * (y1) + (x) << 2;
+				var color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+				
+				f=false;
+				for(var i=0;i<colors.length;i++)
+				{
+					if((colors[i][0]==color[0])&&(colors[i][1]==color[1])&&(colors[i][2]==color[2])&&(colors[i][3]==color[3]))
+					{
+						f=true;
+						break;
+					}
+				}
+				if(f==false) colors.push(color);
+				
+				color=glob_pixelsPro_pg_main_color;
+				
+				var grey_color = [127,127,127,255];
+				
+				for(var i=0;i<colors.length;i++)
+				{
+					if((colors[i][0]==color[0])&&(colors[i][1]==color[1])&&(colors[i][2]==color[2])&&(colors[i][3]==color[3]))
+					{
+						
+						colors.splice(i,1);
+						break;
+						
+					}
+					
+					if(pixelsPro_array_equals(colors[i],grey_color)) colors.splice(i,1);
+				}
+				
+				return colors;
+	
+}
+
+function define_color_for_pass(x,y,color)
+{
+	var colors = pixelsPro_getNeighborsColors(x,y,color);
+	if(colors.length==0) return [];
+	return colors[getRandomInt(0,colors.length)];
+}
+
+function get_color_for_pass(req, res)
+{
+	if(glob_pixelsPro_color_for_pass.length==0) result_text='255,255,255,255';
+	else result_text=glob_pixelsPro_color_for_pass.join(",");
+	sendText(result_text, res, 'get_color_for_pass');
+}
 
 function init_pixels(req, res)
 {
@@ -3192,6 +3455,9 @@ function init_pixels(req, res)
 				glob_pixelsPro_pg_main_color=color;
 		glob_pixelsPro_pg_map_image = copy_image(glob_pixelsPro_pg_main_image);
 			glob_pixelsPro_collected = [];
+			
+			glob_pixelsPro_color_for_pass = define_color_for_pass(x,y,color);
+			
 		res.writeHead( 200, { 'Content-Type':'text/plain' } );
 		res.end("ok");
 		
@@ -3365,8 +3631,24 @@ function pixels(req,res)
 				
 				
 				var color = pixelsPro_getColorArrayFromImageData(x,y);
+				
 				//wall
-				// if(pixelsPro_array_equals(glob_pixelsPro_pg_main_color,color)==false)
+				if(glob_pixelsPro_color_for_pass.length>0)
+				{
+					if(pixelsPro_array_equals(glob_pixelsPro_color_for_pass,color)==false)
+					{
+						console.log("#777");
+						if(pixelsPro_array_equals(glob_pixelsPro_pg_main_color,color)==false)
+						{
+							console.log("#888");
+								var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+							console.log("#999");
+								sendImage(result_png, res, '\n5. labirint not ok\n');	
+								
+								return;
+						}
+					}
+				}
 				// {
 					// var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
 			
@@ -3389,7 +3671,9 @@ function pixels(req,res)
 					//	var imageData = context.getImageData(x,y,1,1);
 							
 						var result_png = pixelsPro_redrawPixels_main(x,y);
-						
+						console.log("testing 111");
+						glob_pixelsPro_color_for_pass = define_color_for_pass(x,y,color);
+						console.log("testing 222 "+glob_pixelsPro_color_for_pass);
 						sendImage(result_png, res, '\n5. labirint ok\n');	
 					}
 					else

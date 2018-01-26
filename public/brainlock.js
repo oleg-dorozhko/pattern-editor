@@ -91,6 +91,66 @@ function stopProgress()
 	clearInterval(glob_intervalID); 
 }
 
+function textToServerAndReturnText(txt, url, callback, onerror)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', url, true);
+	xhr.responseType = "text";
+	xhr.onload = function(e) {  
+		
+		if (xhr.readyState != 4) return;
+
+		if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; onerror(error); return; }
+		
+		var blob_from_server = xhr.response;
+		
+		callback( blob_from_server );	
+		
+	}
+	
+	xhr.send(blob);
+}
+
+function blobToServerAndReturnText(blob, url, callback, onerror)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', url, true);
+	xhr.responseType = "text";
+	xhr.onload = function(e) {  
+		
+		if (xhr.readyState != 4) return;
+
+		if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; onerror(error); return; }
+		
+		var blob_from_server = xhr.response;
+		
+		callback( blob_from_server );	
+		
+	}
+	
+	xhr.send(blob);
+}
+
+function sendImageToUrlGetText(canvas_id, url, callback)
+{
+	startProgress();
+	getImageFromCanvas( canvas_id, function(blob) { 
+	blobToServerAndReturnText( blob, url, function( msg_from_server ) {
+		
+				stopProgress();
+				if (callback) callback(msg_from_server);
+				
+				
+			}, function(msg) {
+			
+				stopProgress();
+				console.log("sendImageToUrlGetText(): Was error: "+msg);
+				throw new Error(msg);
+			
+		}); 
+	});
+}
+
 function transform(canvas_id, action, callback)
 {
 	startProgress();

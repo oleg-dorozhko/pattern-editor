@@ -32,17 +32,55 @@ function getRndColor()
 	
 }
 
+function includesColor(colors, color)
+{
+	for(var i=0;i<colors.length;i++)
+	{
+		if(
+					(colors[i][0] == color[0]) && (colors[i][1] == color[1]) &&
+					(colors[i][2] == color[2]) && (colors[i][3]== color[3])
+					
+		) 
+			{
+				return true;
+			}
+	}
+	return false;
+}
 
 function gen()
 {
 	var s = prompt("enter number");
-		
+	if(s==null) return; 	
+	
 	var wh = Number(s.trim());
 	
 	var canvas5 = document.createElement("canvas");
 	canvas5.width = wh;
 	canvas5.height = wh;
 	var context5 = canvas5.getContext("2d");
+	
+	var s2 = prompt("enter number of random colors");
+	if(s2==null) return; 
+	
+	var wh2 = Number(s2.trim());
+	
+	if(wh2==0) wh2=wh*wh;
+	
+	var randoms = [];
+	while(true)
+	{
+		var rgba = getRndColor();
+		if(includesColor(randoms,rgba)==false)
+		{
+			randoms.push(rgba);
+			if(randoms.length==wh2) break;
+		}
+	}
+	
+	
+	
+	
 	
 	var imageData = context5.getImageData(0,0,wh,wh);
 	
@@ -54,7 +92,7 @@ function gen()
 			{
 				
 				//var imgData = context2.getImageData(i,j,1,1);
-				var rgba = getRndColor();
+				var rgba = randoms[getRandomInt(0,randoms.length)];
 				
 				var obj = {};
 				obj.i = i;

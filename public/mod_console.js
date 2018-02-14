@@ -120,7 +120,7 @@
 			else 
 			{
 				global_client_typing_mode = false;
-				alert('mod_console:error: Unknown command ['+cmd+']');
+				console.log('mod_console:error: Unknown command ['+cmd+']');
 				return false;
 			}
 			
@@ -184,7 +184,7 @@
 			else 
 			{
 				global_client_typing_mode = false;
-				alert('mod_console:error: Unknown command ['+cmd+']');
+				console.log('mod_console:error: Unknown command ['+cmd+']');
 				return false;
 			}
 			global_client_typing_mode = false;
@@ -361,7 +361,7 @@ function mod_console_js_showConsole(e)
 			console.log(e);
 			if(e.code == "Enter")
 			{
-				alert('catch: '+this.value);
+				console.log('catch: '+this.value);
 				e.preventDefault();
 			}
 			

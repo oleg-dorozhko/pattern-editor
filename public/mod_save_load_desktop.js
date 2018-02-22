@@ -274,7 +274,7 @@ function parseTextAreaAndSaveToLocalStore()
 	var div = document.getElementById("modal_window0"); 
 	if ( div != null )
 	{
-		var s0 = div.getElementsByTagName("textarea")[0].innerHTML;
+		var s0 = prompt("Paste your configuration here:");//div.getElementsByTagName("textarea")[0].innerHTML;
 		try
 		{
 			var obj = JSON.parse(s0);

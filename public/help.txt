@@ -17,11 +17,7 @@ When paste in modal window use mouse (not a mouse) and then click 'save'
 
 8. Contact to me: email: oleg.dorozhko@gmail.com
   
-9. Donation ( for financing implementation many other cool buttons and colorfull ideas): 
-
-	3Kd5JY5KwYimF8C6R1a2hfHwT3CyALiyJp
-	
-This is project bitcoin wallet.
+9. Donation opportunities
 
 10. You can save and load your desktop buttons and saved images and working canvas image. Just press 's' for save or 'l' for load.
 

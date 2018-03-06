@@ -1,0 +1,11 @@
+'median', 'execute script', 'axes minus', 'axes plus', 'vertical axe minus', 'horizontal axe minus',
+
+'save', 'copy', 'clean', 'crypto', 'colors', 'floor colors', 'razn colors', 'min colors', 'step colors',
+
+'join colors', 'odin dva colors', 'smooth', 'xminus', 'normal colors', 'combo', 'breath of chaos','rio','up',
+
+'paste','xcombo','inverse','plus','restart','minus','generate seed','border minus','border plus',
+		
+'save on server', 'vortex',	'black white', 'half', 'rotate plus 90', 'rotate plus 45', 'mirror down', 'mirror right', 'random',	
+			
+'rgb++', 'rgb--', 'fill', '<textarea id="ta77">PASTE</textarea>', '<textarea id="ta77">paste</textarea>', 'cripto script',

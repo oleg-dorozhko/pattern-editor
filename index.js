@@ -7,6 +7,7 @@ var mod_step_colors = require('./lib/mod_step_colors');
 var mod_odin_dva_colors = require('./lib/mod_odin_dva_colors');
 var mod_join_colors = require('./lib/mod_join_colors');
 var mod_colors = require('./lib/mod_colors');
+var mod_gcombo = require('./lib/mod_gcombo');
 var mod_min_colors = require('./lib/mod_min_colors');
 var mod_razn_colors = require('./lib/mod_razn_colors');
 var mod_axes = require('./lib/mod_axes');
@@ -1290,6 +1291,19 @@ function median(req, res)
 	});
 		
 }
+
+
+function gcombo(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_gcombo.__gcombo(this),res,"\nImage was gcombed\n");
+		
+	});
+		
+}
+
+
 
 
 function half( req, res )
@@ -3086,6 +3100,7 @@ app.post('/rio', rio );
 app.post('/set_num_colors', set_num_colors);
 app.post('/min_colors', min_colors);
 app.post('/colors', colors);
+app.post('/gcombo', gcombo);
 app.post('/smooth', smooth);
 app.post('/razn_colors', razn_colors);		
 app.post('/step_colors', step_colors);	

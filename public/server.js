@@ -28,6 +28,11 @@ function s_rio()
 	transform("canvas", '/rio'); 
 }
 
+function s_gcombo()
+{
+	transform("canvas", '/gcombo'); 
+}
+
 function s_razn_colors()
 {
 	

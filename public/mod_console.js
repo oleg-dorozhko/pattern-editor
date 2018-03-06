@@ -93,6 +93,7 @@
 			else if (cmd == 'xminus') xminus(params, callback);
 			else if (cmd == 'normal colors') normal_colors(params, callback);
 			else if (cmd == 'combo') combo(params, callback);
+			else if (cmd == 'gcombo') s_gcombo(params, callback);
 			else if (cmd == 'breath of chaos') breath_of_chaos(params, callback);
 			else if (cmd == 'rio') s_rio(params, callback);
 			else if (cmd == 'up') s_up(params, callback);
@@ -152,6 +153,7 @@
 			else if (cmd == 'colors') return true;
 			else if (cmd == 'smooth') return true;
 			else if (cmd == 'floor colors') return true;
+			else if (cmd == 'gcombo')  return true;
 			else if (cmd == 'razn colors')  return true;
 			else if (cmd == 'step colors') return true;
 			else if (cmd == 'join colors')  return true;

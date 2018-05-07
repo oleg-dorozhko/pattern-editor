@@ -1,7 +1,26 @@
-function vortex()
+function vortex(params,callback)
 {
-	transform("canvas", '/vortex');
+	if(params)
+	{
+		if(callback)
+		{
+			
+			transform("canvas", '/vortex',callback);
+			
+			
+			
+		}
+		else{
+			
+			transform("canvas", '/vortex',callback);
+		}
+		
+		//logg('vortex '+params.join(" ")); 
+	}
+	else{
+		transform("canvas", '/vortex',callback);
+		//logg('vortex'); 
+	}
 	
-	logg('vortex'); 
 	
 }

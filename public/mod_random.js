@@ -86,15 +86,12 @@ function random_with_param(n1,n2,n3,n4)
 			context = canvas.getContext("2d");
 			context.putImageData(im,0,0);
 			
-			setTimeout( function(){
-				logg('random('+r+','+g+','+b+',255)'); //after or before? what question
-			}, 100 );	
-			
+		
 			
 			
 }
 
-function random()
+function random(params,callback)
 {
 	/******
 	console.log((255+2) % 256 );
@@ -128,7 +125,20 @@ function random()
 	var g = col[1];
 	var b = col[2];
 	var a = 0;
+		if(params)
+		{
+			r = Number(params[0].trim());
+			if(r<0) return;
+			if(r>255) return;
 			
+			g = Number(params[1].trim());
+			if(g<0) return;
+			if(g>255) return;
+			
+			b = Number(params[2].trim());
+			if(b<0) return;
+			if(b>255) return;
+		}			
 			
 
 			for (var y = 0; y < h; y++) {
@@ -159,9 +169,9 @@ function random()
 			context.putImageData(im,0,0);
 			
 			setTimeout( function(){
-				logg('random('+r+','+g+','+b+',255)'); //after or before? what question
+					if(callback) callback([r,g,b,255]);
+				//logg('random('+r+','+g+','+b+',255)'); //after or before? what question
 			}, 100 );	
-			
 			
 			
 			
@@ -234,7 +244,8 @@ function add_cyclic()
 			context.putImageData(im,0,0);
 			
 			setTimeout( function(){
-				logg('random('+r+','+g+','+b+',255)'); //after or before? what question
+				if(callback) callback();
+			//	logg('random('+r+','+g+','+b+',255)'); //after or before? what question
 			}, 100 );	
 			
 			

@@ -30,6 +30,21 @@ function unselectAll()
 	}
 }
 
+
+function select(params,callback)
+{
+	if(params)
+	{
+		var id = params[0].trim();
+		selectSaveCanvas({target: document.getElementById(id)});
+		if(callback) callback();
+		return;
+	}
+	
+	return;
+}
+
+
 function selectSelectableElement(el)
 {
 	if(el.getAttribute("bordered") == "false") 

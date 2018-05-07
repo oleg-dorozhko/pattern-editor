@@ -13,6 +13,8 @@ function imageToCanvas(img, canvas_id, callback)
 	
 }
 
+
+
 function getImageFromBlob(blob, callback)
 {
 	var newImg = document.createElement("img");
@@ -62,6 +64,35 @@ function blobToServer(blob, action, callback, onerror)
 	xhr.send(blob);
 }
 
+/**
+function blobAndParamsToServer( blob, params, action, callback, onerror)
+{  
+    
+	var args = '';
+	var t='';
+	
+	for(var key in params) { args += (''+t+''+key+'='+encodeURIComponent(params[key])); t='&';}
+	
+	args  += '&md5='+imageToMd5(canvas_id);
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', '/pre_'+action, true);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.responseType = "text";
+	xhr.onload = function(e) {  
+		
+		if (xhr.readyState != 4) return;
+
+		if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; onerror(error); return; }
+		
+		
+		blobToServer(blob, '/'+action, callback, onerror);
+	}
+	
+	xhr.send(args);
+}
+**/
+
 function redrawProgress( progressBar )
 {
 	if(progressBar.value >= 99)  progressBar.value = 0;
@@ -95,6 +126,7 @@ function textToServerAndReturnText(txt, url, callback, onerror)
 {
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', url, true);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	xhr.responseType = "text";
 	xhr.onload = function(e) {  
 		
@@ -108,7 +140,28 @@ function textToServerAndReturnText(txt, url, callback, onerror)
 		
 	}
 	
-	xhr.send(blob);
+	xhr.send(txt);
+}
+
+function textToServerAndReturnBlob(txt, url, callback, onerror)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', url, true);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.responseType = "blob";
+	xhr.onload = function(e) {  
+		
+		if (xhr.readyState != 4) return;
+
+		if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; if(onerror) { onerror(error); return; } else throw new Error(error); }
+		
+		var blob_from_server = xhr.response;
+		
+		callback( blob_from_server );	
+		
+	}
+	
+	xhr.send(txt);
 }
 
 function blobToServerAndReturnText(blob, url, callback, onerror)
@@ -171,6 +224,48 @@ function transform(canvas_id, action, callback)
 			
 		}); 
 	});
+	 
+}
+
+
+function blobToServerForMD5(blob, url, callback, onerror)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', url, true);
+	xhr.responseType = "text";
+	xhr.onload = function(e) {  
+		
+		if (xhr.readyState != 4) return;
+
+		if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText; onerror(error); return; }
+		
+		var blob_from_server = xhr.response;
+		
+		callback( blob_from_server );	
+		
+	}
+	
+	xhr.send(blob);
+}
+
+function ident(canvas_id, action, callback)
+{
+	
+	getImageFromCanvas( canvas_id, function(blob) { 
+	
+		blobToServerForMD5(blob, 'ident', function( data ) {
+			if (callback) callback(data);
+				});	
+				
+			
+		}, function(msg) {
+			
+			
+			console.log("transform(): Was error: "+msg);
+			throw new Error(msg);
+			
+		}); 
+	
 	 
 }
 

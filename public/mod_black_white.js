@@ -1,5 +1,5 @@
 function black_white() 
 {  
-	transform("canvas", '/blackwhite');
-	logg('blackwhite');
+	transform("canvas", '/blackwhite', function(){logg('blackwhite');});
+	
 } 

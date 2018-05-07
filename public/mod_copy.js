@@ -56,7 +56,7 @@ function sendBlobToServerForCopy(blob)
 }
 
 
-function copy()
+function copy(params, callback)
 {
 	if(glob_last_selected_canvas_id==null) return;
 	
@@ -77,7 +77,7 @@ function copy()
 	context.putImageData(im,0,0);
 			
 			setTimeout( function(){
-				logg("copy from "+glob_last_selected_canvas_id); //after or before? what question
+					if(callback) callback(); //after or before? what question
 			}, 100 );	
 			
 	/********

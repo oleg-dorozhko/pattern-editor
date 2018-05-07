@@ -1,70 +1,80 @@
-function s_plus()
+function s_plus(params,callback)
 {
-	transform("canvas", '/plus'); 
+	transform("canvas", '/plus',callback); 
 }
 
-function s_minus()
+function s_ident( params, callback )
 {
-	transform("canvas", '/minus'); 
+	transform("canvas", '/ident', callback ); 
 }
 
-function s_mirror_right()
+function s_minus(params,callback)
 {
-	transform("canvas", '/mright'); 
+	transform("canvas", '/minus',callback); 
 }
 
-function s_mirror_down()
+function s_mirror_right(params,callback)
 {
-	transform("canvas", '/mdown'); 
+	transform("canvas", '/mright',callback); 
 }
 
-function s_median()
+function s_mirror_down(params,callback)
 {
-	transform("canvas", '/median'); 
+	transform("canvas", '/mdown',callback); 
 }
 
-function s_rio()
+function s_median(params,callback)
 {
-	transform("canvas", '/rio'); 
+	transform("canvas", '/median',callback); 
 }
 
-function s_gcombo()
+function s_rio(params,callback,callback)
 {
-	transform("canvas", '/gcombo'); 
+	transform("canvas", '/rio',callback); 
 }
 
-function s_razn_colors()
+function s_gcombo(params,callback)
+{
+	transform("canvas", '/gcombo',callback); 
+}
+
+function s_brain(params,callback)
+{
+	transform("canvas", '/brain',callback); 
+}
+
+function s_razn_colors(params,callback)
 {
 	
 	//textToServerAndReturnText(txt, url, callback, onerror)
-	transform("canvas", '/razn_colors'); 
+	transform("canvas", '/razn_colors',callback); 
 }
 
-function s_step_colors()
+function s_step_colors(params,callback)
 {
-	transform("canvas", '/step_colors'); 
+	transform("canvas", '/step_colors',callback); 
 }
-function s_join_colors()
+function s_join_colors(params,callback)
 {
-	transform("canvas", '/join_colors'); 
+	transform("canvas", '/join_colors',callback); 
 }
-function s_odin_dva_colors()
+function s_odin_dva_colors(params,callback)
 {
-	transform("canvas", '/odin_dva_colors'); 
-}
-
-function s_smooth()
-{
-	transform("canvas", '/smooth'); 
+	transform("canvas", '/odin_dva_colors',callback); 
 }
 
-function s_colors()
+function s_smooth(params,callback)
 {
-	sendImageToUrlGetText( "canvas", '/colors', colors ); 
+	transform("canvas", '/smooth',callback); 
+}
+
+function s_colors(params,callback)
+{
+	sendImageToUrlGetText( "canvas", '/colors', colors, callback ); 
 }
 
 
-function s_up()
+function s_up(params,callback)
 {
-	transform("canvas", '/up'); 
+	transform("canvas", '/up',callback); 
 }

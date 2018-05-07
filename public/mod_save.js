@@ -46,7 +46,7 @@ function selectSaveCanvas(e)
 
 
 
-function save()
+function save(params,callback)
 {
 	
 	var canvas = document.getElementById("canvas");
@@ -83,7 +83,10 @@ function save()
 	save_context.putImageData(context.getImageData(0,0,canvas.width,canvas.height),0,0);
 	
 	setTimeout( function(){
-				logg('save('+cnv.id+')'); //after or before? what question
+		
+		if(callback) callback();
+		
+		//		logg('save('+cnv.id+')'); //after or before? what question
 			}, 100 );	
 			
 		

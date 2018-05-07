@@ -256,44 +256,53 @@ function sendPostWithParametersOnServer( action, params  )
 }
 
 
-function server_crop(x,y,flag)
+function server_crop(x,y,flag,callback)
 {
-	
-	var canvas =  document.getElementById("canvas");
+	ident("canvas", 'ident', function(data2){
+					
+					
+					var md5=data2;
+				//	console.log('md5='+md5);
+					
+					
+		var canvas =  document.getElementById("canvas");
 
-	var w = canvas.width;
-	var h = canvas.height;
-	var params = 'x='+x+'&y='+y+'&w='+w+'&h='+h+'&flag='+flag;		
-	
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', '/precrop', true);
-	//xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	
-	xhr.onload = function(e) {  
+		var w = canvas.width;
+		var h = canvas.height;
+		var params = 'x='+x+'&y='+y+'&w='+w+'&h='+h+'&flag='+flag+'&md5='+encodeURIComponent(md5);		
 		
-			if (xhr.readyState != 4) return;
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/precrop', true);
+		//xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		
+		xhr.onload = function(e) {  
 			
-			if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText+': '+xhr.response; throw new Error(error);  }
+				if (xhr.readyState != 4) return;
+				
+				if (xhr.status != 200) {  var error = xhr.status + ': ' + xhr.statusText+': '+xhr.response; throw new Error(error);  }
 
-			/*******
-    
-            var buffer = xhr.response;
-            var dataview = new DataView(buffer);
-            var ints = new Uint8ClampedArray(buffer.byteLength);
-            for (var i = 0; i < ints.length; i++) {
-                ints[i] = dataview.getUint8(i);
-            }
-			
-			alert(ints[10]);
-			
-			************/
-			
-            transform("canvas",'/crop');
+				/*******
+		
+				var buffer = xhr.response;
+				var dataview = new DataView(buffer);
+				var ints = new Uint8ClampedArray(buffer.byteLength);
+				for (var i = 0; i < ints.length; i++) {
+					ints[i] = dataview.getUint8(i);
+				}
+				
+				alert(ints[10]);
+				
+				************/
+				
+				transform("canvas",'/crop',callback);
 			
 	}
 
 	xhr.send(params);
 	
+	
+	
+	});
 	
 }
 

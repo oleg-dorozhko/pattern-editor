@@ -4,7 +4,7 @@ function inv ( a )
 }
 
 
-function inverse()
+function inverse(params, callback)
 {
 		
 	var canvas = document.getElementById("canvas");
@@ -53,7 +53,7 @@ function inverse()
 			context = canvas.getContext("2d");
 			context.putImageData(im,0,0);
 			
-			setTimeout( function(){ logg('inverse'); 	}, 100 );	
+			setTimeout( function(){ if(callback) callback();	}, 100 );	
 			
 			
 			

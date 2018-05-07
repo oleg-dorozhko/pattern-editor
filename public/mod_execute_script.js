@@ -53,9 +53,12 @@ function execute_t_script(el)
 	{		
 		var s = el.getElementsByTagName("textarea")[0].value.trim();
 		s = s.replace(/\s/g," ");
+		
 		document.body.removeChild(document.getElementById("modal_window0"));
 	//	console.log("["+s+"]");
 		///////////// processing random(100,100,100,255) ////////////////
+		
+		/***
 		var zam =  s.match(/\(\s*(\d{1,3},\d{1,3},*)+\s*\)/g); 
 		if (zam )
 		{
@@ -65,6 +68,7 @@ function execute_t_script(el)
 				s = s.replace(zam[i], t); 
 			}
 		}
+		**/
 		//////////////////////////////////////////////////
 		var arr = s.split(",");
 		global_ec_vars_arr = arr;
@@ -82,6 +86,7 @@ function execute_t_script(el)
 		
 		execute_instruction ( global_ec_vars_arr[global_ec_vars_arr_index], function(){ 
 		
+			console.log(''+global_ec_vars_arr[global_ec_vars_arr_index]);
 			global_ec_vars_arr_index++;
 			setTimeout ( execute_t_script, 500 );
 			
@@ -100,11 +105,45 @@ function execute_t_script(el)
 	
 }
 
+function dvummi(instr)
+{
+	instr = instr.trim();
+	var arr = instr.split(" ");
+	
+	for(var i=0;i<arr.length;i++)
+	{
+		var s="";
+		for(var j=0;j<i+1;j++)
+		{
+			s+= (arr[j]+" ");
+		}
+		s=s.trim();
+		if(check(s)==true) return [s,i+1,arr];
+	}
+	return null;
+	
+}
+
+
 function execute_instruction ( instr, callback)
 {
 	instr = instr.trim();
-	instr = instr.replace(/%!%!%/g,",");
+	//instr = instr.replace(/%!%!%/g,",");
 	
+	var params=[];
+	var arr = dvummi(instr);
+	if(arr==null)
+	{
+		
+	}
+	else
+	{
+		for(var j=arr[1];j<arr[2].length;j++)
+		{
+			params.push(arr[2][j]);
+		}
+	
+	/**
 	var zam =  instr.match(/\(\s*((\d{1,3}(,\d{1,3})*)+)\s*\)/g); 
 	if (zam )
 		{
@@ -115,8 +154,14 @@ function execute_instruction ( instr, callback)
 				//s = s.replace(zam[i], t); 
 			}
 		}
+	**/	
 		
-		callback();
+		//nuzhno otdelit muh ot kotlet v instr pri pomoschi check from mode consol
+		exec1(arr[0], params, function(){   callback();	});	
+		
+	
+	}
+	
 		
 	/***
 	

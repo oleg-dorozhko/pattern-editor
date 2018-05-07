@@ -70,6 +70,18 @@
 			if (check(cmd)==false ) return; 
 			if(cmd=='') return;
 			if(cmd==' ') return;
+			
+			if(callback==undefined)
+			{
+				callback  = function(result_data)
+				{
+					
+					if(result_data) console.log(''+cmd+' '+result_data.join(" "));
+					else console.log(''+cmd);
+				}
+			}
+			
+			
 			if (cmd == 'labirint') labirint();
 			else if (cmd == 'map') map();
 			else if (cmd=='median') s_median(params, callback);
@@ -86,10 +98,17 @@
 			else if (cmd == 'floor colors') floor_colors(params, callback);
 			else if (cmd == 'razn colors') s_razn_colors(params, callback);
 			else if (cmd == 'min colors') min_colors(params, callback);
+			else if (cmd == 'ident') s_ident(params, callback);
 			else if (cmd == 'step colors') s_step_colors(params, callback);
+			else if (cmd == 'brain') s_brain(params, callback);
+			else if (cmd == 'generate random seed')  generate_random_seed(params, callback);
+			else if (cmd == 'gen rnd seed')  generate_random_seed(params, callback);
 			else if (cmd == 'join colors') s_join_colors(params, callback);
 			else if (cmd == 'odin dva colors') s_odin_dva_colors(params, callback);
+			else if (cmd == 'crop lt') crop_lt(params, callback);
+			else if (cmd == 'crop rb') crop_rb(params, callback);
 			else if (cmd == 'smooth') s_smooth(params, callback);
+			else if (cmd == 'select') select(params, callback);
 			else if (cmd == 'xminus') xminus(params, callback);
 			else if (cmd == 'normal colors') normal_colors(params, callback);
 			else if (cmd == 'combo') combo(params, callback);
@@ -99,7 +118,7 @@
 			else if (cmd == 'up') s_up(params, callback);
 			else if(cmd == 'paste') paste();
 			//else if (cmd == 'xcombo') xcombo();
-			else if (cmd == 'inverse') inverse();
+			else if (cmd == 'inverse') inverse(params, callback);
 			else if (cmd == 'plus') s_plus(params, callback);
 			else if (cmd == 'restart')  restart();
 			else if (cmd == 'minus') s_minus(params, callback);
@@ -107,11 +126,13 @@
 			else if (cmd == 'border minus') border_minus(params, callback);
 			else if (cmd == 'border plus') border_plus(params, callback);
 			//else if (cmd == 'save on server') save_on_server();
-			else if (cmd == 'vortex') vortex();
-			else if (cmd == 'black white') black_white();
-			else if (cmd == 'half') half();
-			else if (cmd == 'rotate plus 90')  rotate_plus_90();
-			else if (cmd == 'rotate plus 45')   rotate_plus_45();
+			else if (cmd == 'vortex') vortex(params, callback);
+			else if (cmd == 'black white') black_white(params, callback);
+			else if (cmd == 'half') half(params, callback);
+			else if (cmd == 'rotate plus 90')  rotate_plus_90(params, callback);
+			else if (cmd == 'rotate plus 45')   rotate_plus_45(params, callback);
+			else if (cmd == 'paint over')   paint_over(params, callback);
+			else if (cmd == 'rotate any')   rotate_any(params, callback);
 			else if (cmd == 'mirror down') s_mirror_down (params, callback); 
 			else if (cmd == 'mirror right') s_mirror_right (params, callback); 
 			else if (cmd == 'random') random(params, callback);	
@@ -124,6 +145,8 @@
 				console.log('mod_console:error: Unknown command ['+cmd+']');
 				return false;
 			}
+			
+			
 			
 			global_client_typing_mode = false;
 		}
@@ -146,6 +169,13 @@
 			else if (cmd == '<textarea id="ta77">PASTE</textarea>') return true;
 			else if (cmd == '<textarea id="ta77">paste</textarea>') return true;
 			else if (cmd == 'copy')  return true;
+			else if (cmd == 'gen rnd seed')   return true;
+			else if (cmd == 'generate random seed')     return true;
+			else if (cmd == 'brain')  return true;
+			else if (cmd == 'crop rb') return true;
+			else if (cmd == 'select')  return true;
+			else if (cmd == 'crop lt') return true;
+			else if (cmd == 'ident') return true;
 			else if (cmd == 'clean')  return true;
 			else if (cmd == 'xminus') return true;
 			else if (cmd == 'restart')  return true;
@@ -156,6 +186,7 @@
 			else if (cmd == 'gcombo')  return true;
 			else if (cmd == 'razn colors')  return true;
 			else if (cmd == 'step colors') return true;
+			else if (cmd == 'paint over')  return true;
 			else if (cmd == 'join colors')  return true;
 			else if (cmd == 'odin dva colors') return true;
 			else if (cmd == 'normal colors') return true;
@@ -177,6 +208,7 @@
 			else if (cmd == 'half')  return true;
 			else if (cmd == 'rotate plus 90')  return true;
 			else if (cmd == 'rotate plus 45')   return true;
+			else if (cmd == 'rotate any')     return true;
 			else if (cmd == 'mirror down')  return true;
 			else if (cmd == 'mirror right') return true; 
 			else if (cmd == 'random')  return true;
@@ -186,7 +218,7 @@
 			else 
 			{
 				global_client_typing_mode = false;
-				console.log('mod_console:error: Unknown command ['+cmd+']');
+				//console.log('mod_console:error: Unknown command ['+cmd+']');
 				return false;
 			}
 			global_client_typing_mode = false;
@@ -236,7 +268,7 @@
 					//var r = cmd.replace(' ','_');
 					//if( window[''+r] ) window[''+r]();
 					//document.getElementById('console_text').value = e.target.innerHTML;
-					console.log(this.innerHTML);
+					//console.log(this.innerHTML);
 					exec1(this.innerHTML);
 				}
 				

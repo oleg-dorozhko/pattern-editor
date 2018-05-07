@@ -1,4 +1,4 @@
-function half()
+function half(params,callback)
 {
 	
 	//console.log("half");
@@ -37,7 +37,7 @@ function half()
 	}
 		
 	setTimeout( function(){
-				logg('half '); //after or before? what question
+				if(callback) callback(); //after or before? what question
 			}, 100 );	
 			
 }

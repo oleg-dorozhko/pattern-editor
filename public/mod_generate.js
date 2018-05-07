@@ -1,17 +1,26 @@
-function generate_seed()
+function generate_seed(params,callback)
 {
 	gen();
 
-	vortex();
+	if(callback) callback();
 }
 
-function generate_seed_with_param(s, callback)
+function generate_random_seed(params,callback)
 {
-	gen_p(Number(s.trim()));
+	gen_rnd(params);
 
-	vortex();
 	
-	callback();
+	
+	if(callback) callback();
+}
+
+function generate_seed_with_param(params, callback)
+{
+	gen_p(Number(params[0].trim()));
+
+	
+	if(callback) callback();
+	
 }
 
 
@@ -132,14 +141,103 @@ function gen()
 		var context = canvas.getContext("2d");
 		context.putImageData(imageData,0,0);
 		
-		setTimeout( function(){
-				logg('generate seed('+wh+')'); //after or before? what question
-			}, 100 );	
-			
+		
 	
 }
 
 
+function gen_rnd(params)
+{
+	var wh = getRandomInt(3,20);
+	
+	
+	var wh2 = getRandomInt(2,8);
+	
+	var canvas5 = document.createElement("canvas");
+	canvas5.width = wh;
+	canvas5.height = wh;
+	var context5 = canvas5.getContext("2d");
+	
+	if(params)
+	{
+		wh = Number(params[0].trim());
+		if(wh<3) return;
+		if(wh>20) return;
+		
+		 wh2 = Number(params[1].trim());
+		if(wh2<2) return;
+		if(wh2>8) return;
+		
+	}
+	
+	var randoms = [];
+	while(true)
+	{
+		var rgba = getRndColor();
+		if(includesColor(randoms,rgba)==false)
+		{
+			randoms.push(rgba);
+			if(randoms.length==wh2) break;
+		}
+	}
+	
+	
+	
+	
+	
+	var imageData = context5.getImageData(0,0,wh,wh);
+	
+	var arr = [];
+	
+		for(var j=0;j<wh;j++)
+		{
+			for(var i=0;i<wh;i++)
+			{
+				
+				//var imgData = context2.getImageData(i,j,1,1);
+				var rgba = randoms[getRandomInt(0,randoms.length)];
+				
+				var obj = {};
+				obj.i = i;
+				obj.j = j;
+				obj.r = rgba[0];
+				obj.g = rgba[1];
+				obj.b = rgba[2];
+				obj.a = rgba[3];
+					
+				arr.push(obj);
+					
+			}
+		}
+	
+		
+		
+		
+		for(var i=0;i<arr.length;i++)
+		{
+			var obj = arr[i];
+			var dd = (obj.j*wh+obj.i)*4;
+			imageData.data[dd]  = obj.r;
+			imageData.data[dd+1]  = obj.g;
+			imageData.data[dd+2]  = obj.b;
+			imageData.data[dd+3]  = obj.a;
+			
+			var dd2 = (obj.i*wh+obj.j)*4;
+			imageData.data[dd2]  = obj.r;
+			imageData.data[dd2+1]  = obj.g;
+			imageData.data[dd2+2]  = obj.b;
+			imageData.data[dd2+3]  = obj.a;
+		}
+		
+		var canvas = document.getElementById("canvas");
+		canvas.width = wh;
+		canvas.height = wh;
+		var context = canvas.getContext("2d");
+		context.putImageData(imageData,0,0);
+			
+			
+	
+}
 
 function gen_p(wh)
 {
@@ -198,11 +296,6 @@ function gen_p(wh)
 		var context = canvas.getContext("2d");
 		context.putImageData(imageData,0,0);
 		
-		setTimeout( function(){
-				logg('generate seed '); //after or before? what question
-			}, 100 );	
-			
-	
 }
 
 

@@ -43,7 +43,7 @@ function restart()
 		modsld_saveDesktop();
 	
 		reload();
-	
+	setInitialButtonsToCanvas();
 	}
 	
 	img.src = 'initial-image.png';

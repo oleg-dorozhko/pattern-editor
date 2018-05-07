@@ -81,9 +81,7 @@ function both_axes_minus()
 			context = canvas.getContext("2d");
 			context.putImageData(im,0,0);
 			
-			setTimeout( function(){
-				logg('axes minus'); //after or before? what question
-			}, 100 );	
+			//setTimeout( function(){	logg('axes minus'); }, 100 );	
 			
 			
 }
@@ -124,9 +122,7 @@ function horizontal_axe_minus( ) //minus one horizontal line
 			context = canvas.getContext("2d");
 			context.putImageData(im,0,0);
 			
-			setTimeout( function(){
-				logg('horizontal_axe_minus'); //after or before? what question
-			}, 200 );	
+			// setTimeout( function(){			logg('horizontal_axe_minus'); 		}, 200 );	
 			
 			
 			
@@ -170,9 +166,7 @@ function vertical_axe_minus( ) //minus one vertical line
 			context = canvas.getContext("2d");
 			context.putImageData(im,0,0);
 			
-			setTimeout( function(){
-				logg('vertical_axe_minus'); //after or before? what question
-			}, 200 );	
+		//	setTimeout( function(){ logg('vertical_axe_minus'); 	}, 200 );	
 			
 			
 			

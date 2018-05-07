@@ -7,21 +7,26 @@ var mod_step_colors = require('./lib/mod_step_colors');
 var mod_odin_dva_colors = require('./lib/mod_odin_dva_colors');
 var mod_join_colors = require('./lib/mod_join_colors');
 var mod_colors = require('./lib/mod_colors');
+var mod_rotate_ff = require('./lib/mod_rotate_ff');
 var mod_gcombo = require('./lib/mod_gcombo');
+var mod_brain = require('./lib/mod_brain');
 var mod_min_colors = require('./lib/mod_min_colors');
 var mod_razn_colors = require('./lib/mod_razn_colors');
 var mod_axes = require('./lib/mod_axes');
 var mod_smooth = require('./lib/mod_smooth');
-
+var mod_rotate_any = require('./lib/mod_rotate_any');
+var mod_md5 = require('./lib/mod_md5');
 var PNG = require('pngjs').PNG;
-
+var md5 = require('js-md5');
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();  
 var fs = require('fs');
 //var bodyParser = require('body-parser');
 var Readable = require('stream').Readable;
 var qs = require('querystring');
-
+app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(express.bodyParser());
 //app.use(bodyParser.json()); // support json encoded bodies
 //app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
@@ -1282,6 +1287,95 @@ function smooth(req, res)
 		
 }
 
+function getDataTxtObjectByMD5(md5)
+{
+	var arr = fs.readdirSync('./memory');
+	for(var i=0;i<arr.length;i++)
+	{
+		if(arr[i]==(''+md5+'.id'))
+		{
+			var s = fs.readFileSync( './memory/'+arr[i]);
+			return JSON.parse(s);
+		}
+	  
+	}
+	return null;
+	
+}
+
+function isDataPNGObjectByMD5(md5)
+{
+	var arr = fs.readdirSync('./memory');
+	for(var i=0;i<arr.length;i++)
+	{
+		console.log('test '+arr[i]);
+		if(arr[i]==(''+md5+'.png'))
+		{
+			
+			return arr[i];
+		}
+	  
+	}
+	return null;
+	
+}
+
+function pre_rotate_any(req, res)
+{
+	
+	console.log('pre_rotate_any:');
+	for(var key in req.body)	console.log('req.body['+key+']: '+req.body[key]);
+	
+	var s = (''+req.body['md5']).trim();
+	
+	var obj = {};
+	obj.hash = s;
+	obj.degree = req.body['degree'];
+	
+	fs.writeFile("./memory/"+s+'.id', JSON.stringify(obj), function(err) {
+		if(err) {
+			return console.log(err);
+		}
+
+		console.log("The file was saved!");
+	}); 
+	
+	
+	res.writeHead(200, {  'Content-Type': 'text/html' } );
+	res.end('ok');
+	
+}
+function rotate_any(req, res)
+{
+	
+	console.log('rotate_any:');
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		var s = get_md5_hex(this.data);
+		var obj = getDataTxtObjectByMD5(s);
+		if(obj==null)
+		{
+			console.log('rotate_any: not found obj with this md5:'+s);
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end('rotate_any: not found obj with this md5:'+s);
+				req.connection.destroy();
+				return;
+		}
+		else sendImage(mod_rotate_any.rotate_any(this,obj),res,"\nrotate_any");
+		
+	});
+	
+}
+
+function rotate_ff(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_rotate_ff.rotate_ff(this),res,"\nImage was ff rotated\n");
+		
+	});
+}
+
 function median(req, res)
 {
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
@@ -1303,7 +1397,17 @@ function gcombo(req, res)
 		
 }
 
-
+function brain(req, res)
+{
+	console.log('In brain:');
+	console.log('req:'+req);
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_brain.__brain(this),res,"\nImage was brained\n");
+		
+	});
+		
+}
 
 
 function half( req, res )
@@ -1855,12 +1959,11 @@ function axes( req, res )
 
 
 
-	var crop_settings = null;
 	
-	function newcroplt(req, res)
+	
+	function newcroplt(ish_png,  res,crop_settings)
 	{
-		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
-			
+		
 			var xw = crop_settings.x;
 			var yh = crop_settings.y;
 			var w = crop_settings.w;
@@ -1876,10 +1979,10 @@ function axes( req, res )
 
 			
 			var m=0;
-			for (var y = 0; y < this.height; y++) {
+			for (var y = 0; y < ish_png.height; y++) {
 				
 				var n=0;
-				for (var x = 0; x < this.width; x++) {
+				for (var x = 0; x < ish_png.width; x++) {
 					
 					/***
 					console.log("x="+x);
@@ -1889,14 +1992,14 @@ function axes( req, res )
 					***/
 					if( x>=xw  && y>=yh )
 					{
-						var idx = (this.width * y + x) << 2;
+						var idx = (ish_png.width * y + x) << 2;
 						
 						var newidx = (newpng.width * m + n) << 2;
 
-						newpng.data[newidx+0] = this.data[idx+0];
-						newpng.data[newidx+1] = this.data[idx+1];
-						newpng.data[newidx+2] = this.data[idx+2];
-						newpng.data[newidx+3] = this.data[idx+3];
+						newpng.data[newidx+0] = ish_png.data[idx+0];
+						newpng.data[newidx+1] = ish_png.data[idx+1];
+						newpng.data[newidx+2] = ish_png.data[idx+2];
+						newpng.data[newidx+3] = ish_png.data[idx+3];
 						
 						n++;
 					}
@@ -1906,15 +2009,17 @@ function axes( req, res )
 			}
 
 
-			sendImage(newpng,res,'\nImage was LT croped \n');
+			
+			return newpng;
+			
 
-		});
+
 											
 	}
 	
-	function newcroprb(req, res)
+	function newcroprb(ish_png, res,crop_settings)
 	{
-		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
 			
 			var xw = crop_settings.x;
 			var yh = crop_settings.y;
@@ -1931,20 +2036,20 @@ function axes( req, res )
 				
 				for (var x = 0; x < newpng.width; x++) {
 					
-					var idx = (this.width * y + x) << 2;
+					var idx = (ish_png.width * y + x) << 2;
 					var newidx = (newpng.width * y + x) << 2;
 
-					newpng.data[newidx+0] = this.data[idx+0];
-					newpng.data[newidx+1] = this.data[idx+1];
-					newpng.data[newidx+2] = this.data[idx+2];
-					newpng.data[newidx+3] = this.data[idx+3];
+					newpng.data[newidx+0] = ish_png.data[idx+0];
+					newpng.data[newidx+1] = ish_png.data[idx+1];
+					newpng.data[newidx+2] = ish_png.data[idx+2];
+					newpng.data[newidx+3] = ish_png.data[idx+3];
 				}
 			}
 
+			return newpng;
+			
 
-			sendImage(newpng,res,'\nImage was RB croped \n');
-
-		});
+		
 											
 	}
 	
@@ -1954,46 +2059,59 @@ function axes( req, res )
 	{
 		console.log('\nIn crop(...)\n');
 		
-		if(crop_settings == null)
-		{
+		
+		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 			
-			res.writeHead( 500, { 'Content-Type':'text/plain' } );
-			res.end("crop(): error: call /precrop before");
-			req.connection.destroy();
-			return;
-
-		}
+			
+			var s = get_md5_hex(this.data);
+			var obj = getDataTxtObjectByMD5(s);
+			if(obj==null)
+			{
+				console.log('crop: not found crop_settings with this md5:'+s);
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('crop: not found crop_settings with this md5:'+s);
+					req.connection.destroy();
+					return;
+			}
+			
+			var crop_settings=obj;
+			
+			
+					
+			
+			
+			var flag = crop_settings.flag;
+			
+			
+			console.log("x="+crop_settings.x);
+			console.log("y="+crop_settings.y);
+			console.log("w="+crop_settings.w);
+			console.log("h="+crop_settings.h);
+			console.log("flag="+flag);
+			console.log("md5="+crop_settings.md5);
+			
+			if(flag==1)
+			{
 				
-		
-		
-		var flag = crop_settings.flag;
-		
-		
-		console.log("x="+crop_settings.x);
-		console.log("y="+crop_settings.y);
-		console.log("w="+crop_settings.w);
-		console.log("h="+crop_settings.h);
-		console.log("flag="+flag);
-		
-		
-		if(flag==1)
-		{
+			
+				var newpng = newcroplt(this,res,crop_settings);
+				
+				sendImage(newpng,res,'\nImage was LT croped \n');
+				
+			}
+			
+			else if(flag==2)
+			{
+				
+				
+				var newpng = newcroprb(this,res,crop_settings);
+				
+				sendImage(newpng,res,'\nImage was RB croped \n');
+				
+			}
 			
 		
-			newcroplt(req,res);
-			
-			
-		}
-		
-		else if(flag==2)
-		{
-			
-			
-			newcroprb(req,res);
-		}
-		
-		
-		
+		});
 		
 		
 	}
@@ -2039,8 +2157,22 @@ function precrop( req, res)
 			crop_settings.h =  +post['h'];
 			crop_settings.flag =  +post['flag'];
 			
+			console.log("md5="+post['md5']);
+			
+			crop_settings.md5= post['md5'];
+			
+			fs.writeFile("./memory/"+post['md5']+'.id', JSON.stringify(crop_settings), function(err) {
+				if(err) {
+					return console.log(err);
+				}
+			
 			res.writeHead( 200, { 'Content-Type':'text/plain' } );
 			res.end("ok");
+			
+				console.log("The file was saved!");
+			}); 
+	
+			
 			
 			
 		});
@@ -2062,11 +2194,24 @@ function prepare_combo(req, res)
 	req.pipe(second_image).on( 'parsed', function()  {
 				
 		
-		combo_settings = {};
-		combo_settings.second_image = this;
+		var base64Data = req.rawBody.replace(/^data:image\/png;base64,/, "");
+
+		var md5 = get_md5_hex(this.data);
+		
+		require("fs").writeFile("./memory/"+md5+".png", base64Data, 'base64', function(err) {
+		  
+		  
+		  console.log(err);
+		  
+		  
+		  
+		  
+		});
 		
 		res.writeHead( 200, { 'Content-Type':'text/plain' } );
-		res.end("ok");
+		res.end(md5);
+		
+		
 					
 	});				
 					
@@ -2096,7 +2241,7 @@ function combo( req, res )
 {
 	
 	console.log('\nIn combo(...)\n');
-		
+	/***	
 	if(combo_settings == null)
 	{
 		
@@ -2106,151 +2251,327 @@ function combo( req, res )
 		return;
 
 	}
+	**/
+	for(var key in req.body)	console.log('req.body['+key+']: '+req.body[key]);
 	
-	var old_png = combo_settings.second_image; 
+	var md51 = (''+req.body['md51']).trim();
+	var md52 = (''+req.body['md52']).trim();
 	
-	var big_image = new PNG({filterType: 4});
-	
-	req.pipe(big_image).on('parsed', function() {
+	var nm1 = isDataPNGObjectByMD5(md51);
+	if(nm1==null)
+	{
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("combo: error: call /prepare_combo before");
+		req.connection.destroy();
+		return;
 		
 		
-				
-					
-					
-					
-			if(old_png.width != old_png.height) 
-			{
-				error( req, res, "combo: error: old_png.width != old_png.height");
-				return;
-				
-			}
-			
-			if(this.width != this.height) {
-				error( req, res, "combo: error: this.width != this.height");
-				
-				return;  
-			}
-				
-			if((old_png.width % 2 == 0) && (this.width % 2 ==  0))
-			{
-				//even
-				if(old_png.width > this.width)
-				{
-					
-					
-					
-					var result_png = new PNG ( {
-						
-							width: old_png.width,
-							height: old_png.height,
-							filterType: 4
-					} );
-					
+	}
+	var nm2 = isDataPNGObjectByMD5(md52);
+	if(nm2==null)
+	{
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("combo: error: call /prepare_combo before");
+		req.connection.destroy();
+		return;
+		
+		
+	}
+	
+	fs.createReadStream('./memory/'+nm1).pipe( new PNG({filterType: 4}) ).on('parsed', function() {
 
-					var t4 = (old_png.width-this.width)/2;
-					var k4 = (old_png.height-this.height)/2;
-					
-					
-					
-					for(var j=0;j<old_png.height;j++)
-					{
-						for(var i=0;i<old_png.width;i++)
-						{
-							if( (i>=t4) && (i<(t4+this.width)) && (j>=k4) && (j<(k4+this.height))	)
-							{
-								
-								
-								
-								var idx = (old_png.width * j + i) << 2;
-								
-								var n=i-t4;
-								var m=j-k4;
-								
-								var new_idx1 = this.width * m + n << 2;
-						
-								result_png.data[idx+0] = slozhenie_cvetov( this.data[new_idx1+0], old_png.data[idx+0] );
-								result_png.data[idx+1] = slozhenie_cvetov( this.data[new_idx1+1], old_png.data[idx+1] );
-								result_png.data[idx+2] = slozhenie_cvetov( this.data[new_idx1+2], old_png.data[idx+2] );
-								result_png.data[idx+3] = 255;
-								
-								
-								
-							}
-							else
-							{
-								
-								
-								var idx = (old_png.width * j + i) << 2;
-								
-								result_png.data[idx+0] = old_png.data[idx+0];
-								result_png.data[idx+1] = old_png.data[idx+1];
-								result_png.data[idx+2] = old_png.data[idx+2];
-								result_png.data[idx+3] = 255;
-								
-							}
-						}
-					}
-					
-					
-					
-					
-					
+		var old_png = this;
+		
+		fs.createReadStream('./memory/'+nm2).pipe( new PNG({filterType: 4}) ).on('parsed', function() {
 
-				}
-				else
+		
+			var big_image =  this;//new PNG({filterType: 4});
+	
+			//req.pipe(big_image).on('parsed', function() {
+				
+				
+					
+					
+								
+				if(old_png.width != old_png.height) 
 				{
+					error( req, res, "combo: error: old_png.width != old_png.height");
+					return;
 					
-					var result_png = new PNG ( {
-						
-							width: this.width,
-							height: this.height,
-							filterType: 4
-					} );
+				}
+				
+				if(this.width != this.height) {
+					error( req, res, "combo: error: this.width != this.height");
 					
+					return;  
+				}
 					
-					
-					
-					
-					var t4 = (this.width-old_png.width)/2;
-					var k4 = (this.height-old_png.height)/2;
-					
-					
-					
-					for(var j=0;j<this.height;j++)
+				if((old_png.width % 2 == 0) && (this.width % 2 ==  0))
+				{
+					//even
+					if(old_png.width > this.width)
 					{
-						for(var i=0;i<this.width;i++)
-						{
-							if( (i>=t4) && (i<(t4+old_png.width)) && (j>=k4) && (j<(k4+old_png.height))	)
-							{
-								
-								
-								
-								var idx = (this.width * j + i) << 2;
-								
-								var n=i-t4;
-								var m=j-k4;
-								
-								var new_idx1 = old_png.width * m + n << 2;
 						
-								result_png.data[idx+0] = slozhenie_cvetov( this.data[idx+0], old_png.data[new_idx1+0] );
-								result_png.data[idx+1] = slozhenie_cvetov( this.data[idx+1], old_png.data[new_idx1+1] );
-								result_png.data[idx+2] = slozhenie_cvetov( this.data[idx+2], old_png.data[new_idx1+2] );
-								result_png.data[idx+3] = 255;
-								
-								
-								
-							}
-							else
+						
+						
+						var result_png = new PNG ( {
+							
+								width: old_png.width,
+								height: old_png.height,
+								filterType: 4
+						} );
+						
+
+						var t4 = (old_png.width-this.width)/2;
+						var k4 = (old_png.height-this.height)/2;
+						
+						
+						
+						for(var j=0;j<old_png.height;j++)
+						{
+							for(var i=0;i<old_png.width;i++)
 							{
+								if( (i>=t4) && (i<(t4+this.width)) && (j>=k4) && (j<(k4+this.height))	)
+								{
+									
+									
+									
+									var idx = (old_png.width * j + i) << 2;
+									
+									var n=i-t4;
+									var m=j-k4;
+									
+									var new_idx1 = this.width * m + n << 2;
+							
+									result_png.data[idx+0] = slozhenie_cvetov( this.data[new_idx1+0], old_png.data[idx+0] );
+									result_png.data[idx+1] = slozhenie_cvetov( this.data[new_idx1+1], old_png.data[idx+1] );
+									result_png.data[idx+2] = slozhenie_cvetov( this.data[new_idx1+2], old_png.data[idx+2] );
+									result_png.data[idx+3] = 255;
+									
+									
+									
+								}
+								else
+								{
+									
+									
+									var idx = (old_png.width * j + i) << 2;
+									
+									result_png.data[idx+0] = old_png.data[idx+0];
+									result_png.data[idx+1] = old_png.data[idx+1];
+									result_png.data[idx+2] = old_png.data[idx+2];
+									result_png.data[idx+3] = 255;
+									
+								}
+							}
+						}
+						
+						
+						
+						
+						
+
+					}
+					else
+					{
+						
+						var result_png = new PNG ( {
+							
+								width: this.width,
+								height: this.height,
+								filterType: 4
+						} );
+						
+						
+						
+						
+						
+						var t4 = (this.width-old_png.width)/2;
+						var k4 = (this.height-old_png.height)/2;
+						
+						
+						
+						for(var j=0;j<this.height;j++)
+						{
+							for(var i=0;i<this.width;i++)
+							{
+								if( (i>=t4) && (i<(t4+old_png.width)) && (j>=k4) && (j<(k4+old_png.height))	)
+								{
+									
+									
+									
+									var idx = (this.width * j + i) << 2;
+									
+									var n=i-t4;
+									var m=j-k4;
+									
+									var new_idx1 = old_png.width * m + n << 2;
+							
+									result_png.data[idx+0] = slozhenie_cvetov( this.data[idx+0], old_png.data[new_idx1+0] );
+									result_png.data[idx+1] = slozhenie_cvetov( this.data[idx+1], old_png.data[new_idx1+1] );
+									result_png.data[idx+2] = slozhenie_cvetov( this.data[idx+2], old_png.data[new_idx1+2] );
+									result_png.data[idx+3] = 255;
+									
+									
+									
+								}
+								else
+								{
+									
+									
+									var idx = (this.width * j + i) << 2;
+									
+									result_png.data[idx+0] = this.data[idx+0];
+									result_png.data[idx+1] = this.data[idx+1];
+									result_png.data[idx+2] = this.data[idx+2];
+									result_png.data[idx+3] = 255;
+									
+								}
+							}
+						}
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+					}
+					
+							
+					
+					
+					sendImage(result_png,res,'\nImages combined\n');
+					
+					
+					
+				}
+				else if ((old_png.width % 2 == 1) && (this.width % 2 ==  1))
+				{
+					//odd
+					if(old_png.width > this.width)
+					{
+						
+						
+						var result_png = new PNG ( {
+							
+								width: old_png.width,
+								height: old_png.height,
+								filterType: 4
+						} );
+						
+						var middle_of_bigger_w = old_png.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+						var middle_of_smaller_w = this.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
+						
+						var begin_w = middle_of_bigger_w - middle_of_smaller_w;
+						var end_w = begin_w + this.width; //and (not include) end
+						
+						var middle_of_bigger_h = old_png.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+						var middle_of_smaller_h = this.height / 2 | 0; 
+						
+						var begin_h = middle_of_bigger_h - middle_of_smaller_h;
+						var end_h = begin_h + this.height; 	
+						
+						
+						for(var j=0;j<old_png.height;j++)
+						{
+							for(var i=0;i<old_png.width;i++)
+							{
+								var idx = (old_png.width * j + i) << 2;	
 								
+								if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
+								{
 								
-								var idx = (this.width * j + i) << 2;
+									var n =	i - begin_w;
+									var m = j - begin_h;
+									
+									var idx2 = this.width * m + n << 2;
+									
+									result_png.data[idx+0] = slozhenie_cvetov( this.data[idx2+0], old_png.data[idx+0] );
+									result_png.data[idx+1] = slozhenie_cvetov( this.data[idx2+1], old_png.data[idx+1] );
+									result_png.data[idx+2] = slozhenie_cvetov( this.data[idx2+2], old_png.data[idx+2] );
+									result_png.data[idx+3] = 255;
+									
+									
+								}
+								else
+								{
 								
-								result_png.data[idx+0] = this.data[idx+0];
-								result_png.data[idx+1] = this.data[idx+1];
-								result_png.data[idx+2] = this.data[idx+2];
-								result_png.data[idx+3] = 255;
+									result_png.data[idx+0] = old_png.data[idx+0];
+									result_png.data[idx+1] = old_png.data[idx+1];
+									result_png.data[idx+2] = old_png.data[idx+2];
+									result_png.data[idx+3] = 255;
+								}
+							}
+						}
+						
+						
+						
+						
+					}
+					else
+					{
+						
+						var result_png = new PNG ( {
+							
+								width: this.width,
+								height: this.height,
+								filterType: 4
+						} );
+						
+						var middle_of_bigger_w = this.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+						var middle_of_smaller_w = old_png.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
+						
+						var middle_of_bigger_h = this.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+						var middle_of_smaller_h = old_png.height / 2 | 0; 
+						
+						var begin_w = middle_of_bigger_w - middle_of_smaller_w;
+						var end_w = begin_w + old_png.width; //and (not include) end
+						
+						var begin_h = middle_of_bigger_h - middle_of_smaller_h;
+						var end_h = begin_h + old_png.height; 	
+					
+						for(var j=0;j<this.height;j++)
+						{
+							for(var i=0;i<this.width;i++)
+							{
+								var idx = (this.width * j + i) << 2;	
 								
+								if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
+								{
+									
+									var n =	i - begin_w;
+									var m = j - begin_h;
+									
+									var idx2 = old_png.width * m + n << 2;
+									
+									result_png.data[idx+0] = slozhenie_cvetov( old_png.data[idx2+0], this.data[idx+0] );
+									result_png.data[idx+1] = slozhenie_cvetov( old_png.data[idx2+1], this.data[idx+1] );
+									result_png.data[idx+2] = slozhenie_cvetov( old_png.data[idx2+2], this.data[idx+2] );
+									result_png.data[idx+3] = 255;
+									
+									
+								}
+								else
+								{
+									
+									
+									result_png.data[idx+0] = old_png.data[idx+0];
+									result_png.data[idx+1] = old_png.data[idx+1];
+									result_png.data[idx+2] = old_png.data[idx+2];
+									result_png.data[idx+3] = 255;
+								}
 							}
 						}
 					}
@@ -2259,13 +2580,7 @@ function combo( req, res )
 					
 					
 					
-					
-					
-					
-					
-					
-					
-					
+					sendImage(result_png,res,'\nImages combined\n');
 					
 					
 					
@@ -2273,157 +2588,61 @@ function combo( req, res )
 					
 					
 				}
-				
-						
-				
-				
-				sendImage(result_png,res,'\nImages combined\n');
-				
-				
-				
-			}
-			else if ((old_png.width % 2 == 1) && (this.width % 2 ==  1))
-			{
-				//odd
-				if(old_png.width > this.width)
+				else  
 				{
 					
+					error( req, res, "combo: error: odd first image but even second image. need both odd or even");
 					
-					var result_png = new PNG ( {
-						
-							width: old_png.width,
-							height: old_png.height,
-							filterType: 4
-					} );
-					
-					var middle_of_bigger_w = old_png.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
-					var middle_of_smaller_w = this.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
-					
-					var begin_w = middle_of_bigger_w - middle_of_smaller_w;
-					var end_w = begin_w + this.width; //and (not include) end
-					
-					var middle_of_bigger_h = old_png.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
-					var middle_of_smaller_h = this.height / 2 | 0; 
-					
-					var begin_h = middle_of_bigger_h - middle_of_smaller_h;
-					var end_h = begin_h + this.height; 	
-					
-					
-					for(var j=0;j<old_png.height;j++)
-					{
-						for(var i=0;i<old_png.width;i++)
-						{
-							var idx = (old_png.width * j + i) << 2;	
-							
-							if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
-							{
-							
-								var n =	i - begin_w;
-								var m = j - begin_h;
-								
-								var idx2 = this.width * m + n << 2;
-								
-								result_png.data[idx+0] = slozhenie_cvetov( this.data[idx2+0], old_png.data[idx+0] );
-								result_png.data[idx+1] = slozhenie_cvetov( this.data[idx2+1], old_png.data[idx+1] );
-								result_png.data[idx+2] = slozhenie_cvetov( this.data[idx2+2], old_png.data[idx+2] );
-								result_png.data[idx+3] = 255;
-								
-								
-							}
-							else
-							{
-							
-								result_png.data[idx+0] = old_png.data[idx+0];
-								result_png.data[idx+1] = old_png.data[idx+1];
-								result_png.data[idx+2] = old_png.data[idx+2];
-								result_png.data[idx+3] = 255;
-							}
-						}
-					}
-					
-					
-					
-					
-				}
-				else
-				{
-					
-					var result_png = new PNG ( {
-						
-							width: this.width,
-							height: this.height,
-							filterType: 4
-					} );
-					
-					var middle_of_bigger_w = this.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
-					var middle_of_smaller_w = old_png.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
-					
-					var middle_of_bigger_h = this.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
-					var middle_of_smaller_h = old_png.height / 2 | 0; 
-					
-					var begin_w = middle_of_bigger_w - middle_of_smaller_w;
-					var end_w = begin_w + old_png.width; //and (not include) end
-					
-					var begin_h = middle_of_bigger_h - middle_of_smaller_h;
-					var end_h = begin_h + old_png.height; 	
-				
-					for(var j=0;j<this.height;j++)
-					{
-						for(var i=0;i<this.width;i++)
-						{
-							var idx = (this.width * j + i) << 2;	
-							
-							if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
-							{
-								
-								var n =	i - begin_w;
-								var m = j - begin_h;
-								
-								var idx2 = old_png.width * m + n << 2;
-								
-								result_png.data[idx+0] = slozhenie_cvetov( old_png.data[idx2+0], this.data[idx+0] );
-								result_png.data[idx+1] = slozhenie_cvetov( old_png.data[idx2+1], this.data[idx+1] );
-								result_png.data[idx+2] = slozhenie_cvetov( old_png.data[idx2+2], this.data[idx+2] );
-								result_png.data[idx+3] = 255;
-								
-								
-							}
-							else
-							{
-								
-								
-								result_png.data[idx+0] = old_png.data[idx+0];
-								result_png.data[idx+1] = old_png.data[idx+1];
-								result_png.data[idx+2] = old_png.data[idx+2];
-								result_png.data[idx+3] = 255;
-							}
-						}
-					}
+					return; //need error processing
 				}
 				
+		
+		
+//	});
 				
 				
 				
 				
-				sendImage(result_png,res,'\nImages combined\n');
 				
 				
 				
 				
 				
 				
-			}
-			else  
-			{
 				
-				error( req, res, "combo: error: odd first image but even second image. need both odd or even");
 				
-				return; //need error processing
-			}
-			
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+		
+		
+		});
+		
 		
 		
 	});
+		
+		
+				
+					
+					
+		
 	
 }
 	
@@ -2947,6 +3166,38 @@ function odin_dva_colors(req, res)
 					
 }
 
+function get_md5_hex(data)
+{
+		var s =md5(data);
+		//console.log('In get_md5_hex:'+s);
+		return s;
+		
+		
+	
+		
+}
+
+function ident(req, res)
+{
+	var png = new PNG({filterType: 4});
+	req.pipe(png).on( 'parsed', function()  {
+		
+		var md5 = get_md5_hex(this.data);
+			
+		png.pack().pipe(fs.createWriteStream("./memory/"+md5+".png"));
+		
+		
+		
+		
+		
+		console.log('\nIn ident(...)\nmd5='+md5);
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end(""+md5);
+		
+					
+	});				
+					
+}
 function join_colors(req, res)
 {
 	//console.log('\nIn rio(...)\n');
@@ -3100,6 +3351,7 @@ app.post('/rio', rio );
 app.post('/set_num_colors', set_num_colors);
 app.post('/min_colors', min_colors);
 app.post('/colors', colors);
+app.post('/brain', brain);
 app.post('/gcombo', gcombo);
 app.post('/smooth', smooth);
 app.post('/razn_colors', razn_colors);		
@@ -3115,9 +3367,12 @@ app.post('/mright', mright );
 app.post('/up', up );
 app.post('/vortex', vortex );
 app.post('/rotate', rotate );
+app.post('/pre_rotate_any', pre_rotate_any );
+app.post('/rotate_any', rotate_any );
 app.post('/half', half );
 app.post('/median', median );
 app.post('/axes', axes );
+app.post('/ident', ident );
 app.post('/multiply', multiply );
 app.post('/rotateff', rotateff );
 app.post('/plus', plus );
@@ -3127,6 +3382,7 @@ app.post('/inverse', inverse );
 app.post('/borderplus', borderplus );
 app.post('/borderminus', borderminus );
 app.get('/get_color_for_pass', get_color_for_pass );
+app.post('/rotate_ff', rotate_ff );
 app.post('/pixels', pixels );
 app.post('/right_pixels', right_pixels );
 app.post('/set_collected_pixels',set_collected_pixels);	

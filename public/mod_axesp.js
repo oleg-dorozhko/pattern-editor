@@ -55,9 +55,7 @@ function both_axes_plus()
 	cnv0.getContext("2d").drawImage(cnv,0,0);
 	document.body.removeChild(cnv);
 	
-	setTimeout( function(){
-				logg('axes plus'); //after or before? what question
-			}, 100 );
+	// setTimeout( function(){		logg('axes plus'); 	}, 100 );
 	
 	
 }

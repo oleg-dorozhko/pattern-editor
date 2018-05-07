@@ -255,14 +255,19 @@ function ident(canvas_id, action, callback)
 	
 		blobToServerForMD5(blob, 'ident', function( data ) {
 			if (callback) callback(data);
-				});	
+				}
 				
+				, function(msg) {
 			
-		}, function(msg) {
 			
-			
-			console.log("transform(): Was error: "+msg);
+			console.log("ident(): Was error: "+msg);
 			throw new Error(msg);
+			
+		}
+				
+				
+				);	
+				
 			
 		}); 
 	

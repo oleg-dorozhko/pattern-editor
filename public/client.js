@@ -170,6 +170,7 @@ window.onload = function()
 		
 		
 		//moveDraggableOnOwnPlace();
+		
 		initModPixels();
 	
 		//document.getElementById('console_enter').onclick = process_console_text;
@@ -206,12 +207,21 @@ window.onload = function()
 					else if (ch == 's')  { modsld_saveDesktop(); alert('saved'); }
 					else if (ch == 'c')  { global_client_typing_mode = true; cripto_script(); }
 					else if (ch == 'd')  { global_client_typing_mode = true; decripto_script(); }
-					else if (ch == 'r')  restart_all();
+					else if (ch == 'r')  { global_client_typing_mode = true; restart_all(); }
 					//else if (ch == 'l')  load_desktop_from_local_store();
-					else if (ch == 'p')  print_all();
+					else if (ch == 'p')  { global_client_typing_mode = true;print_all(); }
 					else if (ch == 'l')  { global_client_typing_mode = true; load_all(); }
 					//else if (ch == 'b')  print_buttons();
-					else if (ch == 'e')   { global_client_typing_mode = true; execute_script(); }
+					else if (ch == 'e')   { 
+					
+						global_client_typing_mode = true; 
+						execute_script(
+							function()
+							{
+								global_client_typing_mode = false;
+							}
+						); 
+					}
 					else if (ch == 'h')  help();
 						
 				}

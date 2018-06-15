@@ -85,9 +85,12 @@
 			if (cmd == 'labirint') labirint();
 			else if (cmd == 'map') map();
 			else if (cmd=='median') s_median(params, callback);
-			else if (cmd == 'execute script') execute_script(params, callback);
-			else if (cmd == 'axes minus') both_axes_minus(params, callback);
-			else if (cmd == 'axes plus') both_axes_plus(params, callback);
+			else if (cmd == 'execute script') { 
+													global_client_typing_mode = true; 
+													execute_script( params, function() {  global_client_typing_mode = false;  } ); 
+			}
+			else if (cmd == 'axes minus') s_both_axes_minus(params, callback);
+			else if (cmd == 'axes plus') s_both_axes_plus(params, callback);
 			else if (cmd == 'vertical axe minus') vertical_axe_minus(params, callback);
 			else if (cmd == 'horizontal axe minus') horizontal_axe_minus(params, callback);
 			else if (cmd == 'save') save(params, callback);
@@ -105,37 +108,37 @@
 			else if (cmd == 'gen rnd seed')  generate_random_seed(params, callback);
 			else if (cmd == 'join colors') s_join_colors(params, callback);
 			else if (cmd == 'odin dva colors') s_odin_dva_colors(params, callback);
-			else if (cmd == 'crop lt') crop_lt(params, callback);
-			else if (cmd == 'crop rb') crop_rb(params, callback);
+			else if (cmd == 'crop lt') s_crop_lt(params, callback);
+			else if (cmd == 'crop rb') s_crop_rb(params, callback);
 			else if (cmd == 'smooth') s_smooth(params, callback);
 			else if (cmd == 'select') select(params, callback);
 			else if (cmd == 'xminus') xminus(params, callback);
 			else if (cmd == 'normal colors') normal_colors(params, callback);
-			else if (cmd == 'combo') combo(params, callback);
+			else if (cmd == 'combo') client_combo(params, callback);
 			else if (cmd == 'gcombo') s_gcombo(params, callback);
 			else if (cmd == 'breath of chaos') breath_of_chaos(params, callback);
 			else if (cmd == 'rio') s_rio(params, callback);
 			else if (cmd == 'up') s_up(params, callback);
 			else if(cmd == 'paste') paste();
 			//else if (cmd == 'xcombo') xcombo();
-			else if (cmd == 'inverse') inverse(params, callback);
+			else if (cmd == 'inverse') s_inverse(params, callback);
 			else if (cmd == 'plus') s_plus(params, callback);
 			else if (cmd == 'restart')  restart();
 			else if (cmd == 'minus') s_minus(params, callback);
 			else if (cmd == 'generate seed') generate_seed(params, callback);
-			else if (cmd == 'border minus') border_minus(params, callback);
-			else if (cmd == 'border plus') border_plus(params, callback);
+			else if (cmd == 'border minus') s_border_minus(params, callback);
+			else if (cmd == 'border plus') s_border_plus(params, callback);
 			//else if (cmd == 'save on server') save_on_server();
-			else if (cmd == 'vortex') vortex(params, callback);
-			else if (cmd == 'black white') black_white(params, callback);
-			else if (cmd == 'half') half(params, callback);
+			else if (cmd == 'vortex') s_vortex(params, callback);
+			else if (cmd == 'black white') s_black_white(params, callback);
+			else if (cmd == 'half') s_half(params, callback);
 			else if (cmd == 'rotate plus 90')  rotate_plus_90(params, callback);
 			else if (cmd == 'rotate plus 45')   rotate_plus_45(params, callback);
-			else if (cmd == 'paint over')   paint_over(params, callback);
+			else if (cmd == 'paint over')   s_paint_over(params, callback);
 			else if (cmd == 'rotate any')   rotate_any(params, callback);
 			else if (cmd == 'mirror down') s_mirror_down (params, callback); 
 			else if (cmd == 'mirror right') s_mirror_right (params, callback); 
-			else if (cmd == 'random') random(params, callback);	
+			else if (cmd == 'random') s_random(params, callback);	
 			else if (cmd == 'rgb++') rgb_plus_plus(params, callback);
 			else if (cmd == 'rgb--') rgb_minus_minus(params, callback);
 			else if (cmd == 'fill')  fill(params, callback);  
@@ -285,7 +288,7 @@ function process_console_text()
 	if(con==null) { global_client_typing_mode=false; return; }
 	var cmd = con.trim();
 	xcmd(cmd);
-	
+	 global_client_typing_mode=false; 
 	//	$("#random").click( random );
 	//	$("#add_cyclic").click( add_cyclic );
 	//	$("#random").click( function() { transform("canvas", '/random'); console.log('random'); } );

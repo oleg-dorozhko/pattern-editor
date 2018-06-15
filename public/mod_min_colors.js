@@ -1,4 +1,4 @@
-function min_colors()
+function min_colors(params,callback)
 {
 	sendImageToUrlGetText( "canvas", '/colors', function(num_colors)
 	{

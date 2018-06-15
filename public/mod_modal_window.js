@@ -1,4 +1,4 @@
-function modal_window( callback )
+function modal_window( callback, callback2 )
 {
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', '/modal_window.html');
@@ -22,9 +22,12 @@ function modal_window( callback )
 				global_ec_vars_arr_length=0;
 				global_client_typing_mode = false;
 			}
-			
-			if ( callback ) ( callback ( div ));
+			if ( callback && callback2 ) {
 				
+				callback ( div, callback2 );
+			}
+			else if ( callback )   callback ( div );
+			
 			
 			
 		}

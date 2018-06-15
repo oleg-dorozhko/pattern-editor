@@ -1,8 +1,8 @@
-function execute_script()
+function execute_script( callback )
 {
 	if (document.getElementById("modal_window0")==null)
 	{
-		modal_window( hexecute_script );
+		modal_window( hexecute_script, callback );
 	}
 }
 
@@ -25,7 +25,14 @@ function hexecute_script(el)
 			el.getElementsByTagName("textarea")[0].addEventListener('paste', handlePaste);
 			chld.onclick = function() { 
 			localStorage.setItem("last_script",el.getElementsByTagName("textarea")[0].value.trim());
-			execute_t_script(el);
+			
+			var all_commands  = ''+ el.getElementsByTagName("textarea")[0].value.trim();
+			document.body.removeChild(document.getElementById("modal_window0"));
+			execute_t_script(all_commands, function()
+			{
+				global_client_typing_mode = false;
+			});
+			
 			}
 			chld.innerHTML = "Execute";
 			//el.getElementsByTagName("p")[1].removeChild(chld);
@@ -47,14 +54,14 @@ var global_ec_vars_arr = null;
 var global_ec_vars_arr_index=null;
 var global_ec_vars_arr_length=0;
 
-function execute_t_script(el)
+function execute_t_script(all_commands, callback)
 {
 	if(global_ec_vars_arr_index==null)
 	{		
-		var s = el.getElementsByTagName("textarea")[0].value.trim();
+		var s = all_commands;
 		s = s.replace(/\s/g," ");
 		
-		document.body.removeChild(document.getElementById("modal_window0"));
+		
 	//	console.log("["+s+"]");
 		///////////// processing random(100,100,100,255) ////////////////
 		
@@ -99,7 +106,7 @@ function execute_t_script(el)
 		global_ec_vars_arr_length=0;
 		global_client_typing_mode = false;
 		
-	
+	if(callback) callback();
 	}
 	
 	

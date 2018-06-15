@@ -2,6 +2,11 @@
 var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');
 var mod_mirror = require('./lib/mod_mirror');
+//var mod_half = require('./lib/mod_half');
+var mod_axes = require('./lib/mod_axes');
+var mod_generate_random_seed = require('./lib/mod_generate_random_seed');
+var mod_inverse = require('./lib/mod_inverse');
+var mod_random = require('./lib/mod_random');
 var mod_median = require('./lib/mod_median');
 var mod_step_colors = require('./lib/mod_step_colors');
 var mod_odin_dva_colors = require('./lib/mod_odin_dva_colors');
@@ -13,9 +18,12 @@ var mod_brain = require('./lib/mod_brain');
 var mod_min_colors = require('./lib/mod_min_colors');
 var mod_razn_colors = require('./lib/mod_razn_colors');
 var mod_axes = require('./lib/mod_axes');
+var mod_black_white = require('./lib/mod_black_white');
 var mod_smooth = require('./lib/mod_smooth');
+var mod_paint_over = require('./lib/mod_paint_over');
 var mod_rotate_any = require('./lib/mod_rotate_any');
 var mod_md5 = require('./lib/mod_md5');
+
 var PNG = require('pngjs').PNG;
 var md5 = require('js-md5');
 var express = require('express');
@@ -1062,56 +1070,9 @@ function blackwhite( req, res )
 		
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 			
-			var result_png = new PNG ( {
-						
-							width: this.width,
-							height: this.height,
-							filterType: 4
-					} );
-
-			for (var y = 0; y < this.height; y++) {
-				for (var x = 0; x < this.width; x++) {
-					var idx = (this.width * y + x) << 2;
-
-					
-					var maxind = -1;
-					var maxred = 0;
-					
-					var arr = [];
-					arr[0] = this.data[idx];
-					arr[1] = this.data[idx+1];
-					arr[2] = this.data[idx+2];
-					
-					for(var n=0;n<3;n++)
-					{
-						if(arr[n]>=maxred)
-						{
-							maxind=n;
-							maxred = arr[n];
-						}
-					}
-					
-					result_png.data[idx] = arr[maxind];
-					result_png.data[idx+1] = arr[maxind];
-					result_png.data[idx+2] = arr[maxind];
-					result_png.data[idx+3] = this.data[idx+3];
-					
-					
-				}
-			}
+		sendImage( mod_black_white.black_white(this), res, 'black white' );
+		
 			
-			
-			result_png.pack();
-			
-			res.writeHead( 200, {  'Content-Type': 'blob' } );
-			
-			result_png.pipe(res);
-			
-			result_png.on('end', function(){
-				
-				console.log("Image blackwhited");
-				
-			});
 			
 	});
 		
@@ -1287,6 +1248,17 @@ function smooth(req, res)
 		
 }
 
+function paint_over(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_paint_over.paint_over(this),res,"\npaint over");
+		
+	});
+		
+}
+
+
 function getDataTxtObjectByMD5(md5)
 {
 	var arr = fs.readdirSync('./memory');
@@ -1419,16 +1391,22 @@ function half( req, res )
 		//if(arr == null) return; 
 		
 		var n=0;
-		if(( this.width%2 == 0  ) && (this.height%2 == 0)) { n = this.width/2; m = this.height/2; }
-		else 
-		{
-			var err = "width %2 != 0 or height %2 != 0 ";
-			console.log(err);
-			res.writeHead(500, {  'Content-Type': 'text/html' } );
-			res.end("/half: error: "+err);
-			return;
+		var m=0;
+		if( this.width%2 == 0  ) n = this.width/2;
+		else if( this.width%2 == 1  ) n = (this.width/2|0)+1;
+		
+		
+		if(this.height%2 == 0) {  m = this.height/2;  }
+		else if(this.height%2 == 1) { m = (this.height/2|0)+1; }
+		// else 
+		// {
+			// var err = "width %2 != 0 or height %2 != 0 ";
+			// console.log(err);
+			// res.writeHead(500, {  'Content-Type': 'text/html' } );
+			// res.end("/half: error: "+err);
+			// return;
 			
-		}	
+		// }	
 
 
 		
@@ -1748,8 +1726,29 @@ function mdown( req, res )
 	});
 }
 
+/***
 
+function half( req, res )
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		if( this.width * 2 > 1200 )
+		{
+			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("mright: error: too big size (need result width * 2 <= 1200)");
+			return;
+			
+		}
 
+		
+		sendImage(mod_half.half(this), res, 'half');	
+			
+	});
+}
+
+***/
 
 function mright( req, res )
 {
@@ -2293,18 +2292,18 @@ function combo( req, res )
 					
 					
 								
-				if(old_png.width != old_png.height) 
-				{
-					error( req, res, "combo: error: old_png.width != old_png.height");
-					return;
+				// if(old_png.width != old_png.height) 
+				// {
+					// error( req, res, "combo: error: old_png.width != old_png.height");
+					// return;
 					
-				}
+				// }
 				
-				if(this.width != this.height) {
-					error( req, res, "combo: error: this.width != this.height");
+				// if(this.width != this.height) {
+					// error( req, res, "combo: error: this.width != this.height");
 					
-					return;  
-				}
+					// return;  
+				// }
 					
 				if((old_png.width % 2 == 0) && (this.width % 2 ==  0))
 				{
@@ -3222,7 +3221,75 @@ function up(req, res)
 					
 }	
 	
+function axes_minus(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_axes.bothAxesMinus(this), res, 'both axes minus' );
+					
+	});	
+}	
+
+function axes_plus(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_axes.bothAxesPlus(this), res, 'both axes plus' );
+					
+	});	
+}
+
+function inverse(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_inverse.inverse(this), res, 'inverse' );
+					
+	});	
+}
+
+function random(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+		sendImage( mod_random.random(this), res, 'random' );
+					
+	});	
+}
+
+function generate_random_seed(req, res)
+{
+	console.log('in generate_random_seed'+req.body);
+	var body = [];
+  req.on('error', function (err) {
+    console.error(err);
+  });
+  
+  
+  req.on('data',  function (chunk){
+    body.push(chunk);
+  });
+  
+  
+   req.on('end', function() {
+    body = Buffer.concat(body).toString();
 	
+	 var obj = JSON.parse(body); //params
+	var params = [obj.size,obj.num_colors];
+	  
+	   console.log(''+body);
+	     console.log(''+params);
+		
+		 sendImage( mod_generate_random_seed.generate_random_seed(params), res, 'generate random seed' );
+		 
+	   //sendText(""+num_colors, res, 'set num colors '+num_colors );
+	
+   });
+	
+	
+	
+}
+
 
 var fill_settings = null;
 
@@ -3353,15 +3420,18 @@ app.post('/min_colors', min_colors);
 app.post('/colors', colors);
 app.post('/brain', brain);
 app.post('/gcombo', gcombo);
+app.post('/inverse', inverse);
 app.post('/smooth', smooth);
 app.post('/razn_colors', razn_colors);		
 app.post('/step_colors', step_colors);	
+app.post('/paint_over', paint_over);
 app.post('/odin_dva_colors', odin_dva_colors);	
 app.post('/join_colors', join_colors);	
 app.post('/send_seed', get_seed );
 app.post('/crop', crop );
 app.post('/precrop', precrop );
 app.post('/random', random );
+app.post('/generate_random_seed',generate_random_seed);
 app.post('/mdown', mdown );
 app.post('/mright', mright );
 app.post('/up', up );
@@ -3371,7 +3441,10 @@ app.post('/pre_rotate_any', pre_rotate_any );
 app.post('/rotate_any', rotate_any );
 app.post('/half', half );
 app.post('/median', median );
-app.post('/axes', axes );
+//shift shift lt w/2+1
+app.post('/axes_minus', axes_minus );
+app.post('/axes_plus', axes_plus );
+//app.post('/axes', axes );
 app.post('/ident', ident );
 app.post('/multiply', multiply );
 app.post('/rotateff', rotateff );

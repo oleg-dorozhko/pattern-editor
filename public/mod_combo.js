@@ -1,17 +1,50 @@
-function combo(params, callback)
+function client_combo(params, callback)
 {
 	// search for true-bordered canvas
-	// var cnv = getSelectedBorderedSaveCanvas();
+	var cnv = getSelectedBorderedSaveCanvas();
 	var from_script=false;
 	if(params&&params.length&&params.length>0)
 	{
 		glob_last_selected_canvas_id=params[0];
-		from_script=true;
+		cnv = document.getElementById(glob_last_selected_canvas_id);
 	}
 	
-	else if(glob_last_selected_canvas_id==null) return;
+	if(cnv==null) return;
 		
+	var w1 = document.getElementById("canvas").width;
+	var h1 = document.getElementById("canvas").height;
 	
+	var w2 = cnv.width;
+	var h2 = cnv.height;
+	
+	if((w1%2==1)&&(w2%2==0))  
+	{	
+		alert('w2 not for w1');
+		if (callback) callback();
+		return ;
+	}
+	
+	if((w2%2==1)&&(w1%2==0))  
+	{	
+		alert('w2 not for w1');
+		if (callback) callback();
+		return ;
+	}
+	
+	
+	
+	
+	
+	if((h1%2==1)&&(h2%2==0))
+	{
+		
+		alert('h2 not for h1');if (callback) callback();
+		return ;
+	}
+	if((h1%2==0)&&(h2%2==1))
+		{alert('h2 not for h1');if (callback) callback();
+		return ;}
+		
 	
 	//console.log("combo id="+glob_last_selected_canvas_id);
 	
@@ -19,9 +52,7 @@ function combo(params, callback)
 	
 	//v combu nado peredavat dva md5 a na servere schit sogl plana operation
 	
-	var cnv = document.getElementById(glob_last_selected_canvas_id);	
-	
-		ident(glob_last_selected_canvas_id, 'ident', function(data){
+		ident(cnv.id, 'ident', function(data){
 				
 				/*** writing some data to file with md5 name
 				params = 'degree='+encodeURIComponent(params.degree)+'&md5='+data;
@@ -81,7 +112,7 @@ function combo(params, callback)
 	
 }
 
-function combo_with_name(name, callback)
+function client_combo_with_name(name, callback)
 {
 	// search for true-bordered canvas
 	// var cnv = getSelectedBorderedSaveCanvas();

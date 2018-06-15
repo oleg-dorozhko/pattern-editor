@@ -126,9 +126,7 @@ function save_with_name(name)
 	var save_context = cnv.getContext("2d"); 
 	save_context.putImageData(context.getImageData(0,0,canvas.width,canvas.height),0,0);
 	
-	setTimeout( function(){
-				logg('save('+cnv.id+')'); //after or before? what question
-			}, 100 );	
+	setTimeout( function(){ console.log('save '+cnv.id);  }, 100 );	
 			
 }
 

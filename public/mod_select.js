@@ -88,7 +88,7 @@ function getSelectedBorderedSaveCanvas()
 	{
 		if(list[i].id=="pixels") continue;
 		if(list[i].id=="canvas") continue;
-		if(!list[i].style.border == '') {ind= i; break;}
+		if(list[i].classList.contains("seed-bordered") ){ind= i; break;}
 	}
 	if(ind==null) return null;
 	return list[ind];

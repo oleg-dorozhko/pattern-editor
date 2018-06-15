@@ -3183,7 +3183,7 @@ function ident(req, res)
 		
 		var md5 = get_md5_hex(this.data);
 			
-		png.pack().pipe(fs.createWriteStream("./memory/"+md5+".png"));
+		png.pack().pipe(fs.createWriteStream("memory/"+md5+".png"));
 		
 		
 		

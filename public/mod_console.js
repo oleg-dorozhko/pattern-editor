@@ -103,6 +103,7 @@
 			else if (cmd == 'min colors') min_colors(params, callback);
 			else if (cmd == 'ident') s_ident(params, callback);
 			else if (cmd == 'step colors') s_step_colors(params, callback);
+			else if (cmd == 'destroy colors') s_destroy_colors(params, callback);
 			else if (cmd == 'brain') s_brain(params, callback);
 			else if (cmd == 'generate random seed')  generate_random_seed(params, callback);
 			else if (cmd == 'gen rnd seed')  generate_random_seed(params, callback);
@@ -111,6 +112,7 @@
 			else if (cmd == 'crop lt') s_crop_lt(params, callback);
 			else if (cmd == 'crop rb') s_crop_rb(params, callback);
 			else if (cmd == 'smooth') s_smooth(params, callback);
+			else if (cmd == 'nineth') s_nineth(params, callback);
 			else if (cmd == 'select') select(params, callback);
 			else if (cmd == 'xminus') xminus(params, callback);
 			else if (cmd == 'normal colors') normal_colors(params, callback);
@@ -185,10 +187,12 @@
 			//else if (cmd == 'cripto script')  return true;
 			else if (cmd == 'colors') return true;
 			else if (cmd == 'smooth') return true;
+			else if (cmd == 'nineth') return true;
 			else if (cmd == 'floor colors') return true;
 			else if (cmd == 'gcombo')  return true;
 			else if (cmd == 'razn colors')  return true;
 			else if (cmd == 'step colors') return true;
+			else if (cmd == 'destroy colors')  return true;
 			else if (cmd == 'paint over')  return true;
 			else if (cmd == 'join colors')  return true;
 			else if (cmd == 'odin dva colors') return true;

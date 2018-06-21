@@ -111,6 +111,13 @@ function s_step_colors(params,callback)
 {
 	transform("canvas", '/step_colors',callback); 
 }
+
+function s_destroy_colors(params, callback)
+{
+	transform("canvas", '/destroy_colors',callback); 
+}
+
+
 function s_join_colors(params,callback)
 {
 	transform("canvas", '/join_colors',callback); 
@@ -123,6 +130,11 @@ function s_odin_dva_colors(params,callback)
 function s_smooth(params,callback)
 {
 	transform("canvas", '/smooth',callback); 
+}
+
+function s_nineth(params,callback)
+{
+	transform("canvas", '/nineth',callback); 
 }
 
 function s_colors(params,callback)

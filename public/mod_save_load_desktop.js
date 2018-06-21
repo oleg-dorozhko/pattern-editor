@@ -261,7 +261,17 @@ function setInitialButtonsToCanvas()
 
 			
 		//	var json = '{"buttons":["plus","minus","half","median","vortex","axes minus","axes plus","combo","border minus","border plus","colors","min colors","rotate 45 degree","fill","random","inverse","black white","save","copy","clean"],"saves":[],"canvas":[]}';
-			var json = '{"buttons":["labirint","map","median","execute script","axes minus","axes plus","vertical axe minus","horizontal axe minus","save","copy","clean","colors","floor colors","razn colors","min colors","ident","step colors","brain","generate random seed","gen rnd seed","join colors","odin dva colors","crop lt","crop rb","smooth","select","xminus","normal colors","combo","gcombo","breath of chaos","rio","up","paste","xcombo","inverse","plus","restart","minus","border minus","border plus","vortex","black white","half","rotate plus 90","rotate plus 45","paint over","rotate any","mirror down","mirror right","random","rgb++","rgb--","fill"],"saves":[],"canvas":[]}';
+			var json = '{ "buttons": [';
+			json += '"labirint","map","median","execute script","axes minus",';
+			json += '"axes plus","vertical axe minus","horizontal axe minus",';
+			json += '"save","copy","clean","colors","floor colors","razn colors",';
+			json += '"min colors","ident","step colors","brain","generate random seed",';
+			json += '"gen rnd seed","join colors","destroy colors","odin dva colors","crop lt",';
+			json += '"crop rb","smooth","nineth","select","xminus","normal colors","combo","gcombo",';
+			json += '"breath of chaos","rio","up","paste","xcombo","inverse","plus","restart",';
+			json += '"minus","border minus","border plus","vortex","black white","half","rotate plus 90",';
+			json += '"rotate plus 45","paint over","rotate any","mirror down","mirror right","random","rgb++","rgb--","fill"';
+			json += '],"saves":[],"canvas":[]}';
 			localStorage.clear();
 			localStorage.setItem("desktop",json);
 	

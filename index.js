@@ -9,6 +9,7 @@ var mod_inverse = require('./lib/mod_inverse');
 var mod_random = require('./lib/mod_random');
 var mod_median = require('./lib/mod_median');
 var mod_step_colors = require('./lib/mod_step_colors');
+var mod_destroy_colors = require('./lib/mod_destroy_colors');
 var mod_odin_dva_colors = require('./lib/mod_odin_dva_colors');
 var mod_join_colors = require('./lib/mod_join_colors');
 var mod_colors = require('./lib/mod_colors');
@@ -20,6 +21,7 @@ var mod_razn_colors = require('./lib/mod_razn_colors');
 var mod_axes = require('./lib/mod_axes');
 var mod_black_white = require('./lib/mod_black_white');
 var mod_smooth = require('./lib/mod_smooth');
+var mod_nineth = require('./lib/mod_nineth');
 var mod_paint_over = require('./lib/mod_paint_over');
 var mod_rotate_any = require('./lib/mod_rotate_any');
 var mod_md5 = require('./lib/mod_md5');
@@ -1248,6 +1250,17 @@ function smooth(req, res)
 		
 }
 
+
+function nineth(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_nineth.nineth(this),res,"\nnineth");
+		
+	});
+		
+}
+
 function paint_over(req, res)
 {
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
@@ -1382,22 +1395,20 @@ function brain(req, res)
 }
 
 
-function half( req, res )
+function __half(im)
 {
-	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
-		
-		
-		//var arr = get_coordinates(this.width, this.height);
+	
+	//var arr = get_coordinates(this.width, this.height);
 		//if(arr == null) return; 
 		
 		var n=0;
 		var m=0;
-		if( this.width%2 == 0  ) n = this.width/2;
-		else if( this.width%2 == 1  ) n = (this.width/2|0)+1;
+		if( im.width%2 == 0  ) n = im.width/2;
+		else if( im.width%2 == 1  ) n = (im.width/2|0)+1;
 		
 		
-		if(this.height%2 == 0) {  m = this.height/2;  }
-		else if(this.height%2 == 1) { m = (this.height/2|0)+1; }
+		if(im.height%2 == 0) {  m = im.height/2;  }
+		else if(im.height%2 == 1) { m = (im.height/2|0)+1; }
 		// else 
 		// {
 			// var err = "width %2 != 0 or height %2 != 0 ";
@@ -1424,17 +1435,27 @@ function half( req, res )
 				
 				for (var x = 0; x < n; x++) {
 					
-					var idx = (this.width * y + x) << 2;
+					var idx = (im.width * y + x) << 2;
 					var idx2 = (newpng.width * y + x) << 2;
 					
-					newpng.data[idx2] = this.data[idx];
-					newpng.data[idx2+1] = this.data[idx+1];
-					newpng.data[idx2+2] = this.data[idx+2];
-					newpng.data[idx2+3] = this.data[idx+3];
+					newpng.data[idx2] = im.data[idx];
+					newpng.data[idx2+1] = im.data[idx+1];
+					newpng.data[idx2+2] = im.data[idx+2];
+					newpng.data[idx2+3] = im.data[idx+3];
 					
 				}
 			}
 			
+	
+	return newpng;
+}
+
+function half( req, res )
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+			var newpng = __half(this);
 			sendImage(newpng,res,"\nImage was halfed\n");
 						
 		});
@@ -1486,28 +1507,15 @@ function rotate( req, res )
 }
 
 
-
-
-
-function vortex( req, res )
+function __vortex(im)
 {
-	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+	
+	
 		
-		
-		if(this.width * 2 > 3000 || this.height * 2 > 3000 )
-		{
-			
-			res.writeHead( 500, { 'Content-Type':'text/plain' } );
-			res.end("vortex: error: too big size (need result width * 2 or height * 2 <= 1200)");
-			return;
-			
-		}
-		
-			
 		var newpng = new PNG ( {
 			
-				width: this.width*2,
-				height: this.height,
+				width: im.width*2,
+				height: im.height,
 				filterType: 4
 		} );
 		
@@ -1520,25 +1528,25 @@ function vortex( req, res )
 					
 					var idx = 0;
 					var new_idx1 = newpng.width * y + x << 2;
-					if(x < this.width)
+					if(x < im.width)
 					{
 					
-						idx = (this.width * y + x) << 2;
+						idx = (im.width * y + x) << 2;
 						
-						newpng.data[new_idx1+0] = this.data[idx+0];
-						newpng.data[new_idx1+1] = this.data[idx+1];
-						newpng.data[new_idx1+2] = this.data[idx+2];
-						newpng.data[new_idx1+3] = this.data[idx+3];
+						newpng.data[new_idx1+0] = im.data[idx+0];
+						newpng.data[new_idx1+1] = im.data[idx+1];
+						newpng.data[new_idx1+2] = im.data[idx+2];
+						newpng.data[new_idx1+3] = im.data[idx+3];
 						n++;
 					}
 					else
 					{
-						idx = (this.width * y + (n-1)) << 2;
+						idx = (im.width * y + (n-1)) << 2;
 						
-						newpng.data[new_idx1+0] = this.data[idx+0];
-						newpng.data[new_idx1+1] = this.data[idx+1];
-						newpng.data[new_idx1+2] = this.data[idx+2];
-						newpng.data[new_idx1+3] = this.data[idx+3];
+						newpng.data[new_idx1+0] = im.data[idx+0];
+						newpng.data[new_idx1+1] = im.data[idx+1];
+						newpng.data[new_idx1+2] = im.data[idx+2];
+						newpng.data[new_idx1+3] = im.data[idx+3];
 						
 						n--;
 
@@ -1611,12 +1619,32 @@ function vortex( req, res )
 			//sendImage(newpng,res,'\nImage mirror downed\n');
 			
 			
+			return newpng2;
+	
+	
+	
+}
+
+
+function vortex( req, res )
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		
+		if(this.width * 2 > 3000 || this.height * 2 > 3000 )
+		{
 			
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end("vortex: error: too big size (need result width * 2 or height * 2 <= 1200)");
+			return;
 			
-			
+		}
+		
+		
+		
 			
 		
-			sendImage(newpng2,res,'\nImage vortexed\n');
+			sendImage(__vortex(this),res,'\nImage vortexed\n');
 			
 			
 			
@@ -1877,7 +1905,7 @@ function random( req, res )
 
 
 
-function axes( req, res )
+function old__axes( req, res )
 {
 
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
@@ -3119,15 +3147,15 @@ function min_colors(req, res)
 					
 }
 
-function axes(req, res)
-{
-	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+// function axes(req, res)
+// {
+	// req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
-		sendImage( module.bothAxesMinus(this), res, 'axes' );
+		// sendImage( module.bothAxesMinus(this), res, 'axes' );
 					
-	});	
+	// });	
 
-}
+// }
 
 function colors(req, res)
 {
@@ -3152,7 +3180,24 @@ function step_colors(req, res)
 	});				
 					
 }
+
+function destroy_colors(req, res)
+{
+	//console.log('\nIn rio(...)\n');
 	
+	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
+				
+				var im = this;
+				//for(var i=0;i<20; i++)
+				{
+					im = mod_destroy_colors.destroyColorsForImageData(im);
+					
+				}
+					sendImage( im, res, 'destroy colors' );
+	});				
+					
+}
+		
 function odin_dva_colors(req, res)
 {
 	//console.log('\nIn rio(...)\n');
@@ -3225,7 +3270,10 @@ function axes_minus(req, res)
 {
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
-		sendImage( mod_axes.bothAxesMinus(this), res, 'both axes minus' );
+		//var newpng = __half(this);	
+		var prom = 	mod_axes.bothAxesMinus(this);
+		
+		sendImage( prom, res, 'both axes minus' );
 					
 	});	
 }	
@@ -3422,9 +3470,12 @@ app.post('/brain', brain);
 app.post('/gcombo', gcombo);
 app.post('/inverse', inverse);
 app.post('/smooth', smooth);
+app.post('/nineth', nineth);
 app.post('/razn_colors', razn_colors);		
 app.post('/step_colors', step_colors);	
 app.post('/paint_over', paint_over);
+
+app.post('/destroy_colors', destroy_colors);	
 app.post('/odin_dva_colors', odin_dva_colors);	
 app.post('/join_colors', join_colors);	
 app.post('/send_seed', get_seed );

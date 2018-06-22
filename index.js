@@ -1313,17 +1313,27 @@ function pre_rotate_any(req, res)
 	
 	var s = (''+req.body['md5']).trim();
 	
-	var obj = {};
+	
+	var ind = isDataPNGObjectByMD5(s);
+		if(ind==null)
+		{
+			console.log('pre_rotate_any:error: not found obj with this md5:'+s);
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end('pre_rotate_any:error:  not found obj with this md5:'+s);
+				req.connection.destroy();
+				return;
+		}
+	
+	var obj = global_memory[ind];
 	obj.hash = s;
 	obj.degree = req.body['degree'];
-	
-	fs.writeFile("./memory/"+s+'.id', JSON.stringify(obj), function(err) {
-		if(err) {
-			return console.log(err);
-		}
+	// fs.writeFile("./memory/"+s+'.id', JSON.stringify(obj), function(err) {
+		// if(err) {
+			// return console.log(err);
+		// }
 
-		console.log("The file was saved!");
-	}); 
+		// console.log("The file was saved!");
+	//}); 
 	
 	
 	res.writeHead(200, {  'Content-Type': 'text/html' } );
@@ -1337,8 +1347,8 @@ function rotate_any(req, res)
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
 		var s = get_md5_hex(this.data);
-		var obj = getDataTxtObjectByMD5(s);
-		if(obj==null)
+		var ind = isDataPNGObjectByMD5(s);
+		if(ind==null)
 		{
 			console.log('rotate_any: not found obj with this md5:'+s);
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
@@ -1346,7 +1356,7 @@ function rotate_any(req, res)
 				req.connection.destroy();
 				return;
 		}
-		else sendImage(mod_rotate_any.rotate_any(this,obj),res,"\nrotate_any");
+		else sendImage(mod_rotate_any.rotate_any(this,global_memory[ind]),res,"\nrotate_any");
 		
 	});
 	

@@ -113,6 +113,7 @@
 			else if (cmd == 'crop rb') s_crop_rb(params, callback);
 			else if (cmd == 'smooth') s_smooth(params, callback);
 			else if (cmd == 'nineth') s_nineth(params, callback);
+			else if (cmd == 'nonineth') s_nonineth(params, callback);
 			else if (cmd == 'select') select(params, callback);
 			else if (cmd == 'xminus') xminus(params, callback);
 			else if (cmd == 'normal colors') normal_colors(params, callback);
@@ -188,6 +189,7 @@
 			else if (cmd == 'colors') return true;
 			else if (cmd == 'smooth') return true;
 			else if (cmd == 'nineth') return true;
+			else if (cmd == 'nonineth') return true;
 			else if (cmd == 'floor colors') return true;
 			else if (cmd == 'gcombo')  return true;
 			else if (cmd == 'razn colors')  return true;

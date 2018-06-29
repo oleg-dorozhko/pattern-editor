@@ -137,6 +137,12 @@ function s_nineth(params,callback)
 	transform("canvas", '/nineth',callback); 
 }
 
+
+function s_nonineth(params,callback)
+{
+	transform("canvas", '/nonineth',callback); 
+}
+
 function s_colors(params,callback)
 {
 	sendImageToUrlGetText( "canvas", '/colors', colors, callback ); 

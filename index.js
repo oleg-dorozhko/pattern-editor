@@ -3,7 +3,7 @@ var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');
 var mod_mirror = require('./lib/mod_mirror');
 //var mod_half = require('./lib/mod_half');
-var mod_axes = require('./lib/mod_axes');
+//var mod_axes = require('./lib/mod_axes');
 var mod_generate_random_seed = require('./lib/mod_generate_random_seed');
 var mod_inverse = require('./lib/mod_inverse');
 var mod_random = require('./lib/mod_random');
@@ -52,6 +52,20 @@ app.post('/api/users', function(req, res) {
 
 //We can test this using POSTman and send information as application/x-www-form-urlencoded:
 //https://scotch.io/tutorials/use-expressjs-to-get-url-and-post-parameters
+
+
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+
+
+
+
+
 
 
 app.set('port', (process.env.PORT || 5000));
@@ -843,6 +857,55 @@ function rotateff(req, res)
 }
 
 
+function __getCountOfColors(im0)
+{
+	
+	var w = im0.width;
+	var h = im0.height;
+	
+		
+			var obj = {};
+			//var colors = [];
+
+			for (var y = 0; y < h; y++) {
+		
+
+				for (var x = 0; x < w; x++) {
+				
+					
+					var idx = (w * y + x) << 2;
+					
+					var key = ""+im0.data[idx]+"-"+im0.data[idx+1]+"-"+im0.data[idx+2]+"-"+im0.data[idx+3];
+					if (obj[key]==undefined)obj[key]=0;
+					obj[key]++;
+					// if (obj[key]==undefined) { 
+					
+						
+						// var col = [im0.data[idx], im0.data[idx+1],im0.data[idx+2],im0.data[idx+3]]; 
+						// colors.push(col); 
+						// obj[key]= {cnt:1,arr:col};
+					
+					// }
+					// else
+					// {
+						// var obj4 = {cnt:obj[key].cnt+1,arr:obj[key].arr};
+						// obj[key] = obj4;
+					// }
+					
+					
+					
+					
+					
+				}
+			}
+			var n=0;
+			for(var p in obj){n++;
+			//console.log (p +" ="+obj[p]);
+			}
+			
+			return n;
+}
+
 function borderplus(req, res)
 {
 	
@@ -984,6 +1047,52 @@ function minus( req, res )
 	});
 }
 
+function __plus(img)
+{
+	
+			//here we create new png (same as result bufferedImage (in java))
+		var newpng = new PNG ( {
+			
+				width: img.width*2,
+				height: img.height*2,
+				filterType: 4
+		} );
+		
+
+			for (var y = 0; y < img.height; y++) {
+				for (var x = 0; x < img.width; x++) {
+					
+					var idx = (img.width * y + x) << 2;
+					
+					var new_idx = newpng.width * (y*2) + (x*2) << 2;
+					var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
+					
+					newpng.data[new_idx] = img.data[idx];
+					newpng.data[new_idx+1] = img.data[idx+1];
+					newpng.data[new_idx+2] = img.data[idx+2];
+					newpng.data[new_idx+3] = img.data[idx+3];
+					
+					newpng.data[new_idx+4] = img.data[idx];
+					newpng.data[new_idx+5] = img.data[idx+1];
+					newpng.data[new_idx+6] = img.data[idx+2];
+					newpng.data[new_idx+7] = img.data[idx+3];
+					
+					newpng.data[new_idx2] = img.data[idx];
+					newpng.data[new_idx2+1] = img.data[idx+1];
+					newpng.data[new_idx2+2] = img.data[idx+2];
+					newpng.data[new_idx2+3] = img.data[idx+3];
+					
+					newpng.data[new_idx2+4] = img.data[idx];
+					newpng.data[new_idx2+5] = img.data[idx+1];
+					newpng.data[new_idx2+6] = img.data[idx+2];
+					newpng.data[new_idx2+7] = img.data[idx+3];
+					
+					
+				}
+			}
+	
+	return newpng;
+}
 
 function plus( req, res)
 {
@@ -1001,47 +1110,7 @@ function plus( req, res)
 		}
 			
 			//here we create new png (same as result bufferedImage (in java))
-		var newpng = new PNG ( {
-			
-				width: this.width*2,
-				height: this.height*2,
-				filterType: 4
-		} );
-		
-
-			for (var y = 0; y < this.height; y++) {
-				for (var x = 0; x < this.width; x++) {
-					
-					var idx = (this.width * y + x) << 2;
-					
-					var new_idx = newpng.width * (y*2) + (x*2) << 2;
-					var new_idx2 = newpng.width * (y*2+1) + (x*2) << 2;
-					
-					newpng.data[new_idx] = this.data[idx];
-					newpng.data[new_idx+1] = this.data[idx+1];
-					newpng.data[new_idx+2] = this.data[idx+2];
-					newpng.data[new_idx+3] = this.data[idx+3];
-					
-					newpng.data[new_idx+4] = this.data[idx];
-					newpng.data[new_idx+5] = this.data[idx+1];
-					newpng.data[new_idx+6] = this.data[idx+2];
-					newpng.data[new_idx+7] = this.data[idx+3];
-					
-					newpng.data[new_idx2] = this.data[idx];
-					newpng.data[new_idx2+1] = this.data[idx+1];
-					newpng.data[new_idx2+2] = this.data[idx+2];
-					newpng.data[new_idx2+3] = this.data[idx+3];
-					
-					newpng.data[new_idx2+4] = this.data[idx];
-					newpng.data[new_idx2+5] = this.data[idx+1];
-					newpng.data[new_idx2+6] = this.data[idx+2];
-					newpng.data[new_idx2+7] = this.data[idx+3];
-					
-					
-				}
-			}
-	
-			
+		var newpng = __plus(this);
 
 			newpng.pack(); //pack result, write head to response, pipe result to response, when 'end' bla-bla-bla to log 
 			res.writeHead( 200, {  'Content-Type': 'blob' } ); 
@@ -1250,6 +1319,111 @@ function smooth(req, res)
 		
 }
 
+function execute_script(req, res)
+{
+	console.log('execute_script:');
+	var s = '';
+	for(var key in req.body)	{ 
+		s +='\nreq.body['+key+']: '+req.body[key];
+		
+	}
+	console.log(s); 
+	
+	var arr = req.body[key].split(",");
+	var res_png=null;
+	for(var i=0;i<arr.length;i++)
+	{
+		arr[i]=arr[i].trim();
+		console.log("executing ["+arr[i]+"]"); 
+		if(arr[i]=="generate random seed")
+		{
+			
+			res_png = mod_generate_random_seed.generate_random_seed([14,5]);
+		}
+		else if(arr[i]=="plus")
+		{
+			if(res_png.width * 2 > 1200 || res_png.height * 2 > 1200 )
+			{
+				
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("plus: error: too big size (need result width * 2 <= 1200 or height * 2 <= 1200 )");
+				return;
+				
+			}
+			
+			res_png = __plus(res_png);
+			
+			
+		}
+		
+		else if(arr[i]=="mirror right")
+		{
+			if(res_png.width * 2 > 1200  )
+			{
+				
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("mright: error: too big size (need result width * 2 <= 1200 )");
+				return;
+				
+			}
+			
+			res_png = mod_mirror.mirror_right(res_png);
+			
+			
+			
+		}
+		else if(arr[i]=="mirror down")
+		{
+			
+			if( res_png.height * 2 > 1200 )
+			{
+				
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("mdown: error: too big size (need result height * 2 <= 1200)");
+				return;
+				
+			}
+			
+			res_png = mod_mirror.mirror_down(res_png);
+			
+			
+		}
+		
+		else if(arr[i]=="axes minus")
+		{
+		
+		
+		
+			res_png = mod_axes.bothAxesMinus(res_png);
+		
+		
+		
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	sendImage( res_png, res, 'script executed' );
+	
+}
+
+function nonineth(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_nineth.nonineth(this),res,"\nnonineth");
+		
+	});
+		
+}
 
 function nineth(req, res)
 {
@@ -1305,6 +1479,8 @@ function isDataPNGObjectByMD5(md5)
 	
 }
 
+
+
 function pre_rotate_any(req, res)
 {
 	
@@ -1356,7 +1532,12 @@ function rotate_any(req, res)
 				req.connection.destroy();
 				return;
 		}
-		else sendImage(mod_rotate_any.rotate_any(this,global_memory[ind]),res,"\nrotate_any");
+		else 
+		{
+			var respng = mod_rotate_any.rotate_any(this,global_memory[ind]);
+			global_memory.splice(ind,1);
+			sendImage(respng,res,"\nrotate_any");
+		}
 		
 	});
 	
@@ -2138,7 +2319,7 @@ function old__axes( req, res )
 				
 			
 				var newpng = newcroplt(this,res,crop_settings);
-				
+				global_memory.splice(ind,1);
 				sendImage(newpng,res,'\nImage was LT croped \n');
 				
 			}
@@ -2148,7 +2329,7 @@ function old__axes( req, res )
 				
 				
 				var newpng = newcroprb(this,res,crop_settings);
-				
+				global_memory.splice(ind,1);
 				sendImage(newpng,res,'\nImage was RB croped \n');
 				
 			}
@@ -2577,8 +2758,8 @@ function combo( req, res )
 						
 					}
 					
-					global_memory.splice(nm1);		
-					global_memory.splice(nm2);
+					global_memory.splice(nm1,1);		
+					global_memory.splice(nm2,1);
 					
 					sendImage(result_png,res,'\nImages combined\n');
 					
@@ -2706,7 +2887,8 @@ function combo( req, res )
 					
 					
 					
-					
+					global_memory.splice(nm1,1);
+					global_memory.splice(nm2,1);
 					
 					sendImage(result_png,res,'\nImages combined\n');
 					
@@ -3211,7 +3393,16 @@ function razn_colors(req, res)
 	
 	
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
-				
+		var n = __getCountOfColors(this);	
+if(n>500)
+{
+	res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("razn_colors(): error: > 500 colors found");
+		req.connection.destroy();
+		return;
+	
+	
+}	
 		sendImage( mod_razn_colors.raznColors(this), res, 'razn colors' );
 					
 	});				
@@ -3627,6 +3818,7 @@ app.post('/gcombo', gcombo);
 app.post('/inverse', inverse);
 app.post('/smooth', smooth);
 app.post('/nineth', nineth);
+app.post('/nonineth', nonineth);
 app.post('/razn_colors', razn_colors);		
 app.post('/step_colors', step_colors);	
 app.post('/paint_over', paint_over);
@@ -3657,6 +3849,7 @@ app.post('/multiply', multiply );
 app.post('/rotateff', rotateff );
 app.post('/plus', plus );
 app.post('/minus', minus );
+app.post('/execute_script', execute_script );
 app.post('/blackwhite', blackwhite );
 app.post('/inverse', inverse );
 app.post('/borderplus', borderplus );

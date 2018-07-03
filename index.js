@@ -1335,10 +1335,31 @@ function execute_script(req, res)
 	{
 		arr[i]=arr[i].trim();
 		console.log("executing ["+arr[i]+"]"); 
-		if(arr[i]=="generate random seed")
+		
+		if(arr[i].indexOf("generate random seed")===0)
+		{
+			var t = arr[i].replace("generate random seed",'');
+			t=t.trim();
+			var params=t.split(" ");console.log('in execute generate_random_seed: '+params);
+			if(params.length>0)
+			{
+				for(var ii=0;ii<params.length;ii++) params[ii]=Number(params[ii]);
+				
+			}
+			else
+			{
+				params=[14,5];
+			}
+			
+			res_png = mod_generate_random_seed.generate_random_seed(params);
+			
+			
+		}
+		else if(arr[i]=="smooth")
 		{
 			
-			res_png = mod_generate_random_seed.generate_random_seed([14,5]);
+			res_png = mod_smooth.smooth(res_png);
+			
 		}
 		else if(arr[i]=="plus")
 		{

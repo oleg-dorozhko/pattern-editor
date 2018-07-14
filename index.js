@@ -1319,6 +1319,42 @@ function smooth(req, res)
 		
 }
 
+function create_png_from_global(nm1)
+{
+
+		var old_png =  new PNG({
+			
+			width: global_memory[nm1].img.width,
+			height: global_memory[nm1].img.height,
+			filterType: 4
+			
+			
+			});
+		
+		
+		
+		
+		var arr = global_memory[nm1].img.data;
+		
+		
+		//	var arr=[];
+						for(var j=0;j<old_png.height;j++)
+						{
+							for(var i=0;i<old_png.width;i++)
+							{
+								var idx = (old_png.width * j + i) << 2;	
+							
+							//	console.log('\n'+idx+'\n');
+								old_png.data[idx]=arr[idx];
+								old_png.data[idx+1]=arr[idx+1];
+								old_png.data[idx+2]=arr[idx+2];
+								old_png.data[idx+3]=arr[idx+3];
+							}
+						}
+		return old_png;
+}
+		
+
 function execute_script(req, res)
 {
 	console.log('execute_script:');
@@ -1329,8 +1365,34 @@ function execute_script(req, res)
 	}
 	console.log(s); 
 	
-	var arr = req.body[key].split(",");
+	var arr = req.body['commands'].split(",");
 	var res_png=null;
+	var ind=null;
+	var md5=req.body['md5'];
+	console.log(md5); 
+	if(md5 != null)
+	{
+		ind = isDataPNGObjectByMD5(md5);
+		if(ind==null)
+		{
+			console.log('execute_script: not found obj with this md5:'+md5);
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end('execute_script: not found obj with this md5:'+md5);
+				req.connection.destroy();
+				return;
+		}
+		else 
+		{
+			res_png =  create_png_from_global(ind);
+			
+			
+		}
+	
+	
+	
+	}
+	
+	
 	for(var i=0;i<arr.length;i++)
 	{
 		arr[i]=arr[i].trim();
@@ -1340,26 +1402,62 @@ function execute_script(req, res)
 		{
 			var t = arr[i].replace("generate random seed",'');
 			t=t.trim();
-			var params=t.split(" ");console.log('in execute generate_random_seed: '+params);
-			if(params.length>0)
+			var params=null;
+			if(t.length>0)
 			{
-				for(var ii=0;ii<params.length;ii++) params[ii]=Number(params[ii]);
-				
+				var params=t.split(" ");
+				if(params.length>0)
+				{
+					for(var ii=0;ii<params.length;ii++) params[ii]=Number(params[ii]);
+					
+				}
+				else
+				{
+					params =[15,3];
+				}
 			}
 			else
 			{
-				params=[14,5];
+				params =[15,3];
 			}
-			
 			res_png = mod_generate_random_seed.generate_random_seed(params);
 			
 			
 		}
+		else if(arr[i]=="median")
+		{
+			
+			res_png = mod_median.__median(res_png);
+			
+		}
+		
 		else if(arr[i]=="smooth")
 		{
 			
 			res_png = mod_smooth.smooth(res_png);
 			
+		}
+		else if(arr[i]=="rotate plus 45")
+		{
+			res_png = mod_rotate_ff.rotate_ff(res_png);
+		}
+		else if(arr[i]=="paint over")
+		{
+		
+			res_png = mod_paint_over.paint_over(res_png);
+		
+		}
+		else if(arr[i]=="nineth")
+		{
+		
+			res_png = mod_nineth.nineth(res_png);
+		
+		}
+		else if(arr[i]=="nonineth")
+		{
+		
+			res_png = mod_nineth.nonineth(res_png);
+		
 		}
 		else if(arr[i]=="plus")
 		{
@@ -1422,16 +1520,10 @@ function execute_script(req, res)
 		}
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
+	
+	if(ind !=null) global_memory.splice(ind,1);
+	
 	sendImage( res_png, res, 'script executed' );
 	
 }
@@ -2076,7 +2168,7 @@ function mright( req, res )
 	}
 
 	
-function random( req, res )
+function old_random( req, res )
 {
 
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {

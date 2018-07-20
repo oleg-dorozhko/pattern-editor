@@ -22,6 +22,7 @@ var mod_axes = require('./lib/mod_axes');
 var mod_black_white = require('./lib/mod_black_white');
 var mod_smooth = require('./lib/mod_smooth');
 var mod_nineth = require('./lib/mod_nineth');
+var mod_maximus = require('./lib/mod_maximus');
 var mod_paint_over = require('./lib/mod_paint_over');
 var mod_rotate_any = require('./lib/mod_rotate_any');
 var mod_md5 = require('./lib/mod_md5');
@@ -1459,6 +1460,12 @@ function execute_script(req, res)
 			res_png = mod_nineth.nonineth(res_png);
 		
 		}
+		else if(arr[i]=="maximus")
+		{
+		
+			res_png = mod_maximus.maximus(res_png);
+		
+		}
 		else if(arr[i]=="plus")
 		{
 			if(res_png.width * 2 > 1200 || res_png.height * 2 > 1200 )
@@ -1527,7 +1534,15 @@ function execute_script(req, res)
 	sendImage( res_png, res, 'script executed' );
 	
 }
-
+function maximus(req, res)
+{
+	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
+		
+		sendImage(mod_maximus.maximus(this),res,"\nmaximus");
+		
+	});
+		
+}
 function nonineth(req, res)
 {
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
@@ -3959,6 +3974,7 @@ app.post('/axes_plus', axes_plus );
 //app.post('/axes', axes );
 app.post('/ident', ident );
 app.post('/multiply', multiply );
+app.post('/maximus', maximus );
 app.post('/rotateff', rotateff );
 app.post('/plus', plus );
 app.post('/minus', minus );

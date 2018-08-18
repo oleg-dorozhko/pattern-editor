@@ -113,6 +113,7 @@
 			else if (cmd == 'crop rb') s_crop_rb(params, callback);
 			else if (cmd == 'smooth') s_smooth(params, callback);
 			else if (cmd == 'nineth') s_nineth(params, callback);
+			else if (cmd == 'maximus') s_maximus(params, callback);
 			else if (cmd == 'nonineth') s_nonineth(params, callback);
 			else if (cmd == 'select') select(params, callback);
 			else if (cmd == 'xminus') xminus(params, callback);
@@ -182,6 +183,7 @@
 			else if (cmd == 'select')  return true;
 			else if (cmd == 'crop lt') return true;
 			else if (cmd == 'ident') return true;
+			else if (cmd == 'maximus') return true;
 			else if (cmd == 'clean')  return true;
 			else if (cmd == 'xminus') return true;
 			else if (cmd == 'restart')  return true;

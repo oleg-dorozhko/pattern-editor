@@ -136,7 +136,10 @@ function s_nineth(params,callback)
 {
 	transform("canvas", '/nineth',callback); 
 }
-
+function s_maximus(params,callback)
+{
+	transform("canvas", '/maximus',callback); 
+}
 
 function s_nonineth(params,callback)
 {

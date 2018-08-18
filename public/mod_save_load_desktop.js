@@ -270,7 +270,7 @@ function setInitialButtonsToCanvas()
 			json += '"crop rb","smooth","nineth","select","xminus","normal colors","combo","gcombo",';
 			json += '"breath of chaos","rio","up","paste","xcombo","inverse","plus","restart",';
 			json += '"minus","border minus","border plus","vortex","black white","half","rotate plus 90",';
-			json += '"rotate plus 45","paint over","rotate any","mirror down","mirror right","random","rgb++","rgb--","fill"';
+			json += '"rotate plus 45","paint over","maximus","rotate any","mirror down","mirror right","random","rgb++","rgb--","fill"';
 			json += '],"saves":[],"canvas":[]}';
 			localStorage.clear();
 			localStorage.setItem("desktop",json);

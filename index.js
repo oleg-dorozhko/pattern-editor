@@ -8,6 +8,7 @@ var mod_generate_random_seed = require('./lib/mod_generate_random_seed');
 var mod_inverse = require('./lib/mod_inverse');
 var mod_random = require('./lib/mod_random');
 var mod_median = require('./lib/mod_median');
+var mod_magik_rotate = require('./lib/mod_magik_rotate');
 var mod_step_colors = require('./lib/mod_step_colors');
 var mod_destroy_colors = require('./lib/mod_destroy_colors');
 var mod_odin_dva_colors = require('./lib/mod_odin_dva_colors');
@@ -1406,7 +1407,7 @@ function execute_script(req, res)
 			var params=null;
 			if(t.length>0)
 			{
-				var params=t.split(" ");
+				params=t.split(" ");
 				if(params.length>0)
 				{
 					for(var ii=0;ii<params.length;ii++) params[ii]=Number(params[ii]);
@@ -1431,7 +1432,27 @@ function execute_script(req, res)
 			res_png = mod_median.__median(res_png);
 			
 		}
-		
+		else if(arr[i].indexOf("magik rotate")===0)
+		{
+			var t = arr[i].replace("magik rotate",'');
+			t=t.trim();
+			var params=null;
+			if(t.length>0)
+			{
+				params=Number(t);
+				
+			}
+			else
+			{
+				params =1;
+			}
+			res_png = mod_magik_rotate.magik_rotate(res_png,params);
+			
+		}
+		else if(arr[i]=="up")
+		{
+			res_png = mod_up.upForImageData(res_png);
+		}
 		else if(arr[i]=="smooth")
 		{
 			
@@ -1538,7 +1559,7 @@ function maximus(req, res)
 {
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
-		sendImage(mod_maximus.maximus(this),res,"\nmaximus");
+		sendImage(mod_maximus.maximus(this),res,"maximus");
 		
 	});
 		

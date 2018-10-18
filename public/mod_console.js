@@ -82,9 +82,8 @@
 			}
 			
 			
-			if (cmd == 'labirint') labirint();
-			else if (cmd == 'map') map();
-			else if (cmd=='median') s_median(params, callback);
+			
+			if (cmd=='median') s_median(params, callback);
 			else if (cmd == 'execute script') { 
 													global_client_typing_mode = true; 
 													execute_script( params, function() {  global_client_typing_mode = false;  } ); 
@@ -118,6 +117,7 @@
 			else if (cmd == 'select') select(params, callback);
 			else if (cmd == 'xminus') xminus(params, callback);
 			else if (cmd == 'normal colors') normal_colors(params, callback);
+			else if (cmd == 'xcombo') client_x_combo(params, callback);
 			else if (cmd == 'combo') client_combo(params, callback);
 			else if (cmd == 'gcombo') s_gcombo(params, callback);
 			else if (cmd == 'breath of chaos') breath_of_chaos(params, callback);
@@ -163,8 +163,6 @@
 			//console.log('check: ['+cmd+']');
 			if(cmd=='') return true;
 			else if(cmd==' ') return true;
-			else if (cmd == 'labirint') return true;
-			else if (cmd == 'map') return true;
 			else if (cmd=='median') return true;
 			else if (cmd == 'execute script') return true;
 			else if (cmd == 'axes minus')  return true;
@@ -203,6 +201,7 @@
 			else if (cmd == 'normal colors') return true;
 			else if (cmd == 'min colors') return true;
 			else if (cmd == 'combo')  return true;
+			else if (cmd == 'xcombo')  return true;
 			else if (cmd == 'up')  return true;
 			else if (cmd == 'rio') return true;
 			else if (cmd == 'breath of chaos') return true;

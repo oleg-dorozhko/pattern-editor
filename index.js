@@ -3151,26 +3151,104 @@ function xcombo( req, res )
 	
 	console.log('\nIn xcombo(...)\n');
 		
-	if(xcombo_settings == null)
+		for(var key in req.body)	console.log('req.body['+key+']: '+req.body[key]);
+	
+	var md51 = (''+req.body['md51']).trim();
+	var md52 = (''+req.body['md52']).trim();
+	
+	var nm1 = isDataPNGObjectByMD5(md51);
+	if(nm1==null)
 	{
-		
-		res.writeHead( 500, { 'Content-Type':'text/plain' } );
-		res.end("xcombo: error: call /prepare_xcombo before");
-		//req.connection.destroy();
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("xcombo: error: call /ident before");
+		req.connection.destroy();
 		return;
-
+		
+		
+	}
+	var nm2 = isDataPNGObjectByMD5(md52);
+	if(nm2==null)
+	{
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("xcombo: error: call /ident before");
+		req.connection.destroy();
+		return;
+		
+		
 	}
 	
-	var old_png = xcombo_settings.second_image; 
-	
-	var big_image = new PNG({filterType: 4});
-	
-	req.pipe(big_image).on('parsed', function() {
+	//global_memory[nm1].img.pipe(  ).on('parsed', function() {
+
+		var old_png =  new PNG({
+			
+			width: global_memory[nm1].img.width,
+			height: global_memory[nm1].img.height,
+			filterType: 4
+			
+			
+			});
+		
+		
+		
+		
+		var arr = global_memory[nm1].img.data;
+		
+		
+		//	var arr=[];
+						for(var j=0;j<old_png.height;j++)
+						{
+							for(var i=0;i<old_png.width;i++)
+							{
+								var idx = (old_png.width * j + i) << 2;	
+							
+							//	console.log('\n'+idx+'\n');
+								old_png.data[idx]=arr[idx];
+								old_png.data[idx+1]=arr[idx+1];
+								old_png.data[idx+2]=arr[idx+2];
+								old_png.data[idx+3]=arr[idx+3];
+							}
+						}
+		
+		
+		
+		
+		
+		var big_image =  new PNG({
+			
+			width: global_memory[nm2].img.width,
+			height: global_memory[nm2].img.height,
+			filterType: 4
+			
+			
+			});
+		
+		
+		
+		arr = global_memory[nm2].img.data;
+		
+						for(var j=0;j<big_image.height;j++)
+						{
+							for(var i=0;i<big_image.width;i++)
+							{
+								var idx = (big_image.width * j + i) << 2;	
+							
+						//		console.log('\n'+idx+'\n');
+								big_image.data[idx]=arr[idx];
+								big_image.data[idx+1]=arr[idx+1];
+								big_image.data[idx+2]=arr[idx+2];
+								big_image.data[idx+3]=arr[idx+3];
+							}
+						}
+		
+		
+		
+		
 		
 		
 				
 					
-					
+					console.log("old_png.width= " +old_png.width);	
+			console.log("big_image.width= " +big_image.width);	
 					
 			if(old_png.width != old_png.height) 
 			{
@@ -3179,20 +3257,98 @@ function xcombo( req, res )
 				
 			}
 			
-			if(this.width != this.height) {
+			if(big_image.width != big_image.height) {
 				error( req, res, "xcombo: error: this.width != this.height");
 				
 				return;  
 			}
-				
-			console.log("old_png.width= " +old_png.width);	
-			console.log("this.width= " +this.width);	
 			
-			if((old_png.width % 2 == 0) && (this.width % 2 ==  0))
+	if((big_image.width == old_png.width)&&(big_image.height == old_png.height))
+	{
+		
+		
+		var result_png = new PNG ( {
+						
+							width: old_png.width,
+							height: old_png.height,
+							filterType: 4
+					} );
+					
+
+					var t4 = (old_png.width-big_image.width)/2;
+					var k4 = (old_png.height-big_image.height)/2;
+					
+				
+					
+					for(var j=0;j<old_png.height;j++)
+					{
+						for(var i=0;i<old_png.width;i++)
+						{
+								
+								
+								
+								var idx = (old_png.width * j + i) << 2;
+								
+								var n=i-t4;
+								var m=j-k4;
+								
+								var new_idx1 = big_image.width * m + n << 2;
+						
+						
+						if(
+								(big_image.data[new_idx1]==old_png.data[idx])&&
+								(big_image.data[new_idx1+1]==old_png.data[idx+1])&&
+								(big_image.data[new_idx1+2]==old_png.data[idx+2])
+						)
+						{
+												
+								// result_png.data[idx] = 0;
+								// result_png.data[idx+1] = 0;
+								// result_png.data[idx+2] = 255;
+								// result_png.data[idx+3] = 255;
+								
+								result_png.data[idx] = old_png.data[idx];
+								result_png.data[idx+1] = old_png.data[idx+1];
+								result_png.data[idx+2] = old_png.data[idx+2];
+								result_png.data[idx+3] = 255;
+								
+								
+								
+								
+						}
+						else{
+								result_png.data[idx] = 255;
+								result_png.data[idx+1] = 10;
+								result_png.data[idx+2] = 10;
+								result_png.data[idx+3] = 255;
+							
+						}							
+								
+							}
+					}
+		
+		
+			
+				
+				sendImage(result_png,res,'\nImages xcombined\n');
+				
+				return;
+		
+		
+		
+		
+		
+	}
+
+
+			
+			
+			
+			if((old_png.width % 2 == 0) && (big_image.width % 2 ==  0))
 			{
 				
 				//even
-				if(old_png.width > this.width)
+				if(old_png.width > big_image.width)
 				{
 					
 					
@@ -3205,8 +3361,8 @@ function xcombo( req, res )
 					} );
 					
 
-					var t4 = (old_png.width-this.width)/2;
-					var k4 = (old_png.height-this.height)/2;
+					var t4 = (old_png.width-big_image.width)/2;
+					var k4 = (old_png.height-big_image.height)/2;
 					
 				
 					
@@ -3214,7 +3370,7 @@ function xcombo( req, res )
 					{
 						for(var i=0;i<old_png.width;i++)
 						{
-							if( (i>=t4) && (i<(t4+this.width)) && (j>=k4) && (j<(k4+this.height))	)
+							if( (i>=t4) && (i<(t4+big_image.width)) && (j>=k4) && (j<(k4+big_image.height))	)
 							{
 								
 								
@@ -3224,13 +3380,28 @@ function xcombo( req, res )
 								var n=i-t4;
 								var m=j-k4;
 								
-								var new_idx1 = this.width * m + n << 2;
+								var new_idx1 = big_image.width * m + n << 2;
 						
-								result_png.data[idx+0] = this.data[new_idx1+0];
-								result_png.data[idx+1] = this.data[new_idx1+1];
-								result_png.data[idx+2] = this.data[new_idx1+2];
+						
+						if(
+								(big_image.data[new_idx1]==old_png.data[idx])&&
+								(big_image.data[new_idx1+1]==old_png.data[idx+1])&&
+								(big_image.data[new_idx1+2]==old_png.data[idx+2])
+						)
+						{
+												
+								result_png.data[idx] = big_image.data[new_idx1];
+								result_png.data[idx+1] = big_image.data[new_idx1+1];
+								result_png.data[idx+2] = big_image.data[new_idx1+2];
 								result_png.data[idx+3] = 255;
-								
+						}
+						else{
+								result_png.data[idx] = big_image.data[new_idx1];
+								result_png.data[idx+1] = big_image.data[new_idx1+1];
+								result_png.data[idx+2] = big_image.data[new_idx1+2];
+								result_png.data[idx+3] = 255;
+							
+						}							
 								
 								
 							}
@@ -3260,8 +3431,8 @@ function xcombo( req, res )
 					
 					var result_png = new PNG ( {
 						
-							width: this.width,
-							height: this.height,
+							width: big_image.width,
+							height: big_image.height,
 							filterType: 4
 					} );
 					
@@ -3269,32 +3440,46 @@ function xcombo( req, res )
 					
 					
 					
-					var t4 = (this.width-old_png.width)/2;
-					var k4 = (this.height-old_png.height)/2;
+					var t4 = (big_image.width-old_png.width)/2;
+					var k4 = (big_image.height-old_png.height)/2;
 					
 					
 					
-					for(var j=0;j<this.height;j++)
+					for(var j=0;j<big_image.height;j++)
 					{
-						for(var i=0;i<this.width;i++)
+						for(var i=0;i<big_image.width;i++)
 						{
 							if( (i>=t4) && (i<(t4+old_png.width)) && (j>=k4) && (j<(k4+old_png.height))	)
 							{
 								
 								
 								
-								var idx = (this.width * j + i) << 2;
+								var idx = (big_image.width * j + i) << 2;
 								
 								var n=i-t4;
 								var m=j-k4;
 								
 								var idx2 = (old_png.width * n + m) << 2;
 						
-								result_png.data[idx+0] = old_png.data[idx2+0];
+									if(
+								(big_image.data[new_idx1]==old_png.data[idx2])&&
+								(big_image.data[new_idx1+1]==old_png.data[idx2+1])&&
+								(big_image.data[new_idx1+2]==old_png.data[idx2+2])
+						)
+						{
+												
+								result_png.data[idx] = big_image.data[idx];
+								result_png.data[idx+1] = big_image.data[idx+1];
+								result_png.data[idx+2] = big_image.data[idx+2];
+								result_png.data[idx+3] = 255;
+						}
+						else{
+								result_png.data[idx] = old_png.data[idx2];
 								result_png.data[idx+1] = old_png.data[idx2+1];
 								result_png.data[idx+2] = old_png.data[idx2+2];
 								result_png.data[idx+3] = 255;
-								
+							
+						}		
 								
 								
 							}
@@ -3302,11 +3487,11 @@ function xcombo( req, res )
 							{
 								
 								
-								var idx = (this.width * j + i) << 2;
+								var idx = (big_image.width * j + i) << 2;
 								
-								result_png.data[idx+0] = this.data[idx+0];
-								result_png.data[idx+1] = this.data[idx+1];
-								result_png.data[idx+2] = this.data[idx+2];
+								result_png.data[idx+0] = big_image.data[idx+0];
+								result_png.data[idx+1] = big_image.data[idx+1];
+								result_png.data[idx+2] = big_image.data[idx+2];
 								result_png.data[idx+3] = 255;
 								
 							}
@@ -3340,10 +3525,10 @@ function xcombo( req, res )
 				
 				
 			}
-			else if ((old_png.width % 2 == 1) && (this.width % 2 ==  1))
+			else if ((old_png.width % 2 == 1) && (big_image.width % 2 ==  1))
 			{
 				//odd
-				if(old_png.width > this.width)
+				if(old_png.width > big_image.width)
 				{
 					
 					
@@ -3355,16 +3540,16 @@ function xcombo( req, res )
 					} );
 					
 					var middle_of_bigger_w = old_png.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
-					var middle_of_smaller_w = this.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
+					var middle_of_smaller_w = big_image.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
 					
 					var begin_w = middle_of_bigger_w - middle_of_smaller_w;
-					var end_w = begin_w + this.width; //and (not include) end
+					var end_w = begin_w + big_image.width; //and (not include) end
 					
 					var middle_of_bigger_h = old_png.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
-					var middle_of_smaller_h = this.height / 2 | 0; 
+					var middle_of_smaller_h = big_image.height / 2 | 0; 
 					
 					var begin_h = middle_of_bigger_h - middle_of_smaller_h;
-					var end_h = begin_h + this.height; 	
+					var end_h = begin_h + big_image.height; 	
 					
 					
 					for(var j=0;j<old_png.height;j++)
@@ -3379,11 +3564,11 @@ function xcombo( req, res )
 								var n =	i - begin_w;
 								var m = j - begin_h;
 								
-								var idx2 = this.width * m + n << 2;
+								var idx2 = big_image.width * m + n << 2;
 								
-								result_png.data[idx+0] = this.data[idx2+0];
-								result_png.data[idx+1] = this.data[idx2+1];
-								result_png.data[idx+2] = this.data[idx2+2];
+								result_png.data[idx+0] = big_image.data[idx2+0];
+								result_png.data[idx+1] = big_image.data[idx2+1];
+								result_png.data[idx+2] = big_image.data[idx2+2];
 								result_png.data[idx+3] = 255;
 								
 								
@@ -3408,15 +3593,15 @@ function xcombo( req, res )
 					
 					var result_png = new PNG ( {
 						
-							width: this.width,
-							height: this.height,
+							width: big_image.width,
+							height: big_image.height,
 							filterType: 4
 					} );
 					
-					var middle_of_bigger_w = this.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_bigger_w = big_image.width / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
 					var middle_of_smaller_w = old_png.width / 2 | 0;   //for 5   2      0 1 [2] 3 4
 					
-					var middle_of_bigger_h = this.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
+					var middle_of_bigger_h = big_image.height / 2 | 0; // for 7  3    0 _1 2 [3] 4 5 6      3-2 = 1
 					var middle_of_smaller_h = old_png.height / 2 | 0; 
 					
 					var begin_w = middle_of_bigger_w - middle_of_smaller_w;
@@ -3425,11 +3610,11 @@ function xcombo( req, res )
 					var begin_h = middle_of_bigger_h - middle_of_smaller_h;
 					var end_h = begin_h + old_png.height; 	
 				
-					for(var j=0;j<this.height;j++)
+					for(var j=0;j<big_image.height;j++)
 					{
-						for(var i=0;i<this.width;i++)
+						for(var i=0;i<big_image.width;i++)
 						{
-							var idx = (this.width * j + i) << 2;	
+							var idx = (big_image.width * j + i) << 2;	
 							
 							if((i>= begin_w) && (i<end_w) && (j>=begin_h) && (j<end_h))
 							{
@@ -3450,9 +3635,9 @@ function xcombo( req, res )
 							{
 								
 								
-								result_png.data[idx+0] = this.data[idx+0];
-								result_png.data[idx+1] = this.data[idx+1];
-								result_png.data[idx+2] = this.data[idx+2];
+								result_png.data[idx+0] = big_image.data[idx+0];
+								result_png.data[idx+1] = big_image.data[idx+1];
+								result_png.data[idx+2] = big_image.data[idx+2];
 								result_png.data[idx+3] = 255;
 							}
 						}
@@ -3481,7 +3666,7 @@ function xcombo( req, res )
 			
 		
 		
-	});
+
 	
 }
 	
@@ -3880,7 +4065,7 @@ function fill( req, res )
 	
 	req.pipe(big_image).on('parsed', function() {
 		
-		if(big_image.width * small_image.width > 1200 || big_image.height *  small_image.height > 1200 )
+		if(big_image.width * small_image.width > 1600 || big_image.height *  small_image.height > 1600 )
 		{
 			
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
@@ -4006,10 +4191,14 @@ app.post('/borderplus', borderplus );
 app.post('/borderminus', borderminus );
 app.get('/get_color_for_pass', get_color_for_pass );
 app.post('/rotate_ff', rotate_ff );
+app.get('/get_color_for_pass', get_color_for_pass );
+app.get('/get_array_of_all_generated_stones',get_array_of_all_generated_stones);
 app.post('/pixels', pixels );
 app.post('/right_pixels', right_pixels );
+app.post('/add_boh_pixel', add_boh_pixel );
 app.post('/set_collected_pixels',set_collected_pixels);	
 app.post('/init_pixels', init_pixels );
+app.post('/get_error_message', get_error_message );
 app.post('/init_boh_pixels', init_boh_pixels );
 app.post('/init_labirint_settings', init_labirint_settings );
 app.get('/get_chaosed_labirint',get_chaosed_labirint);
@@ -4065,7 +4254,7 @@ function pixelsPro_array_equals(color,color2)
 {
 	for (var i = 0;  i < color.length; i++) 
 	{
-		if(color[i]!=color2[i]) return false;
+		if(Number(color[i])!=Number(color2[i])) return false;
 		
 	}
 	return true;
@@ -4091,7 +4280,7 @@ function getRndColor()
 
 function copy_image(oldpng)
 {
-	console.log('\nIn copy_image(...)\n');
+	//console.log('\nIn copy_image(...)\n');
 	
 		
 	var newpng = new PNG(
@@ -4119,6 +4308,13 @@ function copy_image(oldpng)
 	
 	return newpng;
 			
+}
+
+function get_array_of_all_generated_stones(request, response) {
+
+	response.writeHead(200, {  'Content-Type': 'text/html' } );
+	var res=JSON.stringify(global_inside_stones);
+	response.end(res);
 }
 
 function get_chaosed_labirint(req, res)
@@ -4163,6 +4359,8 @@ function init_boh_pixels(req, res)
 					
 				}
 			}	
+			global_karman_stones=[];
+			global_inside_stones=[];
 			var w = glob_pixelsPro_pg_main_image.width;
 			var h = glob_pixelsPro_pg_main_image.height;
 			var n=glob_num_of_strawbery;
@@ -4176,10 +4374,11 @@ function init_boh_pixels(req, res)
 				newpng.data[ind+1] = rgba[1];
 				newpng.data[ind+2] = rgba[2];
 				newpng.data[ind+3] = rgba[3];
-			
+				if(stone_in_array(rx,ry,rgba)==false)
+				addStone(rx,ry,cloneColor(rgba),global_inside_stones);
 			}
 	
-			
+		
 		}
 		
 		glob_pixelsPro_pg_boh_image = newpng;
@@ -4205,15 +4404,216 @@ function init_boh_pixels(req, res)
 					
 }
 
+function add_boh_pixel(req, res)
+{
+	console.log('\nIn add_boh_pixel(...)\n');
+	
+		if(glob_pixelsPro_pg_main_image==null)
+		{
+			
+			
+		}
+		else
+		{
+			
+			
+			var body = '';
+
+		req.on('data', function (data) {
+			
+			//console.log("when req.on data");
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("pixels(): error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+			
+			
+			
+		
+			var post = qs.parse(body);
+		
+			var x =  +post['x'];
+			var y =  +post['y'];
+			var nx=6;
+			var ny=6;
+			console.log("x="+x);
+			console.log("y="+y);
+			glob_pixelsPro_x_left_top=x;
+			glob_pixelsPro_y_left_top=y;
+			var nn =  +post['scale_koeficient'];
+			
+			glob_num_of_strawbery =  +post['num_of_strawbery'];
+				
+			
+			
+				
+			
+			
+			var newpng = new PNG(
+			{
+				width: glob_pixelsPro_pg_main_image.width,
+				height: glob_pixelsPro_pg_main_image.height,
+				filterType: 4
+			});
+			
+			for(var i=0;i<glob_pixelsPro_pg_main_image.width;i++)
+			{
+				for(var j=0;j<glob_pixelsPro_pg_main_image.height;j++)
+				{
+					
+					var index2 = glob_pixelsPro_pg_main_image.width * j + i << 2;
+					
+					newpng.data[index2+0] = 127;
+					newpng.data[index2+1] = 127;
+					newpng.data[index2+2] = 127;
+					newpng.data[index2+3] = 255;
+					
+					
+				}
+			}	
+			//global_karman_stones=[];
+			//global_inside_stones=[];
+			var w = glob_pixelsPro_pg_main_image.width;
+			var h = glob_pixelsPro_pg_main_image.height;
+			var n=glob_num_of_strawbery;
+			
+			var rgba = getRndColor();
+				var ind = (y+1)*w + x << 2;
+				newpng.data[ind] = rgba[0];
+				newpng.data[ind+1] = rgba[1];
+				newpng.data[ind+2] = rgba[2];
+				newpng.data[ind+3] = rgba[3];
+				if(stone_in_array(x,y+1,rgba)==false)
+				addStone(x,y+1,cloneColor(rgba),global_inside_stones);
+			
+			
+			
+			
+			
+			
+			
+			for(var i=1;i<n;i++)
+			{
+				var kx = getRandomInt(0, 2);
+				var ky = getRandomInt(0, 2);
+				if(kx==0)kx=-1;
+				if(ky==0)ky=-1;
+				var rx = getRandomInt(2, nx)*kx+x;
+				var ry = getRandomInt(2, ny)*ky+y;
+				var rgba = getRndColor();
+				var ind = ry*w + rx << 2;
+				newpng.data[ind] = rgba[0];
+				newpng.data[ind+1] = rgba[1];
+				newpng.data[ind+2] = rgba[2];
+				newpng.data[ind+3] = rgba[3];
+				if(stone_in_array(rx,ry,rgba)==false)
+				addStone(rx,ry,cloneColor(rgba),global_inside_stones);
+			}
+	
+			glob_pixelsPro_pg_boh_image = newpng;
+		
+		
+			glob_pixelsPro_pg_main_image = setChaosPixels();
+				
+			var result_png = pixelsPro_redrawPixels_main(x,y);
+								
+			sendImage(result_png, res, '\nLabirint initiation step 2 success\n');	
+			
+			
+			
+			
+			
+			
+			
+		});
+			
+			
+		}
+			
+			
+			
+			
+			
+			
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		
+		
+		/***
+		var x=glob_pixelsPro_x_left_top;
+		var y=glob_pixelsPro_y_left_top;
+		
+		var index = glob_pixelsPro_pg_main_image.width * (y) + (x) << 2;
+				var color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+				glob_pixelsPro_pg_main_color=color;
+		// res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		// res.end("ok");
+		sendImage(glob_pixelsPro_pg_main_image,res,'\nLabirint initiation success\n');
+		***/
+		
+				
+					
+}
+
+function stone_in_array(rx,ry,rgba)
+{
+	for(var n=0;n<global_inside_stones.length;n++)
+	{
+		
+		var i=global_inside_stones[n].x;
+		var j=global_inside_stones[n].y;
+		var c=global_inside_stones[n].color;
+		if((i==rx)&&(j==ry))
+		{
+			
+			if(pixelsPro_array_equals(c,rgba))return true;
+		}
+	}
+		return false;		
+}
+			
 function pixelsPro_getNeighborsColors(x,y,color)
 {
 	var x0=x-1;
 	var x1=x+1;
 	var y0=y-1;
 	var y1=y+1;
+	var colors=[];
+	//if(color==undefined)colors.push(color);
 	
 	
-	var colors=[color];
 		var index = glob_pixelsPro_pg_main_image.width * (y) + (x0) << 2;
 				color = [
 					glob_pixelsPro_pg_main_image.data[index],
@@ -4291,19 +4691,19 @@ function pixelsPro_getNeighborsColors(x,y,color)
 				}
 				if(f==false) colors.push(color);
 				
-				color=glob_pixelsPro_pg_main_color;
+				//color=glob_pixelsPro_pg_main_color;
 				
 				var grey_color = [127,127,127,255];
 				
 				for(var i=0;i<colors.length;i++)
 				{
-					if((colors[i][0]==color[0])&&(colors[i][1]==color[1])&&(colors[i][2]==color[2])&&(colors[i][3]==color[3]))
-					{
+					// if((colors[i][0]==color[0])&&(colors[i][1]==color[1])&&(colors[i][2]==color[2])&&(colors[i][3]==color[3]))
+					// {
 						
-						colors.splice(i,1);
-						break;
+						// colors.splice(i,1);
+						// break;
 						
-					}
+					// }
 					
 					if(pixelsPro_array_equals(colors[i],grey_color)) colors.splice(i,1);
 				}
@@ -4395,7 +4795,8 @@ function init_labirint_settings(req, res)
 			
 			console.log("x="+x);
 			console.log("y="+y);
-			
+			glob_pixelsPro_x_left_top=x;
+			glob_pixelsPro_y_left_top=y;
 			var nn =  +post['scale_koeficient'];
 			
 			glob_num_of_strawbery =  +post['num_of_strawbery'];
@@ -4420,33 +4821,38 @@ function init_labirint_settings(req, res)
 function setChaosPixels()
 {
 	var copy_map_image = copy_image(glob_pixelsPro_pg_map_image);
-	var newpng = glob_pixelsPro_pg_boh_image;
 	
-			for(var i=0;i<newpng.width;i++)
-			{
-				for(var j=0;j<newpng.height;j++)
-				{
-					
-					var index = newpng.width * j + i << 2;
-					
-					if((newpng.data[index] == 127) && (newpng.data[index+1] == 127) && 
-					(newpng.data[index+2] == 127) && (newpng.data[index+3] == 255))
+	
+		
+					for(var n=0;n<global_inside_stones.length;n++)
 					{
-						continue;
-					}
-					
-					copy_map_image.data[index] = newpng.data[index];
-					copy_map_image.data[index+1] = newpng.data[index+1];
-					copy_map_image.data[index+2] = newpng.data[index+2];
-					copy_map_image.data[index+3] = newpng.data[index+3];
-					
+						
+						var i=global_inside_stones[n].x;
+						var j=global_inside_stones[n].y;
+							
+						var index = copy_map_image.width * j + i << 2;
+						
+						copy_map_image.data[index] = global_inside_stones[n].color[0];
+						copy_map_image.data[index+1] = global_inside_stones[n].color[1];
+						copy_map_image.data[index+2] = global_inside_stones[n].color[2];
+						copy_map_image.data[index+3] = global_inside_stones[n].color[3];
+						
 					
 				}
-			}	
+				
 			
 			return copy_map_image;
 }
 
+var glob_pixelsPro_errorMessage='none';
+function get_error_message(req,res)	
+{								
+		console.log("\nIn get_error_message: "+glob_pixelsPro_errorMessage);
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end(""+glob_pixelsPro_errorMessage);
+		req.connection.destroy();
+		glob_pixelsPro_errorMessage='none';		
+}
 
 function pixels(req,res)	
 {								
@@ -4477,82 +4883,74 @@ function pixels(req,res)
 			
 			
 			
-			console.log("11");
+			
 			var post = qs.parse(body);
-			console.log("22");
+			
 			console.log(post);
-			console.log(post.x);
+			
 			var x =  +post['x'];
 			var y =  +post['y'];
-			console.log("x="+x);
-			console.log("y="+y);
-			glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
-			if( is_grey(x,y)==false)
-			{
-				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
 			
+			glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
+			console.log('-=7878=-');
+			
+			if( is_color_ishodn(pixelsPro_getColorArrayFromImageData(x,y))==false)
+			{
+				console.log('-=7979=-');
+				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+				
+				glob_pixelsPro_errorMessage='1. labirint not ok';
 				sendImage(result_png, res, '\n1. labirint not ok\n');	
+				
+				return;
 			}
 			
 			else if(x<0||x>=glob_pixelsPro_pg_main_image.width) {
 				
 				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
+				
+				glob_pixelsPro_errorMessage='2. labirint not ok';
 				sendImage(result_png, res, '\n2. labirint not ok\n');	
+				
+				return;
 				
 			}
 			else if(y<0||y>=glob_pixelsPro_pg_main_image.height) {
 				
 				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
+			glob_pixelsPro_errorMessage='3. labirint not ok';
 				sendImage(result_png, res, '\n3. labirint not ok\n');	
 				
-			}
-			
-			else if((Math.abs(x-glob_pixelsPro_x_left_top)>1)||(Math.abs(y-glob_pixelsPro_y_left_top)>1)){
-				
-				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-				sendImage(result_png, res, '\n4. labirint not ok\n'+Math.abs(x-glob_pixelsPro_x_left_top));	
-				
+				return;
 			}
 			
 			
 			
-			else
-			{ 
-				
-				
-				
+			
+			
+			var color_prev = pixelsPro_getColorArrayFromImageData(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
 				var color = pixelsPro_getColorArrayFromImageData(x,y);
-				
-				//wall
-				if(glob_pixelsPro_color_for_pass.length>0)
+				if(pixelsPro_array_equals(color_prev,color)==false)
 				{
-					if(pixelsPro_array_equals(glob_pixelsPro_color_for_pass,color)==false)
-					{
-						console.log("#777");
-						if(pixelsPro_array_equals(glob_pixelsPro_pg_main_color,color)==false)
-						{
-							console.log("#888");
-								var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-							console.log("#999");
-								sendImage(result_png, res, '\n5. labirint not ok\n');	
-								
-								return;
-						}
-					}
-				}
-				// {
-					// var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-					// sendImage(result_png, res, '\nlabirint not ok\n');	
-				// }
-				// else
-				{
-					console.log("left(x,y)="+left(x,y));
+					console.log('-=791791=-');
+					
+					
+					
 					if(left(x,y)||right(x,y)||floor(x,y))
 					{
+						console.log('-=79999=-');
+						if(stone_neighbours_of(x,y)==0)
+						{
+							console.log('-=7988889=-');
+							var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+					glob_pixelsPro_errorMessage='6.1.27 stone_neighbours_of not ok';
+								sendImage(result_png, res, '\n6.1.27 stone_neighbours_of not ok\n');	
+							
+							return;
+						}
+						else{
+						
+						console.log('-=7988fmhfvuff889=-');
 						glob_pixelsPro_x_left_top = x;
 						glob_pixelsPro_y_left_top = y;
 						 
@@ -4560,37 +4958,200 @@ function pixels(req,res)
 						glob_pixelsPro_pg_main_color = color;
 						
 						glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
-						
-					//	var context = e.target.getContext("2d");
-					//	var imageData = context.getImageData(x,y,1,1);
-							
+			
 						var result_png = pixelsPro_redrawPixels_main(x,y);
-						console.log("testing 111");
+					glob_pixelsPro_errorMessage='6.1.255. labirint ok';
+						sendImage(result_png, res, '\n6.1.255. labirint ok\n');	
+						
+						}
+						
+					}
+					else
+					{
+					
+						
+								var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+					glob_pixelsPro_errorMessage='6.1.25 labirint not ok';
+								sendImage(result_png, res, '\n6.1.25 labirint not ok\n');	
+					}
+								
+					
+					return;
+				}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			if((Math.abs(x-glob_pixelsPro_x_left_top)>1)||(Math.abs(y-glob_pixelsPro_y_left_top)>1)){
+				
+				// if(xy_is_near_karman_points(x,y)==false)
+			
+				
+					if(left(x,y)||right(x,y)||floor(x,y))
+					{
+						
+						
+						var color_prev = pixelsPro_getColorArrayFromImageData(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+						var color = pixelsPro_getColorArrayFromImageData(x,y);
+						if(pixelsPro_array_equals(color_prev,color)==false)
+						{
+						
+							
+							var neh = pixelsPro_getNeighborsColors(x,y);
+							console.log("neh.length="+neh.length);
+							var f=false;
+							for(var inh=0;inh<neh.length;inh++)
+							{
+								for(var in2=0;in2<global_inside_stones.length;in2++)
+								{
+									if(pixelsPro_array_equals(global_inside_stones[in2].color,neh[inh])==true) {f=true;break;}
+								}
+								if(f)break;
+							}
+							
+							if(f==false)
+							{
+								var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+					glob_pixelsPro_errorMessage='6.1.23 labirint not ok';
+								sendImage(result_png, res, '\n6.1.23 labirint not ok\n');	
+								
+								return;
+							}
+							
+							
+						
+						}
+						else{
+							
+							
+							
+							
+							
+								
+						glob_pixelsPro_x_left_top = x;
+						glob_pixelsPro_y_left_top = y;
+						 
+						var color =  pixelsPro_getColorArrayFromImageData(x,y);
+						glob_pixelsPro_pg_main_color = color;
+			
+						console.log("testing 8888.000");	
+
+						
+			
+						glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
+						
+						console.log("testing 8888.222");
+						
+						var result_png = pixelsPro_redrawPixels_main(x,y);
+						
+						console.log("testing 8888.111");
 						glob_pixelsPro_color_for_pass = define_color_for_pass(x,y,color);
-						console.log("testing 222 "+glob_pixelsPro_color_for_pass);
-						sendImage(result_png, res, '\n5. labirint ok\n');	
+				//		console.log("testing 222 "+glob_pixelsPro_color_for_pass);
+				console.log("testing 8888.77777");
+				glob_pixelsPro_errorMessage='5. labirint ok';
+						sendImage(result_png, res, '\n5. labirint ok\n');
+						
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+						}
+									
+					
+					}
+					else
+					{
+						//var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+						glob_pixelsPro_errorMessage='6. labirint not ok';
+						sendImage(result_png, res, '\n6. labirint not ok\n');	
+					}
+					return;
+				}
+				
+			
+				
+				
+
+					if(left(x,y)||right(x,y)||floor(x,y))
+					{
+						
+						
+						
+							
+			var color_prev = pixelsPro_getColorArrayFromImageData(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+				var color = pixelsPro_getColorArrayFromImageData(x,y);
+				if(pixelsPro_array_equals(color_prev,color)==false)
+				{
+					
+					
+					
+					
+					var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+			glob_pixelsPro_errorMessage='6.4321 labirint not same colors';
+						sendImage(result_png, res, '\n6.4321 labirint not same colors\n');	
+					
+					
+					
+					return;
+					
+					
+					
+				}
+					
+						
+						
+						glob_pixelsPro_x_left_top = x;
+						glob_pixelsPro_y_left_top = y;
+						 
+					
+						glob_pixelsPro_pg_main_color = color;
+						
+						glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
+			
+						var result_png = pixelsPro_redrawPixels_main(x,y);
+					glob_pixelsPro_errorMessage='5.7777ab labirint not ok';
+						sendImage(result_png, res, '\n5.7777ab labirint not ok\n');	
 					}
 					else
 					{
 						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-						sendImage(result_png, res, '\n6. labirint not ok\n');	
+			glob_pixelsPro_errorMessage='6.7777ab labirint not ok';
+						sendImage(result_png, res, '\n6.7777ab labirint not ok\n');	
 					}
-				}
 				
-			}
-		/***
-		
-			res.writeHead( 200, {  'Content-Type': 'blob' } ); 
-			result_png.pipe(res);
-			result_png.on('end', function()	{
-				console.log('labirint ok');
-			});
-		***/	
+			
 			
 		});
 		
 }
+
+function drakon()
+{
+	var colors = pixelsPro_getNeighborsColors(x,y,color);
+	//glob_pixelsPro_pg_main_image
+}
+
+
+
+var global_karman_stones=[];
+var global_inside_stones=[];
+
+
 
 
 function right_pixels(req,res)	
@@ -4621,114 +5182,192 @@ function right_pixels(req,res)
 		req.on('end', function () {
 			
 			
-			
-			console.log("11");
+						
 			var post = qs.parse(body);
-			console.log("22");
+			
 			console.log(post);
-			console.log(post.x);
+			
 			var x =  +post['x'];
 			var y =  +post['y'];
-			console.log("x="+x);
-			console.log("y="+y);
+			var color = null;
 			
-			glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_main_image);
-			if( is_grey(x,y)==true)
-			{
-				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
 			
-				sendImage(result_png, res, '\nchaos not ok\n');	
-			}
-			
-			else if(x<0||x>=glob_pixelsPro_pg_main_image.width) {
 				
-				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+			glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_main_image); 
 			
-				sendImage(result_png, res, '\nchaos not ok\n');	
+			var color = pixelsPro_getColorArrayFromImageData(x,y);
+			if( post['color'] ) color = cloneColor( post['color'].split(',') );
+			var color_on_place = pixelsPro_getColorArrayFromImageData(x,y);
+		
+			
+				
+			
+			if(x<0||x>=glob_pixelsPro_pg_main_image.width) {
+				console.log("y444");
+				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+			glob_pixelsPro_errorMessage='1. chaos not ok';
+				sendImage(result_png, res, '\n1. chaos not ok\n');	
+				
+				return;
 				
 			}
 			else if(y<0||y>=glob_pixelsPro_pg_main_image.height) {
-				
+				console.log("y15555");
 				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-				sendImage(result_png, res, '\nchaos not ok\n');	
+			glob_pixelsPro_errorMessage='2. chaos not ok';
+				sendImage(result_png, res, '\n2. chaos not ok\n');	
 				
-			}
-			
-			else if((Math.abs(x-glob_pixelsPro_x_left_top)>1)||(Math.abs(y-glob_pixelsPro_y_left_top)>1)){
+				return;
 				
-				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-				sendImage(result_png, res, '\nchaos not ok\n');	
 				
 			}
 			
 			
-			
-			else
-			{ 
-				/***
-				glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_main_image);
-				
-				var color = pixelsPro_getColorArrayFromImageData(x,y);
-				//wall
-				// if(pixelsPro_array_equals(glob_pixelsPro_pg_main_color,color)==false)
-				// {
-					// var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-					// sendImage(result_png, res, '\nlabirint not ok\n');	
-				// }
-				// else
+			else	
+			{
+				if(is_color_ishodn(color_on_place)==true)
 				{
-					console.log("left(x,y)="+left(x,y));
-					if(left(x,y)||right(x,y)||floor(x,y))
-					{
-						
-						***/
-						
-					//	glob_pixelsPro_x_left_top = x;
-					//	glob_pixelsPro_y_left_top = y;
-						 
 					
-					//	glob_pixelsPro_pg_main_color = color;
-						
-					//	var context = e.target.getContext("2d");
-					//	var imageData = context.getImageData(x,y,1,1);
 					
-						glob_pixelsPro_pg_boh_image = take_chaos(x,y);	
-						
-						glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
-						
-						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-						
-						sendImage(result_png, res, '\nchaose ok\n');	
-						
-						/***
-					}
-					else
-					{
-						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-						sendImage(result_png, res, '\nlabirint not ok\n');	
-					}
+					
+					 __set__collected__pixels(req,res,x,y,color);
+					return;
+				
+					
 				}
 				
-				***/
+			
+				else
+				{ 
 				
-			}
-		/***
-		
-			res.writeHead( 200, {  'Content-Type': 'blob' } ); 
-			result_png.pipe(res);
-			result_png.on('end', function()	{
-				console.log('labirint ok');
-			});
-		***/	
+					if(is_color_ishodn(color_on_place)||is_color_in(getColors(glob_pixelsPro_pg_map_image),color_on_place))
+					{
+						
+						
+						console.log("y1888");
+						
+						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+					glob_pixelsPro_errorMessage='3. chaos not ok';
+						sendImage(result_png, res, '\n3. chaos not ok\n');	
+						
+						return;
+				
+					}
+					
+					var ctrlz = copy_image(glob_pixelsPro_pg_main_image);
+					
+					
+							take_chaos(x,y,color_on_place);	
+									
+							glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
+									
+							var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+									
+						var x2=x;
+						var y2=y;
+						
+						x=glob_pixelsPro_x_left_top;
+						y=glob_pixelsPro_y_left_top;
+									
+					if(left(x,y)||right(x,y)||floor(x,y))
+					{
+					
+							
+
+						glob_pixelsPro_errorMessage='4. chaos ok';
+								
+							sendImage(result_png, res, '\n4. chaose ok\n');
+							
+					}
+					
+					else{
+						
+						
+						
+						 throw_collected(x2,y2,color_on_place);
+						glob_pixelsPro_pg_main_image=ctrlz;
+						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+						glob_pixelsPro_errorMessage='5. chaos not ok';
+							sendImage(result_png, res, '\n5. chaos not ok\n');	
+					}
+					
+					
+				
+				}
+						
+						
+					
+			}								
+								
+			
 			
 		});
 		
 }
 
+
+function getColors(im0)
+{
+	
+	var w = im0.width;
+	var h = im0.height;
+	
+		
+			var obj = {};
+			var colors = [];
+
+			for (var y = 0; y < im0.data.length; y+=4) {
+		
+				
+					
+					var idx = y;
+					
+					var key = ""+im0.data[idx]+"-"+im0.data[idx+1]+"-"+im0.data[idx+2]+"-"+im0.data[idx+3];
+					
+					if (obj[key]==undefined) { 
+					
+						
+						var col = [im0.data[idx], im0.data[idx+1],im0.data[idx+2],im0.data[idx+3]]; 
+						colors.push(col); 
+						obj[key]= true;
+					
+					}
+					
+					
+				}
+			
+			
+		//console.log ( "count="+colors.length);
+			
+			return colors;
+}
+
+
+
+
+function is_color_in(colors,color)
+{
+	for(var i=0;i<colors.length;i++)
+	{
+		if(pixelsPro_array_equals(colors[i],color)) return true;
+	}
+	
+	return false;
+	
+}
+
+function is_color_ishodn(color)
+{
+	var colors=getColors(glob_pixelsPro_pg_map_image);
+	
+	for(var i=0;i<colors.length;i++)
+	{
+		if(pixelsPro_array_equals(color,colors[i])) return true;
+	}
+	
+	return false;
+	
+}
 
 function set_collected_pixels(req,res)	
 {								
@@ -4764,9 +5403,22 @@ function set_collected_pixels(req,res)
 			var x =  +post['x'];
 			var y =  +post['y'];
 			var color = post['color'].split(',');
-			console.log("x="+x);
-			console.log("y="+y);
-			console.log("color="+color);
+
+			 __set__collected__pixels(req,res,x,y,color);
+				
+			
+			
+		});
+		
+}
+
+function __set__collected__pixels(req,res,x,y,color)
+{
+			color=cloneColor(color);
+			
+			// console.log("x="+x);
+			// console.log("y="+y);
+			// console.log("color="+color);
 			glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_main_image);
 			
 			if(x<0||x>=glob_pixelsPro_pg_main_image.width) {
@@ -4784,80 +5436,87 @@ function set_collected_pixels(req,res)
 				
 			}
 			
-			else if((Math.abs(x-glob_pixelsPro_x_left_top)>1)||(Math.abs(y-glob_pixelsPro_y_left_top)>1)){
+			// else if((Math.abs(x-glob_pixelsPro_x_left_top)>1)||(Math.abs(y-glob_pixelsPro_y_left_top)>1)){
 				
-				var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+				// var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
 			
-				sendImage(result_png, res, '\nset_collected_pixels not ok\n');	
+				// sendImage(result_png, res, '\n444.1 set_collected_pixels not ok\n');	
 				
+			// }
+			
+			else if(global_karman_stones.length==0)
+			{
+				if((is_color_ishodn(color)||is_color_in(getColors(glob_pixelsPro_pg_map_image),color))==false)
+				{
+						take_chaos(x,y,color);
+				
+				
+						glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
+						
+						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+						
+						sendImage(result_png, res, '\ntake stone ok\n');	
+						
+				}
+				
+				else
+				
+				{
+					
+					
+					
+					
+								var neh = pixelsPro_getNeighborsColors(x,y);
+							console.log("neh.length="+neh.length);
+							var f=false;
+							for(var inh=0;inh<neh.length;inh++)
+							{
+								for(var in2=0;in2<global_inside_stones.length;in2++)
+								{
+									if(pixelsPro_array_equals(global_inside_stones[in2].color,neh[inh])==true) {f=true;break;}
+								}
+								if(f)break;
+							}
+							
+							if(f==false)
+							{
+								
+					var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
+				
+					sendImage(result_png, res, '\n544.1 set_collected_pixels not ok\n');	
+					
+					
+								return;
+							}
+							
+					
+					
+					
+					
+					return;
+					
+					
+					
+					
+				}
 			}
-			
-			
 			
 			else
 			{ 
-				/***
-				glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_main_image);
 				
-				var color = pixelsPro_getColorArrayFromImageData(x,y);
-				//wall
-				// if(pixelsPro_array_equals(glob_pixelsPro_pg_main_color,color)==false)
-				// {
-					// var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-					// sendImage(result_png, res, '\nlabirint not ok\n');	
-				// }
-				// else
-				{
-					console.log("left(x,y)="+left(x,y));
-					if(left(x,y)||right(x,y)||floor(x,y))
-					{
-						
-						***/
-						
-					//	glob_pixelsPro_x_left_top = x;
-					//	glob_pixelsPro_y_left_top = y;
-						 
-					
-					//	glob_pixelsPro_pg_main_color = color;
-						
-					//	var context = e.target.getContext("2d");
-					//	var imageData = context.getImageData(x,y,1,1);
-					
-						glob_pixelsPro_pg_boh_image = throw_collected(x,y,color);	
+						//glob_pixelsPro_pg_boh_image = 
+						throw_collected(x,y,color);	
 						
 						glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
 						
 						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
 						
-						sendImage(result_png, res, '\nchaose ok\n');	
+						sendImage(result_png, res, '\nset stone ok\n');	
 						
-						/***
-					}
-					else
-					{
-						var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-			
-						sendImage(result_png, res, '\nlabirint not ok\n');	
-					}
-				}
-				
-				***/
+						
 				
 			}
-		/***
-		
-			res.writeHead( 200, {  'Content-Type': 'blob' } ); 
-			result_png.pipe(res);
-			result_png.on('end', function()	{
-				console.log('labirint ok');
-			});
-		***/	
-			
-		});
-		
 }
-
 
 function get_collected(req, res)
 {
@@ -4868,7 +5527,10 @@ function get_collected(req, res)
 		var rgba = 'rgba('+obj.color[0]+','+obj.color[1]+','+obj.color[2]+','+(obj.color[3]/255)+')';
 		var idd = 'span_collected_pixels'+i;
 		var attr_color=obj.color.join(',');
-		s += '<span class=\'flex-item\' attr_color=\''+attr_color+'\' id=\''+idd+'\' style=\'margin:2px;width:20px;height:20px;display: inline-block;border:2px solid '+rgba+';background-color: '+rgba+'\' > </span>';
+		s += '<span class=\'flex-item\' attr_color=\''+attr_color+'\' id=\''+idd;
+		// s += '\' style=\'margin:2px;border:2px solid '+rgba+';width:20px;height:20px;display: inline-block;background-color: '+rgba+'\' >';
+		s += '\' style=\'width:20px;height:20px;display: inline-block;background-color: '+rgba+'\' >';
+		s += '</span>';
 	}
 	 
 		  res.writeHead(200, {  'Content-Type': 'text/html' } );
@@ -4879,7 +5541,10 @@ function get_collected(req, res)
 
 function throw_collected(x,y,color)
 {
-	
+	///////////////////////
+	addStone(x,y,color,global_inside_stones);
+	removeStone(x,y,color,global_karman_stones);
+	///////////////////////
 	for(var i=0;i<glob_pixelsPro_collected.length;i++)
 	{
 		var obj = glob_pixelsPro_collected[i];
@@ -4890,38 +5555,55 @@ function throw_collected(x,y,color)
 		}
 	}
 	
-	var index2 = glob_pixelsPro_pg_boh_image.width * y + x << 2;
-	glob_pixelsPro_pg_boh_image.data[index2] = color[0];
-	glob_pixelsPro_pg_boh_image.data[index2+1] = color[1];
-	glob_pixelsPro_pg_boh_image.data[index2+2] = color[2];
-	glob_pixelsPro_pg_boh_image.data[index2+3] = color[3];
+	// var index2 = glob_pixelsPro_pg_boh_image.width * y + x << 2;
+	// glob_pixelsPro_pg_boh_image.data[index2] = color[0];
+	// glob_pixelsPro_pg_boh_image.data[index2+1] = color[1];
+	// glob_pixelsPro_pg_boh_image.data[index2+2] = color[2];
+	// glob_pixelsPro_pg_boh_image.data[index2+3] = color[3];
 	
+
 	
-	return glob_pixelsPro_pg_boh_image;
+	// return glob_pixelsPro_pg_boh_image;
 }
 
-
-function take_chaos(x,y)
+function stone_neighbours_of(x,y)
 {
-	var color = [];
-	var index = glob_pixelsPro_pg_map_image.width * y + x << 2;
-	color[0] = glob_pixelsPro_pg_map_image.data[index];
-	color[1] = glob_pixelsPro_pg_map_image.data[index+1];
-	color[2] = glob_pixelsPro_pg_map_image.data[index+2];
-	color[3] = glob_pixelsPro_pg_map_image.data[index+3];
+	var n=0;
+	for(var i=0;i<global_inside_stones.length;i++)
+	{
+		var obj = global_inside_stones[i];
+		if((Math.abs(Number(obj.x)-Number(x))<=1)&&(Math.abs(Number(obj.y)-Number(y))<=1)) n++;
+		
+	}
+	return n;
+}
+
+function take_chaos(x,y,color)
+{
+	// var color = [];
+	// var index = glob_pixelsPro_pg_map_image.width * y + x << 2;
+	// color[0] = glob_pixelsPro_pg_map_image.data[index];
+	// color[1] = glob_pixelsPro_pg_map_image.data[index+1];
+	// color[2] = glob_pixelsPro_pg_map_image.data[index+2];
+	// color[3] = glob_pixelsPro_pg_map_image.data[index+3];
 	
-	var color2 = [];
-	var index2 = glob_pixelsPro_pg_boh_image.width * y + x << 2;
-	color2[0] = glob_pixelsPro_pg_boh_image.data[index2];
-	color2[1] = glob_pixelsPro_pg_boh_image.data[index2+1];
-	color2[2] = glob_pixelsPro_pg_boh_image.data[index2+2];
-	color2[3] = glob_pixelsPro_pg_boh_image.data[index2+3];
+	// var color2 = [];
+	// var index2 = glob_pixelsPro_pg_boh_image.width * y + x << 2;
+	// color2[0] = glob_pixelsPro_pg_boh_image.data[index2];
+	// color2[1] = glob_pixelsPro_pg_boh_image.data[index2+1];
+	// color2[2] = glob_pixelsPro_pg_boh_image.data[index2+2];
+	// color2[3] = glob_pixelsPro_pg_boh_image.data[index2+3];
 	
 	var obj = {};
-	obj.x = x;
-	obj.y = y;
-	obj.color = color2;
+	obj.x = Number(x);
+	obj.y = Number(y);
+	obj.color = color;
 	glob_pixelsPro_collected.push(obj);
+	
+	////////////////////////
+	addStone(x,y,color,global_karman_stones);
+	removeStone(x,y,color,global_inside_stones);
+	///////////////////////
 	
 	//var color = [];
 	/***
@@ -4931,30 +5613,52 @@ function take_chaos(x,y)
 	glob_pixelsPro_pg_boh_image.data[index+2]=color[2];
 	glob_pixelsPro_pg_boh_image.data[index+3]=color[3];
 	***/	
-	glob_pixelsPro_pg_boh_image.data[index]=127;
-	glob_pixelsPro_pg_boh_image.data[index+1]=127;
-	glob_pixelsPro_pg_boh_image.data[index+2]=127;
-	glob_pixelsPro_pg_boh_image.data[index+3]=255;
+	// glob_pixelsPro_pg_boh_image.data[index]=127;
+	// glob_pixelsPro_pg_boh_image.data[index+1]=127;
+	// glob_pixelsPro_pg_boh_image.data[index+2]=127;
+	// glob_pixelsPro_pg_boh_image.data[index+3]=255;
 	
-	return glob_pixelsPro_pg_boh_image;
+	// return glob_pixelsPro_pg_boh_image;
 }
 
-
-
-function is_grey(x,y)
+function cloneColor(color2)
 {
-	var color = [];
-	var index = glob_pixelsPro_pg_boh_image.width * y + x << 2;
-					
-					
-					color[0] = glob_pixelsPro_pg_boh_image.data[index];
-					color[1] = glob_pixelsPro_pg_boh_image.data[index+1];
-					color[2] = glob_pixelsPro_pg_boh_image.data[index+2];
-					color[3] = glob_pixelsPro_pg_boh_image.data[index+3];
-					
-	var grey_color = [127,127,127,255];
-	return pixelsPro_array_equals(color,grey_color);
+	return [Number(color2[0]),Number(color2[1]),Number(color2[2]),Number(color2[3])];
 }
+
+function addStone(x,y,color7,arr)
+{
+	arr.push({x:Number(x),y:Number(y),color:cloneColor(color7)});
+	
+}
+
+function removeStone(x,y,color,arr)
+{
+	for(var i=0;i<arr.length;i++)
+	{
+		if( pixelsPro_array_equals(arr[i].color,color)==true )
+		{
+			arr.splice(i,1);
+			break;
+		}
+	}
+}
+
+
+// function is_grey(x,y)
+// {
+	// var color = [];
+	// var index = glob_pixelsPro_pg_boh_image.width * y + x << 2;
+					
+					
+					// color[0] = glob_pixelsPro_pg_boh_image.data[index];
+					// color[1] = glob_pixelsPro_pg_boh_image.data[index+1];
+					// color[2] = glob_pixelsPro_pg_boh_image.data[index+2];
+					// color[3] = glob_pixelsPro_pg_boh_image.data[index+3];
+					
+	// var grey_color = [127,127,127,255];
+	// return pixelsPro_array_equals(color,grey_color);
+// }
 
 
 function left(x,y)
@@ -5414,6 +6118,9 @@ function pixelsPro_setEventListenersOnTri_Btns()
 
 
 /***==============***/
+
+
+
 
 
 

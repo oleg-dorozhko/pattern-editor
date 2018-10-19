@@ -1,0 +1,83 @@
+1. You can to watch my training videos on youtube: https://youtu.be/BiTvJoetk6A
+
+2. Press 'i' if you want to add single button. For example, press 'i' and type median.
+
+3. Press 'e' if you want to execute line of commands.  For example:  median, inverse, vortex, plus
+
+4. Press 'p' for copy current desktop and then you can save it when paste in your notepad.
+
+5. Press 'c' for crypto... script.
+
+6. Press 'd' for decrypto... script
+
+7. For advanced users: Below is default JSON - you can edit it and then load - press 'l' for this. 
+When paste in modal window use mouse (not a mouse) and then click 'save'
+
+{"buttons":["plus","minus","half","median","vortex","axes minus","axes plus","combo","border minus","border plus","colors","min colors","rotate 45 degree","fill","random","inverse","black white","save","copy","clean"],"saves":[],"canvas":[]}
+
+8. Contact to me: email: oleg.dorozhko@gmail.com
+  
+9. Donation opportunities
+
+10. You can save and load your desktop buttons and saved images and working canvas image. Just press 's' for save or 'l' for load.
+
+11. Press 'r' for restart all aplication. Danger. Save all you works before.
+
+12. Full list of buttons (some of it can do not work, email to me if found such buttons)
+
+labirint,
+map,
+median,
+execute script,
+axes minus,
+axes plus,
+vertical axe minus,
+horizontal axe minus,
+save,
+copy,
+clean,
+// crypto ---  cripto();
+colors,
+floor colors,
+razn colors,
+min colors,
+ident,
+step colors,
+brain,
+generate random seed,
+gen rnd seed,
+join colors,
+odin dva colors,
+crop lt,
+crop rb,
+smooth,
+select,
+xminus,
+normal colors,
+combo,
+gcombo,
+breath of chaos,
+rio,
+up,
+paste,
+xcombo,
+inverse,
+plus,
+restart,
+minus,
+border minus,
+border plus,
+// save on server ---  save_on_server();
+vortex,
+black white,
+half,
+rotate plus 90,
+rotate plus 45,
+paint over,
+rotate any,
+mirror down,
+mirror right,
+random,
+rgb++,
+rgb--,
+fill

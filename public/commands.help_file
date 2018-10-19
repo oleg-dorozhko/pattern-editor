@@ -1,0 +1,145 @@
+labirint ---  labirint();
+map ---  map();
+median ---  s_median(params, callback);
+execute script ---  execute_script(params, callback);
+axes minus ---  both_axes_minus(params, callback);
+axes plus ---  both_axes_plus(params, callback);
+vertical axe minus ---  vertical_axe_minus(params, callback);
+horizontal axe minus ---  horizontal_axe_minus(params, callback);
+save ---  save(params, callback);
+copy ---  copy(params, callback);
+clean ---  clean(params, callback);
+// crypto ---  cripto();
+colors ---  s_colors(params, callback);
+floor colors ---  floor_colors(params, callback);
+razn colors ---  s_razn_colors(params, callback);
+min colors ---  min_colors(params, callback);
+ident ---  s_ident(params, callback);
+step colors ---  s_step_colors(params, callback);
+brain ---  s_brain(params, callback);
+generate random seed ---   generate_random_seed(params, callback);
+gen rnd seed ---   generate_random_seed(params, callback);
+join colors ---  s_join_colors(params, callback);
+odin dva colors ---  s_odin_dva_colors(params, callback);
+crop lt ---  crop_lt(params, callback);
+crop rb ---  crop_rb(params, callback);
+smooth ---  s_smooth(params, callback);
+select ---  select(params, callback);
+xminus ---  xminus(params, callback);
+normal colors ---  normal_colors(params, callback);
+combo ---  combo(params, callback);
+gcombo ---  s_gcombo(params, callback);
+breath of chaos ---  breath_of_chaos(params, callback);
+rio ---  s_rio(params, callback);
+up ---  s_up(params, callback);
+paste ---  paste();
+xcombo ---  xcombo();
+inverse ---  inverse(params, callback);
+plus ---  s_plus(params, callback);
+restart ---   restart();
+minus ---  s_minus(params, callback);
+generate seed ---  generate_seed(params, callback);
+border minus ---  border_minus(params, callback);
+border plus ---  border_plus(params, callback);
+// save on server ---  save_on_server();
+vortex ---  vortex(params, callback);
+black white ---  black_white(params, callback);
+half ---  half(params, callback);
+rotate plus 90 ---   rotate_plus_90(params, callback);
+rotate plus 45 ---    rotate_plus_45(params, callback);
+paint over ---    paint_over(params, callback);
+rotate any ---    rotate_any(params, callback);
+mirror down ---  s_mirror_down (params, callback); 
+mirror right ---  s_mirror_right (params, callback); 
+random ---  random(params, callback);	
+rgb++ ---  rgb_plus_plus(params, callback);
+rgb-- ---  rgb_minus_minus(params, callback);
+fill ---   fill(params, callback);  
+
+
+["labirint","map","median","execute script","axes minus","axes plus","vertical axe minus","horizontal axe minus","save","copy","clean",
+"colors","floor colors","razn colors","min colors","ident","step colors","brain","generate random seed","gen rnd seed","join colors","odin dva colors",
+"crop lt","crop rb","smooth","select","xminus","normal colors","combo","gcombo","breath of chaos","rio","up","paste","xcombo","inverse","plus","restart",
+"minus","border minus","border plus",
+"vortex","black white","half","rotate plus 90","rotate plus 45","paint over","rotate any","mirror down","mirror right","random","rgb++","rgb--","fill"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			if (cmd == 'labirint') labirint();
+			else if (cmd == 'map') map();
+
+median') s_median(params, callback);
+			else if (cmd == 'execute script') execute_script(params, callback);
+			else if (cmd == 'axes minus') both_axes_minus(params, callback);
+			else if (cmd == 'axes plus') both_axes_plus(params, callback);
+			else if (cmd == 'vertical axe minus') vertical_axe_minus(params, callback);
+			else if (cmd == 'horizontal axe minus') horizontal_axe_minus(params, callback);
+			else if (cmd == 'save') save(params, callback);
+			else if (cmd == 'copy') copy(params, callback);
+			else if (cmd == 'clean') clean(params, callback);
+			//else if (cmd == 'crypto') cripto();
+			else if (cmd == 'colors') s_colors(params, callback);
+			else if (cmd == 'floor colors') floor_colors(params, callback);
+			else if (cmd == 'razn colors') s_razn_colors(params, callback);
+			else if (cmd == 'min colors') min_colors(params, callback);
+			else if (cmd == 'ident') s_ident(params, callback);
+			else if (cmd == 'step colors') s_step_colors(params, callback);
+			else if (cmd == 'brain') s_brain(params, callback);
+			else if (cmd == 'generate random seed')  generate_random_seed(params, callback);
+			else if (cmd == 'gen rnd seed')  generate_random_seed(params, callback);
+			else if (cmd == 'join colors') s_join_colors(params, callback);
+			else if (cmd == 'odin dva colors') s_odin_dva_colors(params, callback);
+			else if (cmd == 'crop lt') crop_lt(params, callback);
+			else if (cmd == 'crop rb') crop_rb(params, callback);
+			else if (cmd == 'smooth') s_smooth(params, callback);
+			else if (cmd == 'select') select(params, callback);
+			else if (cmd == 'xminus') xminus(params, callback);
+			else if (cmd == 'normal colors') normal_colors(params, callback);
+			else if (cmd == 'combo') combo(params, callback);
+			else if (cmd == 'gcombo') s_gcombo(params, callback);
+			else if (cmd == 'breath of chaos') breath_of_chaos(params, callback);
+			else if (cmd == 'rio') s_rio(params, callback);
+			else if (cmd == 'up') s_up(params, callback);
+			else if(cmd == 'paste') paste();
+			//else if (cmd == 'xcombo') xcombo();
+			else if (cmd == 'inverse') inverse(params, callback);
+			else if (cmd == 'plus') s_plus(params, callback);
+			else if (cmd == 'restart')  restart();
+			else if (cmd == 'minus') s_minus(params, callback);
+			else if (cmd == 'generate seed') generate_seed(params, callback);
+			else if (cmd == 'border minus') border_minus(params, callback);
+			else if (cmd == 'border plus') border_plus(params, callback);
+			//else if (cmd == 'save on server') save_on_server();
+			else if (cmd == 'vortex') vortex(params, callback);
+			else if (cmd == 'black white') black_white(params, callback);
+			else if (cmd == 'half') half(params, callback);
+			else if (cmd == 'rotate plus 90')  rotate_plus_90(params, callback);
+			else if (cmd == 'rotate plus 45')   rotate_plus_45(params, callback);
+			else if (cmd == 'paint over')   paint_over(params, callback);
+			else if (cmd == 'rotate any')   rotate_any(params, callback);
+			else if (cmd == 'mirror down') s_mirror_down (params, callback); 
+			else if (cmd == 'mirror right') s_mirror_right (params, callback); 
+			else if (cmd == 'random') random(params, callback);	
+			else if (cmd == 'rgb++') rgb_plus_plus(params, callback);
+			else if (cmd == 'rgb--') rgb_minus_minus(params, callback);
+			else if (cmd == 'fill')  fill(params, callback);  
+			else 
+			{
+				global_client_typing_mode = false;
+				console.log('mod_console:error: Unknown command ['+cmd+']');
+				return false;
+			}

@@ -4196,6 +4196,7 @@ app.get('/get_array_of_all_generated_stones',get_array_of_all_generated_stones);
 app.post('/pixels', pixels );
 app.post('/right_pixels', right_pixels );
 app.post('/add_boh_pixel', add_boh_pixel );
+app.post('/get_qty_neighbours',get_qty_neighbours);
 app.post('/set_collected_pixels',set_collected_pixels);	
 app.post('/init_pixels', init_pixels );
 app.post('/get_error_message', get_error_message );
@@ -4542,28 +4543,7 @@ function add_boh_pixel(req, res)
 			
 		}
 			
-			
-			
-			
-			
-			
-
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+		
 		
 		
 		/***
@@ -4603,6 +4583,97 @@ function stone_in_array(rx,ry,rgba)
 	}
 		return false;		
 }
+
+
+
+
+
+			
+function pixelsPro_getNeighborsColorsAllArray(x,y)
+{
+	var x0=x-1;
+	var x1=x+1;
+	var y0=y-1;
+	var y1=y+1;
+	var colors=[];
+	//if(color==undefined)colors.push(color);
+	
+	
+		var index = glob_pixelsPro_pg_main_image.width * (y) + (x0) << 2;
+				color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+				
+				
+	 colors.push(color);
+				
+				index = glob_pixelsPro_pg_main_image.width * (y) + (x1) << 2;
+				color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+
+				colors.push(color);
+				
+				index = glob_pixelsPro_pg_main_image.width * (y0) + (x) << 2;
+				color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+				
+	 colors.push(color);
+				
+				index = glob_pixelsPro_pg_main_image.width * (y1) + (x) << 2;
+				var color = [
+					glob_pixelsPro_pg_main_image.data[index],
+					glob_pixelsPro_pg_main_image.data[index+1],
+					glob_pixelsPro_pg_main_image.data[index+2],
+					glob_pixelsPro_pg_main_image.data[index+3]
+				];
+				
+		 colors.push(color);
+				
+				//color=glob_pixelsPro_pg_main_color;
+				
+				var grey_color = [127,127,127,255];
+				
+				for(var i=0;i<colors.length;i++)
+				{
+					// if((colors[i][0]==color[0])&&(colors[i][1]==color[1])&&(colors[i][2]==color[2])&&(colors[i][3]==color[3]))
+					// {
+						
+						// colors.splice(i,1);
+						// break;
+						
+					// }
+					
+					if(pixelsPro_array_equals(colors[i],grey_color)) colors.splice(i,1);
+				}
+				
+				return colors;
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			
 function pixelsPro_getNeighborsColors(x,y,color)
 {
@@ -4854,6 +4925,62 @@ function get_error_message(req,res)
 		glob_pixelsPro_errorMessage='none';		
 }
 
+function get_qty_neighbours(req,res)	
+{
+		console.log("\nIn get_qty_neighbours: ");
+		
+		var body = '';
+
+			req.on('data', function (data) {
+				
+				//console.log("when req.on data");
+				
+				body += data;
+
+				// Too much POST data, kill the connection!
+				// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+				if (body.length > 99)
+				{
+					res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end("pixels(): error: data.length > 99 too big");
+					req.connection.destroy();
+					return;
+				}
+				
+			});
+
+			req.on('end', function () {
+				
+				
+				
+				
+				var post = qs.parse(body);
+				
+				console.log(post);
+				
+				var x =  +post['x'];
+				var y =  +post['y'];
+				
+				
+				
+				glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
+				console.log('-=7878=-');
+				
+				var arr = pixelsPro_getNeighborsColorsAllArray(x,y);
+				console.log("arr.length="+arr.length);
+				
+				res.writeHead(200, {  'Content-Type': 'text/html' } );
+				var res0=JSON.stringify(arr);
+				res.end(res0);
+				
+				req.connection.destroy();
+				
+				
+			});
+				
+	
+}
+
 function pixels(req,res)	
 {								
 		console.log("\nIn pixels");
@@ -4891,8 +5018,12 @@ function pixels(req,res)
 			var x =  +post['x'];
 			var y =  +post['y'];
 			
+			
+			
 			glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_map_image);
 			console.log('-=7878=-');
+			
+			
 			
 			if( is_color_ishodn(pixelsPro_getColorArrayFromImageData(x,y))==false)
 			{
@@ -5192,8 +5323,12 @@ function right_pixels(req,res)
 			var color = null;
 			
 			
+			
 				
 			glob_pixelsPro_pg_main_image = setChaosPixels(glob_pixelsPro_pg_main_image); 
+			
+			var neh = pixelsPro_getNeighborsColors(x,y);
+			console.log("neh.length="+neh.length);
 			
 			var color = pixelsPro_getColorArrayFromImageData(x,y);
 			if( post['color'] ) color = cloneColor( post['color'].split(',') );

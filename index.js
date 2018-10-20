@@ -180,10 +180,7 @@ app.post('/load_div_first', function(request, response) {
   
 });
 
-app.get('/get_xy_labirint', function(request, response) {
-	response.writeHead(200, {  'Content-Type': 'text/html' } );
-	response.end('{"x":'+glob_pixelsPro_x_left_top+',"y":'+glob_pixelsPro_y_left_top+',"nn":'+glob_pixelsPro_pg_pixels_scale+'}');
-});
+
 
 function sendImage(result_png, res, msg)
 {
@@ -4180,7 +4177,7 @@ app.post('/borderminus', borderminus );
 //app.get('/get_color_for_pass', get_color_for_pass );
 app.post('/rotate_ff', rotate_ff );
 //app.get('/get_color_for_pass', get_color_for_pass );
-app.get('/get_array_of_all_generated_stones',get_array_of_all_generated_stones);
+app.post('/get_array_of_all_generated_stones',get_array_of_all_generated_stones);
 app.post('/pixels', pixels );
 app.post('/right_pixels', right_pixels );
 app.post('/add_boh_pixel', add_boh_pixel );
@@ -4188,10 +4185,11 @@ app.post('/get_qty_neighbours',get_qty_neighbours);
 app.post('/set_collected_pixels',set_collected_pixels);	
 app.post('/init_pixels', init_pixels );
 app.post('/get_error_message', get_error_message );
+app.post('/get_xy_labirint', get_xy_labirint);
 //app.post('/init_boh_pixels', init_boh_pixels );
 app.post('/init_labirint_settings', init_labirint_settings );
-app.get('/get_chaosed_labirint',get_chaosed_labirint);
-app.get('/get_collected', get_collected );
+app.post('/get_chaosed_labirint',get_chaosed_labirint);
+app.post('/get_collected', get_collected );
 app.post('/paste',function(request, response) {
 
 				request.pipe(response);
@@ -4288,9 +4286,38 @@ function copy_image(oldpng)
 			
 }
 ***/
+
+
+
+
+function get_xy_labirint(request, response) {
+	
+	console.log(request.body);
+	var md5 =  (''+request.body['md5']).trim();
+	
+			var ind = getIndexObjectByMD5(md5);
+			if(ind==null)
+			{
+				console.log('get_xy_labirint:error: not found obj with this md5:'+md5);
+				response.writeHead( 500, { 'Content-Type':'text/plain' } );
+					response.end('get_xy_labirint:error:  not found obj with this md5:'+md5);
+					request.connection.destroy();
+					return;
+			}
+		
+			var obj = glob_labirint_memory[ind];
+	
+	response.writeHead(200, {  'Content-Type': 'text/html' } );
+	response.end('{"x":'+obj.glob_pixelsPro_x_left_top+',"y":'+obj.glob_pixelsPro_y_left_top+',"nn":'+obj.glob_pixelsPro_pg_pixels_scale+'}');
+}
+
+
+
+
+
 function get_array_of_all_generated_stones(request, response) {
 
-
+console.log(request.body);
 	//var md5 =  post['md5'];
 	var md5 =  (''+request.body['md5']).trim();
 	
@@ -4314,7 +4341,8 @@ function get_array_of_all_generated_stones(request, response) {
 function get_chaosed_labirint(req, res)
 {
 	
-	
+	console.log('\nIn get_chaosed_labirint(...)\n');
+	console.log(req.body);
 		//var md5 =  post['md5'];
 		var md5 =  (''+req.body['md5']).trim();
 		
@@ -4421,13 +4449,7 @@ function add_boh_pixel(req, res)
 {
 	console.log('\nIn add_boh_pixel(...)\n');
 	
-		if(glob_pixelsPro_pg_main_image==null)
-		{
-			
-			
-		}
-		else
-		{
+		
 			
 			
 			var body = '';
@@ -4564,7 +4586,6 @@ function add_boh_pixel(req, res)
 		});
 			
 			
-		}
 			
 		
 		

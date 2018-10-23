@@ -4178,6 +4178,7 @@ app.post('/rotate_ff', rotate_ff );
 //app.get('/get_color_for_pass', get_color_for_pass );
 app.post('/is_buzzy',is_buzzy);
 app.get('/all_buzy_free',all_buzy_free);
+app.post('/clear_stones',clear_stones);
 app.get('/show_buzy',show_buzy);
 app.get('/show_users',show_users);
 app.post('/commit_labirints_changes',commit_labirints_changes);
@@ -5601,6 +5602,74 @@ function add_boh_pixel(req, res)
 					
 }
 
+
+function clear_stones(req, res)
+{
+		console.log('\nIn clear_stones(...)\n');
+		
+		var body = '';
+
+		req.on('data', function (data) {
+			
+			//console.log("when req.on data");
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("clear_stones: error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+			
+			
+			
+		
+			var post = qs.parse(body);
+			
+			
+			var md5 =  post['md5'];
+			var ind = getIndexObjectByMD5(md5);
+			if(ind==null)
+			{
+				console.log('clear_stones:error: not found obj with this md5:'+md5);
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('clear_stones:error:  not found obj with this md5:'+md5);
+					req.connection.destroy();
+					return;
+			}
+		
+			var obj = glob_labirint_memory[ind];
+			
+			if(obj.global_inside_stones.length==0)
+			{console.log('\nIn clear_stones(...)');
+				obj.number_of_collected_stones=obj.global_karman_stones.length;
+				obj.global_karman_stones=[];
+				obj.global_inside_stones=[];
+				glob_labirint_memory[ind]=obj;
+			}
+			
+			
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end('counted');
+			
+			
+			
+			
+		});	
+			
+}
+
+
+
+
 function stone_in_array(obj,rx,ry,rgba)
 {
 	for(var n=0;n<obj.global_inside_stones.length;n++)
@@ -5900,6 +5969,7 @@ function init_pixels(req, res)
 	obj.glob_pixelsPro_scale_div = null;
 	obj.global_karman_stones=[];
 	obj.global_inside_stones=[];
+	obj.number_of_collected_stones=0;
 	obj.glob_pixelsPro_errorMessage='none';
 	obj.glob_pixelsPro_pg_boh_image = null;
 	obj.glob_pixelsPro_pg_map_image = null;
@@ -6244,12 +6314,13 @@ function get_qty_neighbours(req,res)
 				
 				
 				
-				
+				console.log('Before: \n'+pixelsPro_pg_main_image.width);
 				
 				pixelsPro_pg_main_image = setChaosPixels(obj);
+				console.log('After: \n'+pixelsPro_pg_main_image.width);
 				console.log('-=7878=-');
 				
-				var arr = pixelsPro_getNeighborsColorsAllArray(obj,x,y);
+				var arr = pixelsPro_getNeighborsColorsAllArray(obj,x,y,pixelsPro_pg_main_image);
 				console.log("arr.length="+arr.length);
 				
 				res.writeHead(200, {  'Content-Type': 'text/html' } );
@@ -6448,7 +6519,7 @@ function pixels(req,res)
 						{
 						
 							
-							var neh = pixelsPro_getNeighborsColors(obj,x,y);
+							var neh = pixelsPro_getNeighborsColors(obj,x,y,color,pixelsPro_pg_main_image);
 							console.log("neh.length="+neh.length);
 							var f=false;
 							for(var inh=0;inh<neh.length;inh++)
@@ -6658,7 +6729,7 @@ function right_pixels(req,res)
 				
 			pixelsPro_pg_main_image = setChaosPixels(obj); 
 			
-			var neh = pixelsPro_getNeighborsColors(obj,x,y);
+			var neh = pixelsPro_getNeighborsColors(obj,x,y,color,pixelsPro_pg_main_image);
 			console.log("neh.length="+neh.length);
 			
 			var color = pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
@@ -6967,7 +7038,7 @@ function __set__collected__pixels(req,res,obj,x,y,color)
 					
 					
 					
-								var neh = pixelsPro_getNeighborsColors(obj,x,y);
+								var neh = pixelsPro_getNeighborsColors(obj,x,y,color,pixelsPro_pg_main_image);
 							console.log("neh.length="+neh.length);
 							var f=false;
 							for(var inh=0;inh<neh.length;inh++)
@@ -7190,7 +7261,7 @@ function left(obj,x,y,p1)
 function right(obj,x,y,p1)
 {
 	var color = pixelsPro_getColorArrayFromImageData(obj,x,y,p1);
-	if(x+1>=pixelsPro_pg_map_image.width)return true;
+	if(x+1>=obj.glob_pixelsPro_pg_map_image.width)return true;
 	var color2 = pixelsPro_getColorArrayFromImageData(obj,x+1,y,p1);
 	return !pixelsPro_array_equals(color,color2);
 }
@@ -7198,7 +7269,7 @@ function right(obj,x,y,p1)
 function floor(obj,x,y,p1)
 {
 	var color = pixelsPro_getColorArrayFromImageData(obj,x,y,p1);
-	if(y+1>=pixelsPro_pg_map_image.height)return true;
+	if(y+1>=obj.glob_pixelsPro_pg_map_image.height)return true;
 	var color2 = pixelsPro_getColorArrayFromImageData(obj,x,y+1,p1);
 	return !pixelsPro_array_equals(color,color2);
 }

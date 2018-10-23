@@ -1318,13 +1318,13 @@ function smooth(req, res)
 		
 }
 
-function create_png_from_global(nm1)
+function create_png_from_global(ind)
 {
 
 		var old_png =  new PNG({
 			
-			width: global_memory[nm1].img.width,
-			height: global_memory[nm1].img.height,
+			width: global_memory[ind].img.width,
+			height: global_memory[ind].img.height,
 			filterType: 4
 			
 			
@@ -1333,7 +1333,7 @@ function create_png_from_global(nm1)
 		
 		
 		
-		var arr = global_memory[nm1].img.data;
+		var arr = global_memory[ind].img.data;
 		
 		
 		//	var arr=[];
@@ -4141,7 +4141,6 @@ app.post('/nonineth', nonineth);
 app.post('/razn_colors', razn_colors);		
 app.post('/step_colors', step_colors);	
 app.post('/paint_over', paint_over);
-
 app.post('/destroy_colors', destroy_colors);	
 app.post('/odin_dva_colors', odin_dva_colors);	
 app.post('/join_colors', join_colors);	
@@ -4177,8 +4176,18 @@ app.post('/borderminus', borderminus );
 //app.get('/get_color_for_pass', get_color_for_pass );
 app.post('/rotate_ff', rotate_ff );
 //app.get('/get_color_for_pass', get_color_for_pass );
+app.post('/is_buzzy',is_buzzy);
+app.get('/all_buzy_free',all_buzy_free);
+app.get('/show_buzy',show_buzy);
+app.get('/show_users',show_users);
+app.post('/commit_labirints_changes',commit_labirints_changes);
+app.post('/array_buffer_to_server',array_buffer_to_server);
+app.post('/blob_to_server_and_echo_from_server',blob_to_server_and_echo_from_server);
+app.post('/blob_from_server',blob_from_server);
 app.post('/get_array_of_all_generated_stones',get_array_of_all_generated_stones);
+app.post('/get_labirint_id', init_pixels );
 app.post('/pixels', pixels );
+app.post('/test245', test245 );
 app.post('/right_pixels', right_pixels );
 app.post('/add_boh_pixel', add_boh_pixel );
 app.post('/get_qty_neighbours',get_qty_neighbours);
@@ -4226,9 +4235,967 @@ app.post('/paste',function(request, response) {
 //-------------------------------------------------------------------
 
 
+//var global_memory=[];
+
+function array_buffer_to_server(req, res)
+{
+		
+	var data=[];
+	  req.on('data', function(chunk) {
+        data.push(chunk); //data is an array of Buffers
+    }).on('end', function() {
+        
+        var buffer = Buffer.concat(data);//make a new Buffer from array of Buffers(all of them together)
+		console.log(buffer.length);
+		
+		/***
+		
+					var newpng = new PNG ( {
+						
+							width: 248,
+							height: 248,
+							filterType: 4
+					} );
+					
+		
+					for(var j=0;j<newpng.height;j++)
+					{
+						for(var i=0;i<newpng.width;i++)
+						{
+							
+								
+								var idx = newpng.width * j + i << 2;
+								
+								newpng.data[idx+0] = buffer[idx];
+								newpng.data[idx+1] = buffer[idx+1];
+								newpng.data[idx+2] = buffer[idx+2];;
+								newpng.data[idx+3] = buffer[idx+3];;
+								
+								
+						}
+					}
+					
+			***/		
+					
+					// for(var j=0;j<10;j++)
+					// {
+						// for(var i=0;i<10;i++)
+						// {
+							
+								
+								// var idx = newpng.width * j + i << 2;
+								
+								// newpng.data[idx+0] = 0;
+								// newpng.data[idx+1] = 0;
+								// newpng.data[idx+2] = 0;
+								// newpng.data[idx+3] = 255;
+								
+								
+						// }
+					// }
+					
+					
+					//sendImage(newpng,res,'\nBlack square send');
+					var md5 = generate_md5_id();	
+					var obj = {};
+		obj.id = md5;
+		obj.png = buffer;
+		global_memory.push(obj);
+		
+		
+		console.log('\nIn blob_to_server(...)\nin memory we store buffer\n(and we need w&h for transform to png)\nid of obj='+md5+'\nindex in global_memory unknown');
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end(""+md5);
+		
+    });
+	
+				
+}
+
+
+function blob_to_server_and_echo_from_server(req, res)
+{
+	//
+	//  from client
+	///
+	// var data = new Uint8Array([
+  // 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,8,0,0,
+  // 0,8,8,2,0,0,0,75,109,41,220,0,0,0,34,73,68,65,84,8,215,99,120,
+  // 173,168,135,21,49,0,241,255,15,90,104,8,33,129,83,7,97,163,136,
+  // 214,129,93,2,43,2,0,181,31,90,179,225,252,176,37,0,0,0,0,73,69,
+  // 78,68,174,66,96,130]);
+// var blob = new Blob([data], { type: "image/png" });
+// var url = URL.createObjectURL(blob);
+// var img = new Image();
+// img.src = url;
+// console.log("data length: " + data.length);
+// console.log("url: " + url);
+// document.body.appendChild(img);
+///	
+///img { width: 100px; height: 100px; image-rendering: pixelated; }
+///	
+	
+	
+	// var big_image = new PNG({filterType: 4});
+	
+	// req.pipe(big_image).on('parsed', function() {
+		
+		
+		// sendImage(big_image,res,'\nImage got and echoed\n');
+		
+		
+		
+	// });
+	
+	
+	
+	
+	
+	var data=[];
+	  req.on('data', function(chunk) {
+        data.push(chunk);
+    }).on('end', function() {
+        //at this point data is an array of Buffers
+        //so Buffer.concat() can make us a new Buffer
+        //of all of them together
+        var buffer = Buffer.concat(data);
+		console.log(buffer.length);
+		//var s='';
+		//for(var i=0;i<2500;i++){s+='[';for(var j=0;j<4;j++)s+=buffer[i*4+j]+',';s+=']\n';} console.log(s);
+        //console.log(buffer.toString('base64'));
+		
+		
+					var newpng = new PNG ( {
+						
+							width: 248,
+							height: 248,
+							filterType: 4
+					} );
+					
+		
+					for(var j=0;j<newpng.height;j++)
+					{
+						for(var i=0;i<newpng.width;i++)
+						{
+							
+								
+								var idx = newpng.width * j + i << 2;
+								
+								newpng.data[idx+0] = buffer[idx];
+								newpng.data[idx+1] = buffer[idx+1];
+								newpng.data[idx+2] = buffer[idx+2];;
+								newpng.data[idx+3] = buffer[idx+3];;
+								
+								
+						}
+					}
+					
+					for(var j=0;j<10;j++)
+					{
+						for(var i=0;i<10;i++)
+						{
+							
+								
+								var idx = newpng.width * j + i << 2;
+								
+								newpng.data[idx+0] = 0;
+								newpng.data[idx+1] = 0;
+								newpng.data[idx+2] = 0;
+								newpng.data[idx+3] = 255;
+								
+								
+						}
+					}
+					
+					
+					sendImage(newpng,res,'\nBlack square send');
+							
+		
+    });
+	
+	
+	
+	// var reader = fs.createReadStream();
+	// reader.readAsArrayBuffer(req.body);
+	
+ // reader.addEventListener("loadend", function() {
+	// var s='';
+   // for(var i=0;i<40;i++)s+=''+reader.result[i]; console.log(s);
+ // });
+	
+	// reader.on('readable', function(){
+		// var data = reader.read();
+		// console.log('['+data+']');
+	// });
+	
+	// req.pipe(reader).on('end', function(){
+		// console.log("THE END");
+	// });
+	
+	/*****************
+	req.pipe(reader).on( 'parsed', function()  {
+		
+	});
+	
+// reader.addEventListener("loadend", function() {
+	
+// });
+// reader.readAsArrayBuffer(req.body);
+	
+	var png = new PNG({filterType: 4});
+	req.pipe(png).on( 'parsed', function()  {
+		
+	
+		var md5 = generate_md5_id();
+		//var obj2 ={};
+		//obj2.width=this.width;
+		//obj2.height=this.height;
+		
+			// var arr=[];
+						// for(var j=0;j<this.height;j++)
+						// {
+							// for(var i=0;i<this.width;i++)
+							// {
+								// var idx = (this.width * j + i) << 2;	
+							
+								
+								// arr.push(this.data[idx]);
+								// arr.push(this.data[idx+1]);
+								// arr.push(this.data[idx+2]);
+								// arr.push(this.data[idx+3]);
+							// }
+						// }
+		
+		
+		
+		
+		
+		//obj2.data=arr;
+		var obj = {};
+		obj.id = md5;
+		obj.img= png;
+		global_memory.push(obj);
+		
+		
+		console.log('\nIn blob_to_server(...)\nin memory (this is not index)md5='+md5);
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+		res.end(""+md5);
+		
+					
+	});				
+	******************/				
+}
+
+
+function test245(req, res)
+{
+
+	var data=[];
+	  req.on('data', function(chunk) {
+        data.push(chunk); //data is an array of Buffers
+    }).on('end', function() {
+        //at this point 
+        //we can make a new Buffer of all of them 
+        var buffer = Buffer.concat(data);
+		console.log(buffer.length);
+		
+		
+		var newpng = createPNGfromBuffer(248,248,buffer);
+					
+					for(var j=0;j<10;j++)
+					{
+						for(var i=0;i<10;i++)
+						{
+							
+								
+								var idx = newpng.width * j + i << 2;
+								
+								newpng.data[idx+0] = 0;
+								newpng.data[idx+1] = 0;
+								newpng.data[idx+2] = 0;
+								newpng.data[idx+3] = 255;
+								
+								
+						}
+					}
+				
+					var buffer2 = createBufferfromPNG(newpng);
+					
+					sendImage( createPNGfromBuffer(248,248,buffer2),res,'\nDuble of Black square send');
+							
+		
+    });
+	
+	
+	
+}
+
+
+
+function blob_from_server(req, res)
+{
+	var body = '';
+
+		req.on('data', function (data) {
+			
+			//console.log("when req.on data");
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("blob_from_server: error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+					
+		
+			var post = qs.parse(body);
+			
+			
+			var md5 =  post['md5'];
+			var ind = getIndexObjectByMD5(md5);
+			if(ind==null)
+			{
+				console.log('blob_from_server:error: not found obj with this md5:'+md5);
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end('blob_from_server:error:  not found obj with this md5:'+md5);
+				req.connection.destroy();
+				return;
+			}
+		
+			var obj = glob_labirint_memory[ind];
+			//console.log(obj);
+			var pixelsPro_pg_main_image= get_main_image(obj);
+			//console.log("----------------->  "+pixelsPro_pg_main_image);
+			if(pixelsPro_pg_main_image==null)
+			{
+				
+					console.log('blob_from_server:error: may be white');
+					res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('blob_from_server:error: may be white');
+					req.connection.destroy();
+					return;
+				
+			}
+		
+		console.log('\nIn blob_from_server(...)\nmd5='+md5);
+		
+		sendImage(pixelsPro_pg_main_image,res,'\nLast version send');
+					
+	});				
+					
+}
+
+function get_main_image(obj)
+{
+	var id = obj.glob_pixelsPro_pg_main_image_id;
+	
+	var buf = get_array_buffer_by_id(id);
+	
+	var ind = get_index_of_main_image(id);
+	
+	return createPNGfromBuffer(global_patterns_objects_array[ind].width, global_patterns_objects_array[ind].height, buf);
+}
+
+function all_buzy_free(req,res)
+{
+	 global_buzy_object = null;
+}
+
+var global_buzy_object = null;
+function is_buzy(pat_id,set_id)
+{
+	if(global_buzy_object==null) { global_buzy_object = [{ pat_id:pat_id,set_id:set_id,buzy:false }]; return false; }
+	else if(global_buzy_object.length==0) { global_buzy_object.push({ pat_id:pat_id,set_id:set_id,buzy:false }); return false; }
+	else {
+		
+		for(var i=0;i<global_buzy_object.length;i++)
+		{
+			if(global_buzy_object[i].buzy)
+			{
+				if(global_buzy_object[i].pat_id==pat_id)
+				{
+					if(global_buzy_object[i].set_id!=set_id) return true;
+					
+					global_buzy_object[i].buzy=false; //we yesterday buzy this channel and now free it
+					
+					return false; 
+				}
+			}
+		}
+		
+		for(var i=0;i<global_buzy_object.length;i++)
+		{
+			
+				if(global_buzy_object[i].pat_id==pat_id)
+				{
+					if(global_buzy_object[i].set_id==set_id) return false;
+					
+				}
+			
+		}
+		
+		global_buzy_object.push({ pat_id:pat_id,set_id:set_id,buzy:false });
+		return false;
+	}
+}
+
+function clear_buzy(pat_id,set_id)
+{
+	for(var i=0;i<global_buzy_object.length;i++)
+	{
+		if(global_buzy_object[i].pat_id==pat_id)
+		{
+			if(global_buzy_object[i].set_id==set_id) {
+
+				//console.log();
+				global_buzy_object[i].buzy=false;
+				return;
+			
+			}
+			
+		}
+	}
+}
+function show_users(req,res)
+{
+	var s='<div class="flex_container">';
+	for(var i=0;i<glob_labirint_memory.length;i++)
+	{
+		
+		s+='<div>'+glob_labirint_memory[i].id+'</div>'+'<div>Image ID: '+glob_labirint_memory[i].glob_pixelsPro_pg_main_image_id+'</div>';
+		
+		
+	}
+	s+='</div>';
+	res.writeHead( 200, { 'Content-Type':'text/plain' } );
+			res.end(""+s);
+}
+
+function show_buzy(req,res)
+{
+	var s='<div class="flex_container">';
+	if(global_buzy_object==null){}
+	else
+	{
+	
+	for(var i=0;i<global_buzy_object.length;i++)
+	{
+		
+		s+='<div>'+global_buzy_object[i].pat_id+'</div>'+'<div>'+global_buzy_object[i].set_id+'</div>';
+		
+		
+	}
+	}
+	s+='</div>';
+	
+	
+		res.writeHead( 200, { 'Content-Type':'text/plain' } );
+			res.end(""+s);
+		
+}
+
+function is_buzzy(req,res)
+{		
+		
+		var body = '';
+
+		req.on('data', function (data) {
+			
+			//console.log("when req.on data");
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("is_buzzy: error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+					
+		
+			var post = qs.parse(body);
+			
+			
+			var md5 =  post['md5'];
+			var ind = getIndexObjectByMD5(md5);
+			if(ind==null)
+			{
+				console.log('is_buzzy:error: not found obj with this md5:'+md5);
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end('is_buzzy:error:  not found obj with this md5:'+md5);
+				req.connection.destroy();
+				return;
+			}
+		
+			var obj = glob_labirint_memory[ind];
+			var buzy = is_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);	
+
+				
+			//console.log('\nIn is_buzzy(...)\nmd5='+obj.id+'\nresult='+buzy);
+			res.writeHead( 200, { 'Content-Type':'text/plain' } );
+			res.end(""+buzy);
+		
+			
+		});
+}
+
+function commit_labirints_changes(req, res)
+{
+		var body = '';
+
+		req.on('data', function (data) {
+			
+			//console.log("when req.on data");
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("commit_labirints_changes: error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+			
+			
+			
+		
+			var post = qs.parse(body);
+			
+			
+			var md5 =  post['md5'];
+			var ind = getIndexObjectByMD5(md5);
+			if(ind==null)
+			{
+				console.log('commit_labirints_changes:error: not found obj with this md5:'+md5);
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('commit_labirints_changes:error:  not found obj with this md5:'+md5);
+					req.connection.destroy();
+					return;
+			}
+		
+			var obj = glob_labirint_memory[ind];
+			var nm1 =  post['data_id'];
+			console.log('nm1='+nm1);
+			// console.log(global_memory[nm1]);
+			//now we can to check semaphorus of right access
+			if(is_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id)==false)
+			{
+					var pixelsPro_pg_main_image= get_main_image(obj);;
+					if(pixelsPro_pg_main_image==null)
+					{
+						
+						console.log('commit_labirints_changes:error: may be white');
+						res.writeHead( 500, { 'Content-Type':'text/plain' } );
+						res.end('get_chaosed_labirint:error: may be white');
+						req.connection.destroy();
+						return;
+						
+					}
+					else
+					{
+						if(set_buffer_by_id(obj.glob_pixelsPro_pg_main_image_id,nm1))
+						{
+						clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
+						console.log(global_buzy_object);
+						console.log("changes commited");
+						
+						res.writeHead( 200, { 'Content-Type':'text/plain' } );
+						res.end("changes commited");
+						}
+						else{
+							console.log('commit_labirints_changes:error: something wrong');
+						res.writeHead( 500, { 'Content-Type':'text/plain' } );
+						res.end('commit_labirints_changes:error: may be white');
+						req.connection.destroy();
+						return;
+							
+						}
+					}
+			}
+			
+		});
+	
+	
+	
+	
+	
+}
+
 ////////////////////////////////////////////
-var glob_labirint_memory=[]; //contains obj of labirint with id
+var glob_labirint_memory=[]; 
+var global_patterns_objects_array=[];
 ////////////////////////////////////////////
+function get_index_of_main_image(main_image_id)
+{
+	for(var i=0;i<global_patterns_objects_array.length;i++)
+	{
+		var obj = global_patterns_objects_array[i];
+		if(obj.white) continue;
+		if(obj.id==main_image_id) return i;
+		
+	}
+	return null;
+}
+
+function get_array_buffer_by_id(main_image_id)
+{
+	for(var i=0;i<global_patterns_objects_array.length;i++)
+	{
+		var obj = global_patterns_objects_array[i];
+		if(obj.white) continue;
+		if(obj.count<5) 
+		{
+			
+			if(obj.id==main_image_id) return obj.png;
+			
+			
+		}
+		
+	}
+	return null;
+}
+function createBufferfromPNG(newpng)
+{
+	
+	var buffer = new ArrayBuffer(newpng.width*newpng.height*4);
+	var buf8 = new Uint8ClampedArray(buffer);
+	
+					
+		
+					for(var j=0;j<newpng.height;j++)
+					{
+						for(var i=0;i<newpng.width;i++)
+						{
+							
+								
+								var idx = newpng.width * j + i << 2;
+								
+								buffer[idx]=newpng.data[idx+0];
+								buffer[idx+1]=newpng.data[idx+1];
+								buffer[idx+2]=newpng.data[idx+2];
+								buffer[idx+3]=newpng.data[idx+3];
+								
+								
+						}
+					}
+					
+					return buffer;
+}
+
+function createPNGfromBuffer(w,h,buffer)
+{
+	var newpng = new PNG ( {
+						
+							width: w,
+							height: h,
+							filterType: 4
+					} );
+					
+		
+					for(var j=0;j<newpng.height;j++)
+					{
+						for(var i=0;i<newpng.width;i++)
+						{
+							
+								
+								var idx = newpng.width * j + i << 2;
+								
+								newpng.data[idx+0] = buffer[idx];
+								newpng.data[idx+1] = buffer[idx+1];
+								newpng.data[idx+2] = buffer[idx+2];;
+								newpng.data[idx+3] = buffer[idx+3];;
+								
+								
+						}
+					}
+					
+					return newpng;
+}
+
+
+function set_buffer_by_id(where_png_id,in_memory_id)
+{
+
+	for(var i=0;i<global_patterns_objects_array.length;i++)
+	{
+		var obj = global_patterns_objects_array[i];
+		if(obj.white) continue;
+			
+		if(obj.id==where_png_id) {
+			
+			
+					var ind=isDataPNGObjectByMD5(in_memory_id);
+					if(ind!=null)
+					{
+						//	obj.width=	 //old value or unknown
+						//	obj.height=		//old value or unknown			
+						obj.png = global_memory[ind].png; //we buffer have here
+						return true;
+					}
+					else
+					{
+						console.log("set_buffer_by_id:in global_memory not found object with id:"+in_memory_id);
+						return false;
+					}
+			
+			}
+		
+	}
+	
+	
+	return false;
+}
+
+function check_is_not_white(png)
+{
+	return true; //not white
+}	
+	
+function  get_allowed_pattern_id()
+{
+	var ind=null;
+	for(var i=0;i<global_patterns_objects_array.length;i++)
+	{
+		var obj = global_patterns_objects_array[i];
+		if(obj.white) continue;
+		if(obj.count<5)
+		{
+			ind=i; 
+			break;
+		}
+		
+	}
+	//////////////
+	//splice from global_patterns_objects_array all whole white
+	/////////////////
+	if(ind==null)
+	{
+		
+		var obj = {};
+		obj.id=generate_md5_id();
+		obj.count=1;
+		obj.white=false;
+		var rnd='number of pattern schema';
+		var png = generate_new_pattern(rnd); //new PNG({filterType: 4});
+		if(png == null) return null;
+		
+		obj.width = png.width;
+		obj.height = png.height;
+		
+		obj.png=createBufferfromPNG(png);
+		global_patterns_objects_array.push(obj);
+		
+		return obj.id;
+	}
+	
+	
+	return global_patterns_objects_array[ind].id;
+	
+}
+
+
+
+
+
+
+function __execute_script(commands)
+{
+	console.log('In __execute_script:');
+		
+	var arr = commands.split(",");
+	var res_png=null;
+	res_png = new PNG({filterType: 4});
+		
+	
+	for(var i=0;i<arr.length;i++)
+	{
+		arr[i]=arr[i].trim();
+		console.log("executing ["+arr[i]+"]"); 
+		
+		if(arr[i].indexOf("generate random seed")===0)
+		{
+			var t = arr[i].replace("generate random seed",'');
+			t=t.trim();
+			var params=null;
+			if(t.length>0)
+			{
+				params=t.split(" ");
+				if(params.length>0)
+				{
+					for(var ii=0;ii<params.length;ii++) params[ii]=Number(params[ii]);
+					
+				}
+				else
+				{
+					params =[15,3];
+				}
+			}
+			else
+			{
+				params =[15,3];
+			}
+			res_png = mod_generate_random_seed.generate_random_seed(params);
+			
+			
+		}
+		else if(arr[i]=="median")
+		{
+			
+			res_png = mod_median.__median(res_png);
+			
+		}
+		else if(arr[i].indexOf("magik rotate")===0)
+		{
+			var t = arr[i].replace("magik rotate",'');
+			t=t.trim();
+			var params=null;
+			if(t.length>0)
+			{
+				params=Number(t);
+				
+			}
+			else
+			{
+				params =1;
+			}
+			res_png = mod_magik_rotate.magik_rotate(res_png,params);
+			
+		}
+		else if(arr[i]=="up")
+		{
+			res_png = mod_up.upForImageData(res_png);
+		}
+		else if(arr[i]=="smooth")
+		{
+			
+			res_png = mod_smooth.smooth(res_png);
+			
+		}
+		else if(arr[i]=="rotate plus 45")
+		{
+			res_png = mod_rotate_ff.rotate_ff(res_png);
+		}
+		else if(arr[i]=="paint over")
+		{
+		
+			res_png = mod_paint_over.paint_over(res_png);
+		
+		}
+		else if(arr[i]=="nineth")
+		{
+		
+			res_png = mod_nineth.nineth(res_png);
+		
+		}
+		else if(arr[i]=="nonineth")
+		{
+		
+			res_png = mod_nineth.nonineth(res_png);
+		
+		}
+		else if(arr[i]=="maximus")
+		{
+		
+			res_png = mod_maximus.maximus(res_png);
+		
+		}
+		else if(arr[i]=="plus")
+		{
+			if(res_png.width * 2 > 1200 || res_png.height * 2 > 1200 )
+			{
+				
+				
+				return null;
+				
+			}
+			
+			res_png = __plus(res_png);
+			
+			
+		}
+		
+		else if(arr[i]=="mirror right")
+		{
+			if(res_png.width * 2 > 1200  )
+			{
+				
+				
+				return null;
+				
+			}
+			
+			res_png = mod_mirror.mirror_right(res_png);
+			
+			
+			
+		}
+		else if(arr[i]=="mirror down")
+		{
+			
+			if( res_png.height * 2 > 1200 )
+			{
+				
+				
+				return null;
+				
+			}
+			
+			res_png = mod_mirror.mirror_down(res_png);
+			
+			
+		}
+		
+		else if(arr[i]=="axes minus")
+		{
+		
+		
+		
+			res_png = mod_axes.bothAxesMinus(res_png);
+		
+		
+		
+		}
+		
+		
+	}
+	
+	return res_png;
+	
+}
+
+function generate_new_pattern()
+{
+	var txt=[];
+	txt[0] = "generate random seed 9 5, mirror right, mirror down, axes minus, axes minus, mirror right, mirror down, axes minus, plus,plus,plus,median,rotate plus 45,median,plus";
+	
+	return __execute_script(txt[0]);
+	
+	
+}
+
 
 function pixelsPro_array_equals(color,color2)
 {
@@ -4358,11 +5325,21 @@ function get_chaosed_labirint(req, res)
 		
 			var obj = glob_labirint_memory[ind];
 	
-	
-	
-	obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+	var pixelsPro_pg_main_image= get_main_image(obj);
+			if(pixelsPro_pg_main_image==null)
+			{
 				
-	sendImage(obj.copy_image(obj.glob_pixelsPro_pg_main_image), res, '\n get_chaosed_labirint ok\n');	
+				console.log('get_chaosed_labirint:error: may be white');
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('get_chaosed_labirint:error: may be white');
+					req.connection.destroy();
+					return;
+				
+			}
+	obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
+	pixelsPro_pg_main_image = setChaosPixels(obj);
+				
+	sendImage(obj.copy_image(pixelsPro_pg_main_image), res, '\n get_chaosed_labirint ok\n');	
 }
 
 // function init_boh_pixels(req, res)
@@ -4507,19 +5484,32 @@ function add_boh_pixel(req, res)
 			obj.glob_num_of_strawbery =  +post['num_of_strawbery'];
 			
 			
+			
+			var pixelsPro_pg_main_image= get_main_image(obj);
+			if(pixelsPro_pg_main_image==null)
+			{
+				console.log('add_boh_pixel:error: may be white');
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('add_boh_pixel:error: may be white');
+					req.connection.destroy();
+					return;
+			}
+			obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
+			
+			
 			var newpng = new PNG(
 			{
-				width: obj.glob_pixelsPro_pg_main_image.width,
-				height: obj.glob_pixelsPro_pg_main_image.height,
+				width: pixelsPro_pg_main_image.width,
+				height: pixelsPro_pg_main_image.height,
 				filterType: 4
 			});
 			
-			for(var i=0;i<obj.glob_pixelsPro_pg_main_image.width;i++)
+			for(var i=0;i<pixelsPro_pg_main_image.width;i++)
 			{
-				for(var j=0;j<obj.glob_pixelsPro_pg_main_image.height;j++)
+				for(var j=0;j<pixelsPro_pg_main_image.height;j++)
 				{
 					
-					var index2 = obj.glob_pixelsPro_pg_main_image.width * j + i << 2;
+					var index2 = pixelsPro_pg_main_image.width * j + i << 2;
 					
 					newpng.data[index2+0] = 127;
 					newpng.data[index2+1] = 127;
@@ -4531,8 +5521,8 @@ function add_boh_pixel(req, res)
 			}	
 			//global_karman_stones=[];
 			//global_inside_stones=[];
-			var w = obj.glob_pixelsPro_pg_main_image.width;
-			var h = obj.glob_pixelsPro_pg_main_image.height;
+			var w = pixelsPro_pg_main_image.width;
+			var h = pixelsPro_pg_main_image.height;
 			var n=obj.glob_num_of_strawbery;
 			
 			var rgba = getRndColor();
@@ -4571,9 +5561,9 @@ function add_boh_pixel(req, res)
 			obj.glob_pixelsPro_pg_boh_image = newpng;
 		
 		
-			obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+			pixelsPro_pg_main_image = setChaosPixels(obj);
 				
-			var result_png = pixelsPro_redrawPixels_main(obj,x,y);
+			var result_png = pixelsPro_redrawPixels_main(obj,x,y,pixelsPro_pg_main_image);
 								
 			sendImage(result_png, res, '\nLabirint initiation step 2 success\n');	
 			
@@ -4630,10 +5620,8 @@ function stone_in_array(obj,rx,ry,rgba)
 
 
 
-
-
 			
-function pixelsPro_getNeighborsColorsAllArray(obj,x,y)
+function pixelsPro_getNeighborsColorsAllArray(obj,x,y,pixelsPro_pg_main_image)
 {
 	var x0=x-1;
 	var x1=x+1;
@@ -4643,43 +5631,43 @@ function pixelsPro_getNeighborsColorsAllArray(obj,x,y)
 	//if(color==undefined)colors.push(color);
 	
 	
-		var index = obj.glob_pixelsPro_pg_main_image.width * (y) + (x0) << 2;
+		var index = pixelsPro_pg_main_image.width * (y) + (x0) << 2;
 				color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 				
 				
 	 colors.push(color);
 				
-				index = obj.glob_pixelsPro_pg_main_image.width * (y) + (x1) << 2;
+				index = pixelsPro_pg_main_image.width * (y) + (x1) << 2;
 				color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 
 				colors.push(color);
 				
-				index = obj.glob_pixelsPro_pg_main_image.width * (y0) + (x) << 2;
+				index = pixelsPro_pg_main_image.width * (y0) + (x) << 2;
 				color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 				
 	 colors.push(color);
 				
-				index = obj.glob_pixelsPro_pg_main_image.width * (y1) + (x) << 2;
+				index = pixelsPro_pg_main_image.width * (y1) + (x) << 2;
 				var color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 				
 		 colors.push(color);
@@ -4707,19 +5695,8 @@ function pixelsPro_getNeighborsColorsAllArray(obj,x,y)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 			
-function pixelsPro_getNeighborsColors(obj,x,y,color)
+function pixelsPro_getNeighborsColors(obj,x,y,color,pixelsPro_pg_main_image)
 {
 	var x0=x-1;
 	var x1=x+1;
@@ -4729,12 +5706,12 @@ function pixelsPro_getNeighborsColors(obj,x,y,color)
 	//if(color==undefined)colors.push(color);
 	
 	
-		var index = obj.glob_pixelsPro_pg_main_image.width * (y) + (x0) << 2;
+		var index = pixelsPro_pg_main_image.width * (y) + (x0) << 2;
 				color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 				
 				
@@ -4749,12 +5726,12 @@ function pixelsPro_getNeighborsColors(obj,x,y,color)
 	}
 	if(f==false) colors.push(color);
 				
-				index = obj.glob_pixelsPro_pg_main_image.width * (y) + (x1) << 2;
+				index = pixelsPro_pg_main_image.width * (y) + (x1) << 2;
 				color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 				
 				f=false;
@@ -4768,12 +5745,12 @@ function pixelsPro_getNeighborsColors(obj,x,y,color)
 	}
 	if(f==false) colors.push(color);
 				
-				index = obj.glob_pixelsPro_pg_main_image.width * (y0) + (x) << 2;
+				index = pixelsPro_pg_main_image.width * (y0) + (x) << 2;
 				color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 				
 				f=false;
@@ -4787,12 +5764,12 @@ function pixelsPro_getNeighborsColors(obj,x,y,color)
 				}
 				if(f==false) colors.push(color);
 				
-				index = obj.glob_pixelsPro_pg_main_image.width * (y1) + (x) << 2;
+				index = pixelsPro_pg_main_image.width * (y1) + (x) << 2;
 				var color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 				
 				f=false;
@@ -4858,27 +5835,62 @@ function getIndexObjectByMD5(md5)
 	
 }
 
-function init_pixels(req, res)
+function generate_md5_id()
 {
-	console.log('\nIn init_pixels(...)\n');
 	
-	/////////////////////////////////////////
-	//create_glob_labirint_memory_object();
-	/////////////////////////////////////////
 	var d = new Date();
 	var ms = d.getTime();
 	var s = '';
-	var arr = ['a','b','c','d','e','f','g','h','i','j','K','L','M','N','O','P'];
+	var arr = ['a','b','c','d','e','f','g','h','i','j','K','L','M','N','O','P',')','[',']',')','0','4','7'];
 	for(var i=0;i<16;i++)
 	{
 		var rnd=Math.floor(Math.random() * (arr.length - 0)) + 0;
 		
 		s += arr[rnd];
 	}
-	var md5 = get_md5_hex(''+s+''+ms);
+	return get_md5_hex(''+s+''+ms);
+	
+}
+
+function init_pixels(req, res)
+{
+	console.log('\nIn init_pixels(...)\n');
+	
+	
+	var body = '';
+
+		req.on('data', function (data) {
+			
+			//console.log("when req.on data");
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("init_pixels: error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+				
+			var post = qs.parse(body);
+			var md5 =  post['md5'];
+			var ind = getIndexObjectByMD5(md5);
+			if(ind==null)
+			{
+
+	/////////////////////////////////////////
+	//create_glob_labirint_memory_object();
+	/////////////////////////////////////////
 	
 	var obj = {};
-	obj.id = md5;
+	obj.id = generate_md5_id();
 	obj.glob_pixelsPro_x_left_top = 0;
 	obj.glob_pixelsPro_y_left_top = 0;
 	obj.glob_pixelsPro_point = null;
@@ -4889,7 +5901,6 @@ function init_pixels(req, res)
 	obj.global_karman_stones=[];
 	obj.global_inside_stones=[];
 	obj.glob_pixelsPro_errorMessage='none';
-	obj.glob_pixelsPro_pg_main_image = null;
 	obj.glob_pixelsPro_pg_boh_image = null;
 	obj.glob_pixelsPro_pg_map_image = null;
 	obj.glob_pixelsPro_pg_pixels_scale = 2;
@@ -4927,54 +5938,64 @@ function init_pixels(req, res)
 
 	}
 	
+	obj.glob_pixelsPro_pg_main_image_id = get_allowed_pattern_id();
+	console.log('init_pixels:obj.glob_pixelsPro_pg_main_image_id ='+obj.glob_pixelsPro_pg_main_image_id );	
+	if(obj.glob_pixelsPro_pg_main_image_id==null)
+	{
+		res.writeHead( 500, { 'Content-Type':'text/plain' } );
+		res.end("init_pixels: error: something wrong");
+		req.connection.destroy();
+		return;	
+	}
 	
-	
-	
-	
-	glob_labirint_memory.push(obj);
-	
-	
-	
-	/////////////////////////////////////////////////////////////
-	
-	
-	
-	
-	
-	
-	
-	//////////////////////////////////////////////////////////////
-	
-	
-	
-	obj.glob_pixelsPro_pg_main_image = new PNG({filterType: 4});
-	
-	req.pipe(obj.glob_pixelsPro_pg_main_image).on( 'parsed', function()  {
+	var pixelsPro_pg_main_image = get_main_image(obj);
+	if(pixelsPro_pg_main_image==null)
+			{
+				console.log('init_pixels:error: may be white');
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('init_pixels:error: may be white');
+					req.connection.destroy();
+					return;
+			}
+	obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
+	//req.pipe(obj.glob_pixelsPro_pg_main_image).on( 'parsed', function()  {
 		
-		obj.glob_pixelsPro_x_left_top = 0;
-		obj.glob_pixelsPro_y_left_top = 0;
+	
 		var x=obj.glob_pixelsPro_x_left_top;
 		var y=obj.glob_pixelsPro_y_left_top;
 		
-		var index = obj.glob_pixelsPro_pg_main_image.width * (y) + (x) << 2;
+		var index = pixelsPro_pg_main_image.width * (y) + (x) << 2;
 				var color = [
-					obj.glob_pixelsPro_pg_main_image.data[index],
-					obj.glob_pixelsPro_pg_main_image.data[index+1],
-					obj.glob_pixelsPro_pg_main_image.data[index+2],
-					obj.glob_pixelsPro_pg_main_image.data[index+3]
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
 				];
 				obj.glob_pixelsPro_pg_main_color=color;
-		obj.glob_pixelsPro_pg_map_image = obj.copy_image(obj.glob_pixelsPro_pg_main_image);
-			obj.glob_pixelsPro_collected = [];
+				
+				obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
+				
+				glob_labirint_memory.push(obj);
+				
+				ind = getIndexObjectByMD5(obj.id);		
 			
-			//obj.glob_pixelsPro_color_for_pass = obj.define_color_for_pass(x,y,color);
+				//obj.glob_pixelsPro_color_for_pass = obj.define_color_for_pass(x,y,color);
+	
+				
+		}
 			
-		res.writeHead( 200, { 'Content-Type':'text/plain' } );
-		res.end(""+md5);
 		
+				var obj = glob_labirint_memory[ind];
+				
+						
+				res.writeHead( 200, { 'Content-Type':'text/plain' } );
+				res.end(""+obj.id);	
+						
+				return;
+			
+		});
 		
-	});				
-					
+	
 }
 
 function init_labirint_settings(req, res)
@@ -5021,8 +6042,17 @@ function init_labirint_settings(req, res)
 		var obj = glob_labirint_memory[ind];
 		
 		
-		
-		
+		var pixelsPro_pg_main_image= get_main_image(obj);
+		if(pixelsPro_pg_main_image==null)
+		{
+			console.log('init_labirint_settings:error: not found labirint with this md5:'+md5);
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end('init_labirint_settings:error: not found labirint with this md5:'+md5);
+			req.connection.destroy();
+			return;
+			
+		}
+		obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
 		
 			var x =  +post['x'];
 			var y =  +post['y'];
@@ -5037,17 +6067,17 @@ function init_labirint_settings(req, res)
 				
 				var newpng = new PNG(
 			{
-				width: obj.glob_pixelsPro_pg_main_image.width,
-				height: obj.glob_pixelsPro_pg_main_image.height,
+				width: pixelsPro_pg_main_image.width,
+				height: pixelsPro_pg_main_image.height,
 				filterType: 4
 			});
 			
-			for(var i=0;i<obj.glob_pixelsPro_pg_main_image.width;i++)
+			for(var i=0;i<pixelsPro_pg_main_image.width;i++)
 			{
-				for(var j=0;j<obj.glob_pixelsPro_pg_main_image.height;j++)
+				for(var j=0;j<pixelsPro_pg_main_image.height;j++)
 				{
 					
-					var index2 = obj.glob_pixelsPro_pg_main_image.width * j + i << 2;
+					var index2 = pixelsPro_pg_main_image.width * j + i << 2;
 					
 					newpng.data[index2+0] = 127;
 					newpng.data[index2+1] = 127;
@@ -5059,8 +6089,8 @@ function init_labirint_settings(req, res)
 			}	
 			obj.global_karman_stones=[];
 			obj.global_inside_stones=[];
-			var w = obj.glob_pixelsPro_pg_main_image.width;
-			var h = obj.glob_pixelsPro_pg_main_image.height;
+			var w = pixelsPro_pg_main_image.width;
+			var h = pixelsPro_pg_main_image.height;
 			var n=obj.glob_num_of_strawbery;
 			for(var i=0;i<n;i++)
 			{
@@ -5081,9 +6111,9 @@ function init_labirint_settings(req, res)
 		
 		obj.glob_pixelsPro_pg_boh_image = newpng;
 	
-			obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+			pixelsPro_pg_main_image = setChaosPixels(obj);
 				
-			var result_png = pixelsPro_redrawPixels_main(obj,x,y);
+			var result_png = pixelsPro_redrawPixels_main(obj,x,y,pixelsPro_pg_main_image);
 								
 			sendImage(result_png, res, '\nLabirint initiation step 2 success\n');	
 			
@@ -5096,8 +6126,10 @@ function init_labirint_settings(req, res)
 					
 }
 
+
 function setChaosPixels(obj)
 {
+		
 	var copy_map_image = obj.copy_image(obj.glob_pixelsPro_pg_map_image);
 	
 	
@@ -5194,8 +6226,16 @@ function get_qty_neighbours(req,res)
 		
 			var obj = glob_labirint_memory[ind];
 				
-				
-				
+			var pixelsPro_pg_main_image= get_main_image(obj);
+			if(pixelsPro_pg_main_image==null)
+			{
+				console.log('get_qty_neighbours:error: may be white');
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('get_qty_neighbours:error: may be white');
+					req.connection.destroy();
+					return;
+			}
+			obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);	
 				
 				console.log(post);
 				
@@ -5204,7 +6244,9 @@ function get_qty_neighbours(req,res)
 				
 				
 				
-				obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+				
+				
+				pixelsPro_pg_main_image = setChaosPixels(obj);
 				console.log('-=7878=-');
 				
 				var arr = pixelsPro_getNeighborsColorsAllArray(obj,x,y);
@@ -5270,7 +6312,18 @@ function pixels(req,res)
 		
 			var obj = glob_labirint_memory[ind];
 			
-			
+			var pixelsPro_pg_main_image= get_main_image(obj);
+				if(pixelsPro_pg_main_image==null)
+				{
+					
+					console.log('pixels:error: may be white');
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('pixels:error: may be white');
+					req.connection.destroy();
+					return;
+					
+				}
+	obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
 			
 			
 			
@@ -5281,15 +6334,15 @@ function pixels(req,res)
 			
 			
 			
-			obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+			pixelsPro_pg_main_image = setChaosPixels(obj);
 			console.log('-=7878=-');
 			
 			
 			
-			if( is_color_ishodn(obj,pixelsPro_getColorArrayFromImageData(obj,x,y))==false)
+			if( is_color_ishodn(obj,pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image))==false)
 			{
 				console.log('-=7979=-');
-				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 				
 				obj.glob_pixelsPro_errorMessage='1. labirint not ok';
 				sendImage(result_png, res, '\n1. labirint not ok\n');	
@@ -5297,9 +6350,9 @@ function pixels(req,res)
 				return;
 			}
 			
-			else if(x<0||x>=obj.glob_pixelsPro_pg_main_image.width) {
+			else if(x<0||x>=pixelsPro_pg_main_image.width) {
 				
-				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 				
 				obj.glob_pixelsPro_errorMessage='2. labirint not ok';
 				sendImage(result_png, res, '\n2. labirint not ok\n');	
@@ -5307,9 +6360,9 @@ function pixels(req,res)
 				return;
 				
 			}
-			else if(y<0||y>=obj.glob_pixelsPro_pg_main_image.height) {
+			else if(y<0||y>=pixelsPro_pg_main_image.height) {
 				
-				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			obj.glob_pixelsPro_errorMessage='3. labirint not ok';
 				sendImage(result_png, res, '\n3. labirint not ok\n');	
 				
@@ -5320,21 +6373,21 @@ function pixels(req,res)
 			
 			
 			
-			var color_prev = pixelsPro_getColorArrayFromImageData(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
-				var color = pixelsPro_getColorArrayFromImageData(obj,x,y);
+			var color_prev = pixelsPro_getColorArrayFromImageData(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
+				var color = pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 				if(pixelsPro_array_equals(color_prev,color)==false)
 				{
 					console.log('-=791791=-');
 					
 					
 					
-					if(left(obj,x,y)||right(obj,x,y)||floor(obj,x,y))
+					if(left(obj,x,y,pixelsPro_pg_main_image)||right(obj,x,y,pixelsPro_pg_main_image)||floor(obj,x,y,pixelsPro_pg_main_image))
 					{
 						console.log('-=79999=-');
 						if(stone_neighbours_of(obj,x,y)==0)
 						{
 							console.log('-=7988889=-');
-							var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+							var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 					obj.glob_pixelsPro_errorMessage='6.1.27 stone_neighbours_of not ok';
 								sendImage(result_png, res, '\n6.1.27 stone_neighbours_of not ok\n');	
 							
@@ -5349,9 +6402,9 @@ function pixels(req,res)
 					
 						obj.glob_pixelsPro_pg_main_color = color;
 						
-						obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+						pixelsPro_pg_main_image = setChaosPixels(obj);
 			
-						var result_png = pixelsPro_redrawPixels_main(obj,x,y);
+						var result_png = pixelsPro_redrawPixels_main(obj,x,y,pixelsPro_pg_main_image);
 					obj.glob_pixelsPro_errorMessage='6.1.255. labirint ok';
 						sendImage(result_png, res, '\n6.1.255. labirint ok\n');	
 						
@@ -5362,7 +6415,7 @@ function pixels(req,res)
 					{
 					
 						
-								var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+								var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 					obj.glob_pixelsPro_errorMessage='6.1.25 labirint not ok';
 								sendImage(result_png, res, '\n6.1.25 labirint not ok\n');	
 					}
@@ -5385,12 +6438,12 @@ function pixels(req,res)
 				// if(xy_is_near_karman_points(x,y)==false)
 			
 				
-					if(left(obj,x,y)||right(obj,x,y)||floor(obj,x,y))
+					if(left(obj,x,y,pixelsPro_pg_main_image)||right(obj,x,y,pixelsPro_pg_main_image)||floor(obj,x,y,pixelsPro_pg_main_image))
 					{
 						
 						
-						var color_prev = pixelsPro_getColorArrayFromImageData(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
-						var color = pixelsPro_getColorArrayFromImageData(obj,x,y);
+						var color_prev = pixelsPro_getColorArrayFromImageData(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
+						var color = pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 						if(pixelsPro_array_equals(color_prev,color)==false)
 						{
 						
@@ -5409,7 +6462,7 @@ function pixels(req,res)
 							
 							if(f==false)
 							{
-								var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+								var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 					obj.glob_pixelsPro_errorMessage='6.1.23 labirint not ok';
 								sendImage(result_png, res, '\n6.1.23 labirint not ok\n');	
 								
@@ -5429,18 +6482,18 @@ function pixels(req,res)
 						obj.glob_pixelsPro_x_left_top = x;
 						obj.glob_pixelsPro_y_left_top = y;
 						 
-						var color =  pixelsPro_getColorArrayFromImageData(obj,x,y);
+						var color =  pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 						obj.glob_pixelsPro_pg_main_color = color;
 			
 						console.log("testing 8888.000");	
 
 						
 			
-						obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+						pixelsPro_pg_main_image = setChaosPixels(obj);
 						
 						console.log("testing 8888.222");
 						
-						var result_png = pixelsPro_redrawPixels_main(obj,x,y);
+						var result_png = pixelsPro_redrawPixels_main(obj,x,y,pixelsPro_pg_main_image);
 						
 						console.log("testing 8888.111");
 						//obj.glob_pixelsPro_color_for_pass = define_color_for_pass(x,y,color);
@@ -5458,7 +6511,7 @@ function pixels(req,res)
 					else
 					{
 						//var result_png = pixelsPro_redrawPixels_main(glob_pixelsPro_x_left_top,glob_pixelsPro_y_left_top);
-						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 						obj.glob_pixelsPro_errorMessage='6. labirint not ok';
 						sendImage(result_png, res, '\n6. labirint not ok\n');	
 					}
@@ -5469,21 +6522,21 @@ function pixels(req,res)
 				
 				
 
-					if(left(obj,x,y)||right(obj,x,y)||floor(obj,x,y))
+					if(left(obj,x,y,pixelsPro_pg_main_image)||right(obj,x,y,pixelsPro_pg_main_image)||floor(obj,x,y,pixelsPro_pg_main_image))
 					{
 						
 						
 						
 							
-			var color_prev = pixelsPro_getColorArrayFromImageData(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
-				var color = pixelsPro_getColorArrayFromImageData(obj,x,y);
+			var color_prev = pixelsPro_getColorArrayFromImageData(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
+				var color = pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 				if(pixelsPro_array_equals(color_prev,color)==false)
 				{
 					
 					
 					
 					
-					var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+					var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			obj.glob_pixelsPro_errorMessage='6.4321 labirint not same colors';
 						sendImage(result_png, res, '\n6.4321 labirint not same colors\n');	
 					
@@ -5503,15 +6556,15 @@ function pixels(req,res)
 					
 						obj.glob_pixelsPro_pg_main_color = color;
 						
-						obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+						pixelsPro_pg_main_image = setChaosPixels(obj);
 			
-						var result_png = pixelsPro_redrawPixels_main(obj,x,y);
+						var result_png = pixelsPro_redrawPixels_main(obj,x,y,pixelsPro_pg_main_image);
 					obj.glob_pixelsPro_errorMessage='5.7777ab labirint not ok';
 						sendImage(result_png, res, '\n5.7777ab labirint not ok\n');	
 					}
 					else
 					{
-						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			obj.glob_pixelsPro_errorMessage='6.7777ab labirint not ok';
 						sendImage(result_png, res, '\n6.7777ab labirint not ok\n');	
 					}
@@ -5580,6 +6633,18 @@ function right_pixels(req,res)
 		
 			var obj = glob_labirint_memory[ind];
 			
+			var pixelsPro_pg_main_image= get_main_image(obj);
+			if(pixelsPro_pg_main_image==null)
+			{
+				
+				console.log('right_pixels:error: may be white');
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('right_pixels:error: may be white');
+					req.connection.destroy();
+					return;
+				
+			}
+	obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
 			
 			
 			console.log(post);
@@ -5591,30 +6656,30 @@ function right_pixels(req,res)
 			
 			
 				
-			obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj); 
+			pixelsPro_pg_main_image = setChaosPixels(obj); 
 			
 			var neh = pixelsPro_getNeighborsColors(obj,x,y);
 			console.log("neh.length="+neh.length);
 			
-			var color = pixelsPro_getColorArrayFromImageData(obj,x,y);
+			var color = pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 			if( post['color'] ) color = cloneColor( post['color'].split(',') );
-			var color_on_place = pixelsPro_getColorArrayFromImageData(obj,x,y);
+			var color_on_place = pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 		
 			
 				
 			
-			if(x<0||x>=obj.glob_pixelsPro_pg_main_image.width) {
+			if(x<0||x>=pixelsPro_pg_main_image.width) {
 				console.log("y444");
-				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			obj.glob_pixelsPro_errorMessage='1. chaos not ok';
 				sendImage(result_png, res, '\n1. chaos not ok\n');	
 				
 				return;
 				
 			}
-			else if(y<0||y>=obj.glob_pixelsPro_pg_main_image.height) {
+			else if(y<0||y>=pixelsPro_pg_main_image.height) {
 				console.log("y15555");
-				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			obj.glob_pixelsPro_errorMessage='2. chaos not ok';
 				sendImage(result_png, res, '\n2. chaos not ok\n');	
 				
@@ -5647,7 +6712,7 @@ function right_pixels(req,res)
 						
 						console.log("y1888");
 						
-						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 					obj.glob_pixelsPro_errorMessage='3. chaos not ok';
 						sendImage(result_png, res, '\n3. chaos not ok\n');	
 						
@@ -5655,14 +6720,14 @@ function right_pixels(req,res)
 				
 					}
 					
-					var ctrlz = obj.copy_image(obj.glob_pixelsPro_pg_main_image);
+					var ctrlz = obj.copy_image(pixelsPro_pg_main_image);
 					
 					
 							take_chaos(obj,x,y,color_on_place);	
 									
-							obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+							pixelsPro_pg_main_image = setChaosPixels(obj);
 									
-							var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+							var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 									
 						var x2=x;
 						var y2=y;
@@ -5670,7 +6735,7 @@ function right_pixels(req,res)
 						x=obj.glob_pixelsPro_x_left_top;
 						y=obj.glob_pixelsPro_y_left_top;
 									
-					if(left(obj,x,y)||right(obj,x,y)||floor(obj,x,y))
+					if(left(obj,x,y,pixelsPro_pg_main_image)||right(obj,x,y,pixelsPro_pg_main_image)||floor(obj,x,y,pixelsPro_pg_main_image))
 					{
 					
 							
@@ -5686,8 +6751,8 @@ function right_pixels(req,res)
 						
 						
 						 throw_collected(obj,x2,y2,color_on_place);
-						obj.glob_pixelsPro_pg_main_image=ctrlz;
-						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+						pixelsPro_pg_main_image=ctrlz;
+						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 						obj.glob_pixelsPro_errorMessage='5. chaos not ok';
 							sendImage(result_png, res, '\n5. chaos not ok\n');	
 					}
@@ -5812,7 +6877,8 @@ function set_collected_pixels(req,res)
 					req.connection.destroy();
 					return;
 			}
-		
+	
+	
 			var obj = glob_labirint_memory[ind];
 			
 			
@@ -5839,18 +6905,33 @@ function __set__collected__pixels(req,res,obj,x,y,color)
 			// console.log("x="+x);
 			// console.log("y="+y);
 			// console.log("color="+color);
-			obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
 			
-			if(x<0||x>=obj.glob_pixelsPro_pg_main_image.width) {
+			
+			var pixelsPro_pg_main_image= get_main_image(obj);
+			if(pixelsPro_pg_main_image==null)
+			{
 				
-				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+				console.log('set_collected_pixels:error: may be white');
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+					res.end('set_collected_pixels:error: may be white');
+					req.connection.destroy();
+					return;
+				
+			}
+			obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);	
+			
+			pixelsPro_pg_main_image = setChaosPixels(obj);
+			
+			if(x<0||x>=pixelsPro_pg_main_image.width) {
+				
+				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			
 				sendImage(result_png, res, '\nset_collected_pixels not ok\n');	
 				
 			}
-			else if(y<0||y>=obj.glob_pixelsPro_pg_main_image.height) {
+			else if(y<0||y>=pixelsPro_pg_main_image.height) {
 				
-				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			
 				sendImage(result_png, res, '\nset_collected_pixels not ok\n');	
 				
@@ -5871,9 +6952,9 @@ function __set__collected__pixels(req,res,obj,x,y,color)
 						take_chaos(obj,x,y,color);
 				
 				
-						obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+						pixelsPro_pg_main_image = setChaosPixels(obj);
 						
-						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 						
 						sendImage(result_png, res, '\ntake stone ok\n');	
 						
@@ -5901,7 +6982,7 @@ function __set__collected__pixels(req,res,obj,x,y,color)
 							if(f==false)
 							{
 								
-					var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+					var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 				
 					sendImage(result_png, res, '\n544.1 set_collected_pixels not ok\n');	
 					
@@ -5927,9 +7008,9 @@ function __set__collected__pixels(req,res,obj,x,y,color)
 						//glob_pixelsPro_pg_boh_image = 
 						throw_collected(obj,x,y,color);	
 						
-						obj.glob_pixelsPro_pg_main_image = setChaosPixels(obj);
+						pixelsPro_pg_main_image = setChaosPixels(obj);
 						
-						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top);
+						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 						
 						sendImage(result_png, res, '\nset stone ok\n');	
 						
@@ -6098,47 +7179,47 @@ function removeStone(objj,x,y,color,arr)
 // }
 
 
-function left(obj,x,y)
+function left(obj,x,y,p1)
 {
-	var color = pixelsPro_getColorArrayFromImageData(obj,x,y);
+	var color = pixelsPro_getColorArrayFromImageData(obj,x,y,p1);
 	if(x-1<0)return true;
-	var color2 = pixelsPro_getColorArrayFromImageData(obj,x-1,y);
+	var color2 = pixelsPro_getColorArrayFromImageData(obj,x-1,y,p1);
 	return !pixelsPro_array_equals(color,color2);
 }
 
-function right(obj,x,y)
+function right(obj,x,y,p1)
 {
-	var color = pixelsPro_getColorArrayFromImageData(obj,x,y);
-	if(x+1>=obj.glob_pixelsPro_pg_main_image.width)return true;
-	var color2 = pixelsPro_getColorArrayFromImageData(obj,x+1,y);
+	var color = pixelsPro_getColorArrayFromImageData(obj,x,y,p1);
+	if(x+1>=pixelsPro_pg_map_image.width)return true;
+	var color2 = pixelsPro_getColorArrayFromImageData(obj,x+1,y,p1);
 	return !pixelsPro_array_equals(color,color2);
 }
 
-function floor(obj,x,y)
+function floor(obj,x,y,p1)
 {
-	var color = pixelsPro_getColorArrayFromImageData(obj,x,y);
-	if(y+1>=obj.glob_pixelsPro_pg_main_image.height)return true;
-	var color2 = pixelsPro_getColorArrayFromImageData(obj,x,y+1);
+	var color = pixelsPro_getColorArrayFromImageData(obj,x,y,p1);
+	if(y+1>=pixelsPro_pg_map_image.height)return true;
+	var color2 = pixelsPro_getColorArrayFromImageData(obj,x,y+1,p1);
 	return !pixelsPro_array_equals(color,color2);
 }
 
-function pixelsPro_getColorArrayFromImageData(obj,x,y)
+function pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image)
 {
 	/* var c2 = document.getElementById("pixels");
 	var ctx = c2.getContext("2d");
 	return ctx.getImageData(x,y,1,1).data; */
 	
-	var index = obj.glob_pixelsPro_pg_main_image.width * (y) + (x) << 2;
+	var index = pixelsPro_pg_main_image.width * (y) + (x) << 2;
 	var color = [
-		obj.glob_pixelsPro_pg_main_image.data[index],
-		obj.glob_pixelsPro_pg_main_image.data[index+1],
-		obj.glob_pixelsPro_pg_main_image.data[index+2],
-		obj.glob_pixelsPro_pg_main_image.data[index+3]
+		pixelsPro_pg_main_image.data[index],
+		pixelsPro_pg_main_image.data[index+1],
+		pixelsPro_pg_main_image.data[index+2],
+		pixelsPro_pg_main_image.data[index+3]
 	];	
 	return color;
 }
 		
-function pixelsPro_redrawPixels_main(obj, x,y)
+function pixelsPro_redrawPixels_main(obj, x,y,pixelsPro_pg_main_image)
 {
 	var nn=obj.glob_pixelsPro_pg_pixels_scale;
 	var newpng = new PNG ( {
@@ -6171,21 +7252,21 @@ function pixelsPro_redrawPixels_main(obj, x,y)
 		for(var j=-7;j<	8;j++)
 		{
 			if((y+j)<0) continue;
-			if((y+j)>=obj.glob_pixelsPro_pg_main_image.height) continue;
+			if((y+j)>=pixelsPro_pg_main_image.height) continue;
 			if((x+i)<0) continue;
-			if((x+i)>=obj.glob_pixelsPro_pg_main_image.width) continue;
-			var index = obj.glob_pixelsPro_pg_main_image.width * (y+j) + (x+i) << 2;
+			if((x+i)>=pixelsPro_pg_main_image.width) continue;
+			var index = pixelsPro_pg_main_image.width * (y+j) + (x+i) << 2;
 			
 			var index2 = newpng.width * (j+7)*10*nn + (i+7)*10*nn << 2;
 			
-			var color = [obj.glob_pixelsPro_pg_main_image.data[index+0],obj.glob_pixelsPro_pg_main_image.data[index+1],obj.glob_pixelsPro_pg_main_image.data[index+2],obj.glob_pixelsPro_pg_main_image.data[index+3]];
+			var color = [pixelsPro_pg_main_image.data[index+0],pixelsPro_pg_main_image.data[index+1],pixelsPro_pg_main_image.data[index+2],pixelsPro_pg_main_image.data[index+3]];
 			
 			fillRectanglePro(newpng, (i+7)*10*nn, (j+7)*10*nn, 10*nn, 10*nn, newpng.width, color);
 			
-			newpng.data[index2+0] = obj.glob_pixelsPro_pg_main_image.data[index+0];
-			newpng.data[index2+1] = obj.glob_pixelsPro_pg_main_image.data[index+1];
-			newpng.data[index2+2] = obj.glob_pixelsPro_pg_main_image.data[index+2];
-			newpng.data[index2+3] = obj.glob_pixelsPro_pg_main_image.data[index+3];
+			newpng.data[index2+0] = pixelsPro_pg_main_image.data[index+0];
+			newpng.data[index2+1] = pixelsPro_pg_main_image.data[index+1];
+			newpng.data[index2+2] = pixelsPro_pg_main_image.data[index+2];
+			newpng.data[index2+3] = pixelsPro_pg_main_image.data[index+3];
 			
 			//console.log('i='+i+' j='+j);
 		}

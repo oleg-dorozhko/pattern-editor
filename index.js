@@ -4820,19 +4820,19 @@ function commit_labirints_changes(req, res)
 						if(combo_old_main_image_and_changed_main_image(obj.glob_pixelsPro_pg_main_image_id,nm1))
 						//if(set_buffer_by_id(obj.glob_pixelsPro_pg_main_image_id,nm1))
 						{
-						clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
-						console.log(global_buzy_object);
-						console.log("changes commited");
-						
-						res.writeHead( 200, { 'Content-Type':'text/plain' } );
-						res.end("changes commited");
+							clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
+							console.log(global_buzy_object);
+							console.log("changes commited");
+							when_commit_labirints_changes();
+							res.writeHead( 200, { 'Content-Type':'text/plain' } );
+							res.end("changes commited");
 						}
 						else{
 							console.log('commit_labirints_changes:error: something wrong');
-						res.writeHead( 500, { 'Content-Type':'text/plain' } );
-						res.end('commit_labirints_changes:error: may be white');
-						req.connection.destroy();
-						return;
+							res.writeHead( 500, { 'Content-Type':'text/plain' } );
+							res.end('commit_labirints_changes:error: may be white');
+							req.connection.destroy();
+							return;
 							
 						}
 					}
@@ -7856,4 +7856,40 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
+var WebSocketServer = new require('ws');
 
+// подключенные клиенты
+var clients = {};
+
+// WebSocket-сервер на порту 8081
+var webSocketServer = new WebSocketServer.Server({
+  port: 8081
+});
+webSocketServer.on('connection', function(ws) {
+
+  var id = Math.random();
+  clients[id] = ws;
+  console.log("новое соединение " + id);
+
+  ws.on('message', function(message) {
+    // console.log('получено сообщение ' + message);
+
+    // for (var key in clients) {
+      // clients[key].send(message);
+    // }
+  });
+
+  ws.on('close', function() {
+    console.log('соединение закрыто ' + id);
+    delete clients[id];
+  });
+  
+ 
+  
+});
+
+//setInterval(  () => { for (var key in clients) {  clients[key].send(''+new Date());	}  },  1000  );
+function when_commit_labirints_changes()
+{
+	for (var key in clients) {  clients[key].send('Take last update, please, from '+new Date());	}
+}

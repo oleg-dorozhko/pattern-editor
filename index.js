@@ -4817,7 +4817,8 @@ function commit_labirints_changes(req, res)
 					}
 					else
 					{
-						if(set_buffer_by_id(obj.glob_pixelsPro_pg_main_image_id,nm1))
+						if(combo_old_main_image_and_changed_main_image(obj.glob_pixelsPro_pg_main_image_id,nm1))
+						//if(set_buffer_by_id(obj.glob_pixelsPro_pg_main_image_id,nm1))
 						{
 						clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
 						console.log(global_buzy_object);
@@ -4935,6 +4936,140 @@ function createPNGfromBuffer(w,h,buffer)
 					
 					return newpng;
 }
+
+function colors_equals(old_png,idx,new_png,idx)
+{
+	if(  
+			(old_png.data[idx] == new_png.data[idx]) &&
+			(old_png.data[idx+1] == new_png.data[idx+1]) &&
+			(old_png.data[idx+2] == new_png.data[idx+2]) &&
+			(old_png.data[idx+3] == new_png.data[idx+3])
+	)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+function is_white(old_png,idx)
+{
+	if(  
+			(old_png.data[idx] == 255) &&
+			(old_png.data[idx+1] == 255) &&
+			(old_png.data[idx+2] == 255) &&
+			(old_png.data[idx+3] == 255)
+	)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+function combo_by_white_two_array_buffers(old_ab,new_ab,w,h)
+{
+	var old_png = createPNGfromBuffer(w,h,old_ab);
+	var new_png = createPNGfromBuffer(w,h,new_ab);
+	var result_png = new PNG ( {
+						
+							width: w,
+							height: h,
+							filterType: 4
+					} );
+					
+		
+					for(var j=0;j<result_png.height;j++)
+					{
+						for(var i=0;i<result_png.width;i++)
+						{
+							
+								
+								var idx = result_png.width * j + i << 2;
+								if(colors_equals(old_png,idx,new_png,idx)==false)
+								{
+									if(is_white(old_png,idx))
+									{
+										result_png.data[idx] = old_png.data[idx];
+										result_png.data[idx+1] = old_png.data[idx+1];
+										result_png.data[idx+2] = old_png.data[idx+2];
+										result_png.data[idx+3] = old_png.data[idx+3];
+									}
+									else if(is_white(new_png,idx))
+									{
+										result_png.data[idx] = new_png.data[idx];
+										result_png.data[idx+1] = new_png.data[idx+1];
+										result_png.data[idx+2] = new_png.data[idx+2];
+										result_png.data[idx+3] = new_png.data[idx+3];
+									}
+									else
+									{
+										result_png.data[idx] = 0;
+										result_png.data[idx+1] = 0;
+										result_png.data[idx+2] = 0;
+										result_png.data[idx+3] = 255;
+									}
+								}
+								else
+								{
+									result_png.data[idx] = new_png.data[idx];
+									result_png.data[idx+1] = new_png.data[idx+1];
+									result_png.data[idx+2] = new_png.data[idx+2];
+									result_png.data[idx+3] = new_png.data[idx+3];
+								}
+								
+								
+						}
+					}
+					
+					return createBufferfromPNG(result_png);
+}
+
+
+
+function combo_old_main_image_and_changed_main_image(where_png_id,in_memory_id)
+{
+
+	for(var i=0;i<global_patterns_objects_array.length;i++)
+	{
+		var obj = global_patterns_objects_array[i];
+		if(obj.white) continue;
+			
+		if(obj.id==where_png_id) {
+			//now we found older main as buffer
+			
+					var ind=isDataPNGObjectByMD5(in_memory_id);
+					if(ind!=null)
+					{
+			
+						obj.png=combo_by_white_two_array_buffers(obj.png,global_memory[ind].png,obj.width,obj.height); //we buffer have here, newest buffer
+						
+						global_patterns_objects_array[i]=obj;
+						
+						
+						return true;
+					}
+					else
+					{
+						console.log("combo_old_main_image_and_changed_main_image:in global_memory not found object with id:"+in_memory_id);
+						return false;
+					}
+			
+			}
+		
+	}
+	
+	
+	return false;
+}
+
+
+
+
+
+
+
+
 
 
 function set_buffer_by_id(where_png_id,in_memory_id)

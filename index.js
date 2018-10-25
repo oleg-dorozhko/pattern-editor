@@ -7856,7 +7856,7 @@ app.listen(app.get('port'), function() {
 
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 8081 });
+const wss = new WebSocket.Server({ server:app, port: 8081 });
 
 // // Broadcast to all.
 // wss.broadcast = function broadcast(data) {

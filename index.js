@@ -1,5 +1,5 @@
 //var opbeat = require('opbeat').start()
-var glob_debug_flag=false;
+var glob_debug_flag=true;
 
 var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');
@@ -84,7 +84,7 @@ app.use(function(err, req, res, next) {
   //log.error(err, req);
  
   // during development you may want to print the errors to your console
-  logger_console_log(err.stack);
+  console.log(err.stack);
  
   // send back a 500 with a generic message
   res.status(500);
@@ -4787,7 +4787,7 @@ function commit_labirints_changes(req, res)
 		req.on('end', function () {
 			
 			
-			
+			console.log("changes start to commit");
 		
 			var post = qs.parse(body);
 			
@@ -4828,7 +4828,7 @@ function commit_labirints_changes(req, res)
 						{
 							clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
 							logger_console_log(global_buzy_object);
-							logger_console_log("changes commited");
+							console.log("changes commited");
 							when_commit_labirints_changes();
 							res.writeHead( 200, { 'Content-Type':'text/plain' } );
 							res.end("changes commited");
@@ -7850,52 +7850,71 @@ function pixelsPro_setEventListenersOnTri_Btns()
 /***==============***/
 
 
-
-
-
-
-
-
-
-
 app.listen(app.get('port'), function() {
-  logger_console_log('Node app is running on port', app.get('port'));
+  console.log('Node app is running on port', app.get('port'));
 });
 
-var WebSocketServer = new require('ws');
+const WebSocket = require('ws');
 
-// подключенные клиенты
-var clients = {};
+const wss = new WebSocket.Server({ port: 8080 });
 
-// WebSocket-сервер на порту 8081
-var webSocketServer = new WebSocketServer.Server({
-  port: 8081
+// Broadcast to all.
+wss.broadcast = function broadcast(data) {
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+};
+
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(data) {
+    // Broadcast to everyone else.
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(data);
+      }
+    });
+  });
 });
-webSocketServer.on('connection', function(ws) {
 
-  var id = Math.random();
-  clients[id] = ws;
-  logger_console_log("новое соединение " + id);
+// var WebSocketServer = new require('ws').Server;
 
-  ws.on('message', function(message) {
-    // logger_console_log('получено сообщение ' + message);
+// // подключенные клиенты
+// var clients = {};
+// //
+// // WebSocket-сервер на порту 8081
+// var webSocketServer = new WebSocketServer({server:app});
+// app.on('upgrade', webSocketServer.handleUpgrade);
+// webSocketServer.on('connection', function(ws) {
 
-    // for (var key in clients) {
-      // clients[key].send(message);
-    // }
-  });
+  // var id = Math.random();
+  // clients[id] = ws;
+  // console.log("новое соединение " + id);
 
-  ws.on('close', function() {
-    logger_console_log('соединение закрыто ' + id);
-    delete clients[id];
-  });
+  // ws.on('message', function(message) {
+    // // logger_console_log('получено сообщение ' + message);
+
+    // // for (var key in clients) {
+      // // clients[key].send(message);
+    // // }
+  // });
+
+  // ws.on('close', function() {
+    // console.log('соединение закрыто ' + id);
+    // delete clients[id];
+  // });
   
  
   
-});
+// });
+
+
 
 //setInterval(  () => { for (var key in clients) {  clients[key].send(''+new Date());	}  },  1000  );
 function when_commit_labirints_changes()
 {
-	for (var key in clients) {  clients[key].send('Take last update, please, from '+new Date());	}
+	 console.log("when_commit_labirints_changes");
+	 wss.broadcast('Take last update, please, from '+new Date());
+	//for (var key in clients) {  clients[key].send('Take last update, please, from '+new Date());	}
 }

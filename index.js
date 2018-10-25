@@ -4194,6 +4194,7 @@ app.post('/blob_from_server',blob_from_server);
 app.post('/get_array_of_all_generated_stones',get_array_of_all_generated_stones);
 app.post('/get_labirint_id', init_pixels );
 app.post('/pixels', pixels );
+app.post('/get_url_to_ws', get_url_to_ws );
 app.post('/test245', test245 );
 app.post('/right_pixels', right_pixels );
 app.post('/add_boh_pixel', add_boh_pixel );
@@ -7561,6 +7562,50 @@ function drawRedPoint(newpng,xn, xm, w, h)
 	return fillRectanglePro(newpng, xn, xm, w, h, newpng.width, color);
 }
 
+
+
+function get_url_to_ws(req,res)	
+{								
+		logger_console_log("\nIn get_url_to_ws");
+		
+		
+		var body = '';
+
+		req.on('data', function (data) {
+			
+					
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("get_url_to_ws: error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+			
+			var post = qs.parse(body);
+			
+			
+			var md5 = post['md5'];
+			
+			var data = listener.address();//location.origin.replace(/^http/, 'ws');
+			data='{"url":"'+data.address+'","port":"'+data.port+'"}';
+			console.log("\nIn get_url_to_ws: url=["+data+"]");
+		  res.writeHead(200, {  'Content-Type': 'text/html' } );
+		  res.end(data);	
+			
+			
+		});
+		
+}
+
 /*******
 function pixelsPro_whenClickedOnCanvas(e)
 {
@@ -7850,13 +7895,14 @@ function pixelsPro_setEventListenersOnTri_Btns()
 /***==============***/
 
 
-app.listen(app.get('port'), function() {
+var listener = app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
+  //console.log('Node app is running on port', listener.address());
 });
 
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ server:app, port: 8081 });
+const wss = new WebSocket.Server({ server:listener });
 
 // // Broadcast to all.
 // wss.broadcast = function broadcast(data) {

@@ -1,5 +1,5 @@
 //var opbeat = require('opbeat').start()
-var glob_debug_flag=true;
+var glob_debug_flag=false;
 
 var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');

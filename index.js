@@ -1,5 +1,5 @@
 //var opbeat = require('opbeat').start()
-var glob_debug_flag=true;
+var glob_debug_flag=false;
 
 var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');
@@ -4788,7 +4788,7 @@ function commit_labirints_changes(req, res)
 		req.on('end', function () {
 			
 			
-			console.log("changes start to commit");
+			logger_console_log("changes start to commit");
 		
 			var post = qs.parse(body);
 			
@@ -4829,7 +4829,7 @@ function commit_labirints_changes(req, res)
 						{
 							clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
 							logger_console_log(global_buzy_object);
-							console.log("changes commited");
+							logger_console_log("changes commited");
 							when_commit_labirints_changes();
 							res.writeHead( 200, { 'Content-Type':'text/plain' } );
 							res.end("changes commited");
@@ -7597,7 +7597,7 @@ function get_url_to_ws(req,res)
 			
 			var data = listener.address();//location.origin.replace(/^http/, 'ws');
 			data='{"url":"'+data.address+'","port":"'+data.port+'"}';
-			console.log("\nIn get_url_to_ws: url=["+data+"]");
+			logger_console_log("\nIn get_url_to_ws: url=["+data+"]");
 		  res.writeHead(200, {  'Content-Type': 'text/html' } );
 		  res.end(data);	
 			
@@ -7896,7 +7896,7 @@ function pixelsPro_setEventListenersOnTri_Btns()
 
 
 var listener = app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+  logger_console_log('Node app is running on port', app.get('port'));
   //console.log('Node app is running on port', listener.address());
 });
 

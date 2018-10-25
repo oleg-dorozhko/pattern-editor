@@ -1,4 +1,6 @@
 //var opbeat = require('opbeat').start()
+var glob_debug_flag=false;
+
 var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');
 var mod_mirror = require('./lib/mod_mirror');
@@ -81,7 +83,7 @@ app.use(function(err, req, res, next) {
   //log.error(err, req);
  
   // during development you may want to print the errors to your console
-  console.log(err.stack);
+  logger_console_log(err.stack);
  
   // send back a 500 with a generic message
   res.status(500);
@@ -132,7 +134,10 @@ app.get('/images/labirint.png', function(request, response) {
 	});
 });
 
-
+function logger_console_log(s)
+{
+	if(glob_debug_flag) console.log(s);
+}
 
 function getSeedListFromFS()
 {
@@ -157,7 +162,7 @@ app.post('/load_div_first', function(request, response) {
 	  
 	  if (err) {  
 	  
-		console.log(err);
+		logger_console_log(err);
 		response.writeHead(500, {  'Content-Type': 'text/html' } );
 		response.end("/load_div_first: error: "+err);
 
@@ -189,13 +194,13 @@ function sendImage(result_png, res, msg)
 	result_png.pipe(res);
 			
 	result_png.on('end', function()	{
-		console.log(msg);
+		logger_console_log(msg);
 	});
 }
 
 function sendText(result_text, response, msg)
 {
-	console.log(msg);
+	logger_console_log(msg);
 	response.writeHead(200, {  'Content-Type': 'text/html' } );
 	response.end(result_text); 
 }
@@ -289,11 +294,11 @@ function __rotateff( oldpng, newpng )
 	
 	for(n=2;n<oldpng.height+2;n++)
 	{
-		//console.log("---- "+n+" ----");
+		//logger_console_log("---- "+n+" ----");
 		var y=n-2;
 		for(var x=0;x<n-1;x++)
 		{
-			//console.log("[x,y]=["+x+","+y+"]");
+			//logger_console_log("[x,y]=["+x+","+y+"]");
 			
 			var idx = (oldpng.width * y + x) << 2;
 					
@@ -334,7 +339,7 @@ function __rotateff( oldpng, newpng )
 			contextRes.fillStyle = "black";//"rgba("+r+","+g+","+b+",255)";
 			contextRes.fillRect(x*2,y*2,2,2);
 			
-			//console.log([x,y]);
+			//logger_console_log([x,y]);
 			*****/
 			
 			arr_points.push([x,y]);
@@ -436,7 +441,7 @@ function __rotateff( oldpng, newpng )
 	}	
 		
 	
-	console.log("Data of rotated image inputed");
+	logger_console_log("Data of rotated image inputed");
 	
 	/******************************************************************************/
 	/******************************************************************************/
@@ -583,8 +588,8 @@ function __rotateff( oldpng, newpng )
 			
 			n++;
 			
-		//	console.log(n);
-		//	console.log(arr_points.length);
+		//	logger_console_log(n);
+		//	logger_console_log(arr_points.length);
 		//	if(n >= arr_points.length / 2 ) { exit_cycle=true; break; }
 	
 			var x = arr_points[n][0];
@@ -616,14 +621,14 @@ function __rotateff( oldpng, newpng )
 		}
 		
 		counter++;
-		//console.log("counter="+counter);
+		//logger_console_log("counter="+counter);
 		if(counter>=newpng.height/2+1) break;
 		
 	/******
 	
 		if(exit_cycle==true) break;
 		
-		console.log("n="+n);
+		logger_console_log("n="+n);
 		
 		
 		
@@ -637,14 +642,14 @@ function __rotateff( oldpng, newpng )
 	
 				
 	
-	//console.log("n="+n);
+	//logger_console_log("n="+n);
 	
-	//console.log("counter="+counter);
+	//logger_console_log("counter="+counter);
 	
-	//console.log("x1="+x1);
-	//console.log("y1="+y1);
+	//logger_console_log("x1="+x1);
+	//logger_console_log("y1="+y1);
 	
-	//console.log(arr_points[n]);
+	//logger_console_log(arr_points[n]);
 	
 	
 
@@ -675,8 +680,8 @@ function __rotateff( oldpng, newpng )
 			n++;
 			
 			
-			//console.log(n);
-			//console.log(arr_points.length);
+			//logger_console_log(n);
+			//logger_console_log(arr_points.length);
 			
 			 
 	
@@ -914,7 +919,7 @@ function borderplus(req, res)
 		{
 			
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
-			console.log("borderplus: error: too big size (need result width * height <= 1200)");
+			logger_console_log("borderplus: error: too big size (need result width * height <= 1200)");
 			res.end("borderplus: error: too big size (need result width * height <= 1200)");
 			//req.connection.destroy();
 			return;
@@ -1116,7 +1121,7 @@ function plus( req, res)
 			newpng.pipe(res);
 			newpng.on('end', function() {
 				
-				console.log("Image plused");
+				logger_console_log("Image plused");
 				
 			});
 			
@@ -1197,7 +1202,7 @@ function inverse( req, res )
 			
 			result_png.on('end', function(){
 				
-				console.log("Image inverted");
+				logger_console_log("Image inverted");
 				
 			});
 			
@@ -1209,7 +1214,7 @@ function get_coordinates(w,h)
 {
 
 	
-	if(w != h) {  console.log('error: width of image != height of image'); return null; }
+	if(w != h) {  logger_console_log('error: width of image != height of image'); return null; }
 	
 	
 	if(w == 11) return [3,3,11,11];
@@ -1235,11 +1240,11 @@ function get_coordinates(w,h)
 		
 		if(t1==t2) return [ tmp/2|0, tmp/2|0,tmp+1,tmp+1];
 		
-		console.log("\n\nmedian().get_coordinates(...).error: Not implemented for: "+w);
-		console.log("width of full image="+w);
-		console.log("t1="+t1);
-		console.log("t2="+t2);
-		console.log("\n\n");
+		logger_console_log("\n\nmedian().get_coordinates(...).error: Not implemented for: "+w);
+		logger_console_log("width of full image="+w);
+		logger_console_log("t1="+t1);
+		logger_console_log("t2="+t2);
+		logger_console_log("\n\n");
 		
 		return [0,0,w,h];
 		
@@ -1343,7 +1348,7 @@ function create_png_from_global(ind)
 							{
 								var idx = (old_png.width * j + i) << 2;	
 							
-							//	console.log('\n'+idx+'\n');
+							//	logger_console_log('\n'+idx+'\n');
 								old_png.data[idx]=arr[idx];
 								old_png.data[idx+1]=arr[idx+1];
 								old_png.data[idx+2]=arr[idx+2];
@@ -1356,25 +1361,25 @@ function create_png_from_global(ind)
 
 function execute_script(req, res)
 {
-	console.log('execute_script:');
+	logger_console_log('execute_script:');
 	var s = '';
 	for(var key in req.body)	{ 
 		s +='\nreq.body['+key+']: '+req.body[key];
 		
 	}
-	console.log(s); 
+	logger_console_log(s); 
 	
 	var arr = req.body['commands'].split(",");
 	var res_png=null;
 	var ind=null;
 	var md5=req.body['md5'];
-	console.log(md5); 
+	logger_console_log(md5); 
 	if(md5 != null)
 	{
 		ind = isDataPNGObjectByMD5(md5);
 		if(ind==null)
 		{
-			console.log('execute_script: not found obj with this md5:'+md5);
+			logger_console_log('execute_script: not found obj with this md5:'+md5);
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
 				res.end('execute_script: not found obj with this md5:'+md5);
 				req.connection.destroy();
@@ -1395,7 +1400,7 @@ function execute_script(req, res)
 	for(var i=0;i<arr.length;i++)
 	{
 		arr[i]=arr[i].trim();
-		console.log("executing ["+arr[i]+"]"); 
+		logger_console_log("executing ["+arr[i]+"]"); 
 		
 		if(arr[i].indexOf("generate random seed")===0)
 		{
@@ -1613,7 +1618,7 @@ function isDataPNGObjectByMD5(md5)
 	//var arr = fs.readdirSync('./memory');
 	for(var i=0;i<global_memory.length;i++)
 	{
-		//console.log('test '+arr[i]);
+		//logger_console_log('test '+arr[i]);
 		if(global_memory[i].id===md5)
 		{
 			
@@ -1630,8 +1635,8 @@ function isDataPNGObjectByMD5(md5)
 function pre_rotate_any(req, res)
 {
 	
-	console.log('pre_rotate_any:');
-	for(var key in req.body)	console.log('req.body['+key+']: '+req.body[key]);
+	logger_console_log('pre_rotate_any:');
+	for(var key in req.body)	logger_console_log('req.body['+key+']: '+req.body[key]);
 	
 	var s = (''+req.body['md5']).trim();
 	
@@ -1639,7 +1644,7 @@ function pre_rotate_any(req, res)
 	var ind = isDataPNGObjectByMD5(s);
 		if(ind==null)
 		{
-			console.log('pre_rotate_any:error: not found obj with this md5:'+s);
+			logger_console_log('pre_rotate_any:error: not found obj with this md5:'+s);
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
 				res.end('pre_rotate_any:error:  not found obj with this md5:'+s);
 				req.connection.destroy();
@@ -1651,10 +1656,10 @@ function pre_rotate_any(req, res)
 	obj.degree = req.body['degree'];
 	// fs.writeFile("./memory/"+s+'.id', JSON.stringify(obj), function(err) {
 		// if(err) {
-			// return console.log(err);
+			// return logger_console_log(err);
 		// }
 
-		// console.log("The file was saved!");
+		// logger_console_log("The file was saved!");
 	//}); 
 	
 	
@@ -1665,14 +1670,14 @@ function pre_rotate_any(req, res)
 function rotate_any(req, res)
 {
 	
-	console.log('rotate_any:');
+	logger_console_log('rotate_any:');
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
 		var s = get_md5_hex(this.data);
 		var ind = isDataPNGObjectByMD5(s);
 		if(ind==null)
 		{
-			console.log('rotate_any: not found obj with this md5:'+s);
+			logger_console_log('rotate_any: not found obj with this md5:'+s);
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
 				res.end('rotate_any: not found obj with this md5:'+s);
 				req.connection.destroy();
@@ -1721,8 +1726,8 @@ function gcombo(req, res)
 
 function brain(req, res)
 {
-	console.log('In brain:');
-	console.log('req:'+req);
+	logger_console_log('In brain:');
+	logger_console_log('req:'+req);
 	req.pipe(new PNG({filterType: 4})).on('parsed', function() {
 		
 		sendImage(mod_brain.__brain(this),res,"\nImage was brained\n");
@@ -1749,7 +1754,7 @@ function __half(im)
 		// else 
 		// {
 			// var err = "width %2 != 0 or height %2 != 0 ";
-			// console.log(err);
+			// logger_console_log(err);
 			// res.writeHead(500, {  'Content-Type': 'text/html' } );
 			// res.end("/half: error: "+err);
 			// return;
@@ -2349,10 +2354,10 @@ function old__axes( req, res )
 				for (var x = 0; x < ish_png.width; x++) {
 					
 					/***
-					console.log("x="+x);
-					console.log("y="+y);
-					console.log("n="+n);
-					console.log("m="+m);
+					logger_console_log("x="+x);
+					logger_console_log("y="+y);
+					logger_console_log("n="+n);
+					logger_console_log("m="+m);
 					***/
 					if( x>=xw  && y>=yh )
 					{
@@ -2421,7 +2426,7 @@ function old__axes( req, res )
 	
 	function crop( req, res )
 	{
-		console.log('\nIn crop(...)\n');
+		logger_console_log('\nIn crop(...)\n');
 		
 		
 		req.pipe(new PNG({filterType: 4})).on('parsed', function() {
@@ -2432,7 +2437,7 @@ function old__axes( req, res )
 			if(ind==null)
 			{
 				
-				console.log('crop: not found crop_settings with this md5:'+s);
+				logger_console_log('crop: not found crop_settings with this md5:'+s);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('crop: not found crop_settings with this md5:'+s);
 					req.connection.destroy();
@@ -2453,12 +2458,12 @@ function old__axes( req, res )
 			var flag = crop_settings.flag;
 			
 			
-			console.log("x="+crop_settings.x);
-			console.log("y="+crop_settings.y);
-			console.log("w="+crop_settings.w);
-			console.log("h="+crop_settings.h);
-			console.log("flag="+flag);
-			console.log("md5="+crop_settings.md5);
+			logger_console_log("x="+crop_settings.x);
+			logger_console_log("y="+crop_settings.y);
+			logger_console_log("w="+crop_settings.w);
+			logger_console_log("h="+crop_settings.h);
+			logger_console_log("flag="+flag);
+			logger_console_log("md5="+crop_settings.md5);
 			
 			if(flag==1)
 			{
@@ -2491,14 +2496,14 @@ function precrop( req, res)
 {
 	
 									
-		console.log("\nentering precrop");
+		logger_console_log("\nentering precrop");
 		
 		
 		var body = '';
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -2527,13 +2532,13 @@ function precrop( req, res)
 			crop_settings.h =  +post['h'];
 			crop_settings.flag =  +post['flag'];
 			
-			console.log("md5="+post['md5']);
+			logger_console_log("md5="+post['md5']);
 			
 			crop_settings.md5= post['md5'];
 			
 			// fs.writeFile("./memory/"+post['md5']+'.id', JSON.stringify(crop_settings), function(err) {
 				// if(err) {
-					// return console.log(err);
+					// return logger_console_log(err);
 				// }
 			var ind =	isDataPNGObjectByMD5(crop_settings.md5);
 			if(ind==null)
@@ -2568,7 +2573,7 @@ var combo_settings = null;
 
 function prepare_combo(req, res)
 {
-	console.log('\nIn prepare_combo(...)\n');
+	logger_console_log('\nIn prepare_combo(...)\n');
 	
 	var second_image = new PNG({filterType: 4});
 	
@@ -2582,7 +2587,7 @@ function prepare_combo(req, res)
 		require("fs").writeFile("./memory/"+md5+".png", base64Data, 'base64', function(err) {
 		  
 		  
-		  console.log(err);
+		  logger_console_log(err);
 		  
 		  
 		  
@@ -2621,7 +2626,7 @@ function slozhenie_cvetov(a,b)
 function combo( req, res )
 {
 	
-	console.log('\nIn combo(...)\n');
+	logger_console_log('\nIn combo(...)\n');
 	/***	
 	if(combo_settings == null)
 	{
@@ -2633,7 +2638,7 @@ function combo( req, res )
 
 	}
 	**/
-	for(var key in req.body)	console.log('req.body['+key+']: '+req.body[key]);
+	for(var key in req.body)	logger_console_log('req.body['+key+']: '+req.body[key]);
 	
 	var md51 = (''+req.body['md51']).trim();
 	var md52 = (''+req.body['md52']).trim();
@@ -2683,7 +2688,7 @@ function combo( req, res )
 							{
 								var idx = (old_png.width * j + i) << 2;	
 							
-							//	console.log('\n'+idx+'\n');
+							//	logger_console_log('\n'+idx+'\n');
 								old_png.data[idx]=arr[idx];
 								old_png.data[idx+1]=arr[idx+1];
 								old_png.data[idx+2]=arr[idx+2];
@@ -2714,7 +2719,7 @@ function combo( req, res )
 							{
 								var idx = (big_image.width * j + i) << 2;	
 							
-						//		console.log('\n'+idx+'\n');
+						//		logger_console_log('\n'+idx+'\n');
 								big_image.data[idx]=arr[idx];
 								big_image.data[idx+1]=arr[idx+1];
 								big_image.data[idx+2]=arr[idx+2];
@@ -2730,7 +2735,7 @@ function combo( req, res )
 		
 		
 		
-		//console.log('\n777777.)\n');
+		//logger_console_log('\n777777.)\n');
 		
 		
 		
@@ -3107,7 +3112,7 @@ var xcombo_settings = null;
 
 function prepare_xcombo(req, res)
 {
-	console.log('\nIn prepare_xcombo(...)\n');
+	logger_console_log('\nIn prepare_xcombo(...)\n');
 	
 	var second_image = new PNG({filterType: 4});
 	
@@ -3146,9 +3151,9 @@ function slozhenie_cvetov_nql(a,b)
 function xcombo( req, res )
 {
 	
-	console.log('\nIn xcombo(...)\n');
+	logger_console_log('\nIn xcombo(...)\n');
 		
-		for(var key in req.body)	console.log('req.body['+key+']: '+req.body[key]);
+		for(var key in req.body)	logger_console_log('req.body['+key+']: '+req.body[key]);
 	
 	var md51 = (''+req.body['md51']).trim();
 	var md52 = (''+req.body['md52']).trim();
@@ -3198,7 +3203,7 @@ function xcombo( req, res )
 							{
 								var idx = (old_png.width * j + i) << 2;	
 							
-							//	console.log('\n'+idx+'\n');
+							//	logger_console_log('\n'+idx+'\n');
 								old_png.data[idx]=arr[idx];
 								old_png.data[idx+1]=arr[idx+1];
 								old_png.data[idx+2]=arr[idx+2];
@@ -3229,7 +3234,7 @@ function xcombo( req, res )
 							{
 								var idx = (big_image.width * j + i) << 2;	
 							
-						//		console.log('\n'+idx+'\n');
+						//		logger_console_log('\n'+idx+'\n');
 								big_image.data[idx]=arr[idx];
 								big_image.data[idx+1]=arr[idx+1];
 								big_image.data[idx+2]=arr[idx+2];
@@ -3244,8 +3249,8 @@ function xcombo( req, res )
 		
 				
 					
-					console.log("old_png.width= " +old_png.width);	
-			console.log("big_image.width= " +big_image.width);	
+					logger_console_log("old_png.width= " +old_png.width);	
+			logger_console_log("big_image.width= " +big_image.width);	
 					
 			if(old_png.width != old_png.height) 
 			{
@@ -3677,7 +3682,7 @@ function xcombo( req, res )
 	
 function rio(req, res)
 {
-	//console.log('\nIn rio(...)\n');
+	//logger_console_log('\nIn rio(...)\n');
 	
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
@@ -3706,10 +3711,10 @@ function set_num_colors(request, res)
 	
 	 var obj = JSON.parse(body);
 	   num_colors=obj.num_colors;
-	   console.log(body);
-	   console.log(''+body);
-	    console.log(''+JSON.parse(body));
-		 console.log(''+JSON.parse(body).num_colors);
+	   logger_console_log(body);
+	   logger_console_log(''+body);
+	    logger_console_log(''+JSON.parse(body));
+		 logger_console_log(''+JSON.parse(body).num_colors);
 	   sendText(""+num_colors, res, 'set num colors '+num_colors );
 	
    });
@@ -3774,7 +3779,7 @@ function min_colors(req, res)
 
 function colors(req, res)
 {
-	//console.log('\nIn rio(...)\n');
+	//logger_console_log('\nIn rio(...)\n');
 	
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
@@ -3786,7 +3791,7 @@ function colors(req, res)
 
 function step_colors(req, res)
 {
-	//console.log('\nIn rio(...)\n');
+	//logger_console_log('\nIn rio(...)\n');
 	
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
@@ -3798,7 +3803,7 @@ function step_colors(req, res)
 
 function destroy_colors(req, res)
 {
-	//console.log('\nIn rio(...)\n');
+	//logger_console_log('\nIn rio(...)\n');
 	
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
@@ -3815,7 +3820,7 @@ function destroy_colors(req, res)
 		
 function odin_dva_colors(req, res)
 {
-	//console.log('\nIn rio(...)\n');
+	//logger_console_log('\nIn rio(...)\n');
 	
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
@@ -3828,7 +3833,7 @@ function odin_dva_colors(req, res)
 function get_md5_hex(data)
 {
 		var s =md5(data);
-		//console.log('In get_md5_hex:'+s);
+		//logger_console_log('In get_md5_hex:'+s);
 		return s;
 		
 		
@@ -3842,15 +3847,15 @@ function unident(req, res)
    var filepath = './server/upload/my.csv';
    fs.stat(filepath, function (err, stats) {
    
-			console.log(stats);//here we got all information of file in stats variable
+			logger_console_log(stats);//here we got all information of file in stats variable
 
 		   if (err) {
 			   return console.error(err);
 		   }
 
 		   fs.unlink(filepath,function(err){
-				if(err) return console.log(err);
-				console.log('file deleted successfully');
+				if(err) return logger_console_log(err);
+				logger_console_log('file deleted successfully');
 		   });  
 	});
 }
@@ -3900,7 +3905,7 @@ function ident(req, res)
 		
 		
 		
-		console.log('\nIn ident(...)\nmd5='+md5);
+		logger_console_log('\nIn ident(...)\nmd5='+md5);
 		res.writeHead( 200, { 'Content-Type':'text/plain' } );
 		res.end(""+md5);
 		
@@ -3910,7 +3915,7 @@ function ident(req, res)
 }
 function join_colors(req, res)
 {
-	//console.log('\nIn rio(...)\n');
+	//logger_console_log('\nIn rio(...)\n');
 	
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
@@ -3922,7 +3927,7 @@ function join_colors(req, res)
 	
 function up(req, res)
 {
-	//console.log('\nIn rio(...)\n');
+	//logger_console_log('\nIn rio(...)\n');
 	
 	req.pipe(new PNG({filterType: 4})).on( 'parsed', function()  {
 				
@@ -3973,7 +3978,7 @@ function random(req, res)
 
 function generate_random_seed(req, res)
 {
-	console.log('in generate_random_seed'+req.body);
+	logger_console_log('in generate_random_seed'+req.body);
 	var body = [];
   req.on('error', function (err) {
     console.error(err);
@@ -3991,8 +3996,8 @@ function generate_random_seed(req, res)
 	 var obj = JSON.parse(body); //params
 	var params = [obj.size,obj.num_colors];
 	  
-	   console.log(''+body);
-	     console.log(''+params);
+	   logger_console_log(''+body);
+	     logger_console_log(''+params);
 		
 		 sendImage( mod_generate_random_seed.generate_random_seed(params), res, 'generate random seed' );
 		 
@@ -4009,7 +4014,7 @@ var fill_settings = null;
 
 function get_seed(req, res)
 {
-	console.log('\nIn get_seed(...)\n');
+	logger_console_log('\nIn get_seed(...)\n');
 	
 	var small_image = new PNG({filterType: 4});
 	
@@ -4030,7 +4035,7 @@ function get_seed(req, res)
 function fill( req, res )
 {
 	
-	console.log('\nIn fill(...)\n');
+	logger_console_log('\nIn fill(...)\n');
 		
 	if(fill_settings == null)
 	{
@@ -4054,7 +4059,7 @@ function fill( req, res )
 		{
 			
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
-			console.log("fill: error: too big size (need result width * height <= 1200)");
+			logger_console_log("fill: error: too big size (need result width * height <= 1200)");
 			res.end("fill: error: too big size (need result width * height <= 1200)");
 			//req.connection.destroy();
 			return;
@@ -4072,9 +4077,9 @@ function fill( req, res )
 		
 		//16%3 = 012
 		
-		//console.log("big_image.width="+big_image.width);
-		//console.log("small_image.width="+small_image.width);
-		//console.log("newpng.width="+newpng.width);
+		//logger_console_log("big_image.width="+big_image.width);
+		//logger_console_log("small_image.width="+small_image.width);
+		//logger_console_log("newpng.width="+newpng.width);
 		
 		//var testError = new Error('for test only');
 		//testError.status = 500;
@@ -4214,12 +4219,12 @@ app.post('/paste',function(request, response) {
 					
 					request.on('end', function()
 					{
-						console.log("Stream "+new_fullpath+" is wrote and closed");
+						logger_console_log("Stream "+new_fullpath+" is wrote and closed");
 						//setCurrentCanvasImageName(newname);
 						
-						console.log("Now we try to unlink "+old_fullpath);
+						logger_console_log("Now we try to unlink "+old_fullpath);
 						fs.unlinkSync(old_fullpath);
-						console.log("success");
+						logger_console_log("success");
 						
 						returnNewCanvasImageName(res);
 						
@@ -4247,7 +4252,7 @@ function array_buffer_to_server(req, res)
     }).on('end', function() {
         
         var buffer = Buffer.concat(data);//make a new Buffer from array of Buffers(all of them together)
-		console.log(buffer.length);
+		logger_console_log(buffer.length);
 		
 		/***
 		
@@ -4304,7 +4309,7 @@ function array_buffer_to_server(req, res)
 		global_memory.push(obj);
 		
 		
-		console.log('\nIn blob_to_server(...)\nin memory we store buffer\n(and we need w&h for transform to png)\nid of obj='+md5+'\nindex in global_memory unknown');
+		logger_console_log('\nIn blob_to_server(...)\nin memory we store buffer\n(and we need w&h for transform to png)\nid of obj='+md5+'\nindex in global_memory unknown');
 		res.writeHead( 200, { 'Content-Type':'text/plain' } );
 		res.end(""+md5);
 		
@@ -4329,8 +4334,8 @@ function blob_to_server_and_echo_from_server(req, res)
 // var url = URL.createObjectURL(blob);
 // var img = new Image();
 // img.src = url;
-// console.log("data length: " + data.length);
-// console.log("url: " + url);
+// logger_console_log("data length: " + data.length);
+// logger_console_log("url: " + url);
 // document.body.appendChild(img);
 ///	
 ///img { width: 100px; height: 100px; image-rendering: pixelated; }
@@ -4360,10 +4365,10 @@ function blob_to_server_and_echo_from_server(req, res)
         //so Buffer.concat() can make us a new Buffer
         //of all of them together
         var buffer = Buffer.concat(data);
-		console.log(buffer.length);
+		logger_console_log(buffer.length);
 		//var s='';
-		//for(var i=0;i<2500;i++){s+='[';for(var j=0;j<4;j++)s+=buffer[i*4+j]+',';s+=']\n';} console.log(s);
-        //console.log(buffer.toString('base64'));
+		//for(var i=0;i<2500;i++){s+='[';for(var j=0;j<4;j++)s+=buffer[i*4+j]+',';s+=']\n';} logger_console_log(s);
+        //logger_console_log(buffer.toString('base64'));
 		
 		
 					var newpng = new PNG ( {
@@ -4421,16 +4426,16 @@ function blob_to_server_and_echo_from_server(req, res)
 	
  // reader.addEventListener("loadend", function() {
 	// var s='';
-   // for(var i=0;i<40;i++)s+=''+reader.result[i]; console.log(s);
+   // for(var i=0;i<40;i++)s+=''+reader.result[i]; logger_console_log(s);
  // });
 	
 	// reader.on('readable', function(){
 		// var data = reader.read();
-		// console.log('['+data+']');
+		// logger_console_log('['+data+']');
 	// });
 	
 	// req.pipe(reader).on('end', function(){
-		// console.log("THE END");
+		// logger_console_log("THE END");
 	// });
 	
 	/*****************
@@ -4478,7 +4483,7 @@ function blob_to_server_and_echo_from_server(req, res)
 		global_memory.push(obj);
 		
 		
-		console.log('\nIn blob_to_server(...)\nin memory (this is not index)md5='+md5);
+		logger_console_log('\nIn blob_to_server(...)\nin memory (this is not index)md5='+md5);
 		res.writeHead( 200, { 'Content-Type':'text/plain' } );
 		res.end(""+md5);
 		
@@ -4498,7 +4503,7 @@ function test245(req, res)
         //at this point 
         //we can make a new Buffer of all of them 
         var buffer = Buffer.concat(data);
-		console.log(buffer.length);
+		logger_console_log(buffer.length);
 		
 		
 		var newpng = createPNGfromBuffer(248,248,buffer);
@@ -4539,7 +4544,7 @@ function blob_from_server(req, res)
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -4565,7 +4570,7 @@ function blob_from_server(req, res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('blob_from_server:error: not found obj with this md5:'+md5);
+				logger_console_log('blob_from_server:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 				res.end('blob_from_server:error:  not found obj with this md5:'+md5);
 				req.connection.destroy();
@@ -4573,13 +4578,13 @@ function blob_from_server(req, res)
 			}
 		
 			var obj = glob_labirint_memory[ind];
-			//console.log(obj);
+			//logger_console_log(obj);
 			var pixelsPro_pg_main_image= get_main_image(obj);
-			//console.log("----------------->  "+pixelsPro_pg_main_image);
+			//logger_console_log("----------------->  "+pixelsPro_pg_main_image);
 			if(pixelsPro_pg_main_image==null)
 			{
 				
-					console.log('blob_from_server:error: may be white');
+					logger_console_log('blob_from_server:error: may be white');
 					res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('blob_from_server:error: may be white');
 					req.connection.destroy();
@@ -4587,7 +4592,7 @@ function blob_from_server(req, res)
 				
 			}
 		
-		console.log('\nIn blob_from_server(...)\nmd5='+md5);
+		logger_console_log('\nIn blob_from_server(...)\nmd5='+md5);
 		
 		sendImage(pixelsPro_pg_main_image,res,'\nLast version send');
 					
@@ -4657,7 +4662,7 @@ function clear_buzy(pat_id,set_id)
 		{
 			if(global_buzy_object[i].set_id==set_id) {
 
-				//console.log();
+				//logger_console_log();
 				global_buzy_object[i].buzy=false;
 				return;
 			
@@ -4711,7 +4716,7 @@ function is_buzzy(req,res)
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -4737,7 +4742,7 @@ function is_buzzy(req,res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('is_buzzy:error: not found obj with this md5:'+md5);
+				logger_console_log('is_buzzy:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 				res.end('is_buzzy:error:  not found obj with this md5:'+md5);
 				req.connection.destroy();
@@ -4748,7 +4753,7 @@ function is_buzzy(req,res)
 			var buzy = is_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);	
 
 				
-			//console.log('\nIn is_buzzy(...)\nmd5='+obj.id+'\nresult='+buzy);
+			//logger_console_log('\nIn is_buzzy(...)\nmd5='+obj.id+'\nresult='+buzy);
 			res.writeHead( 200, { 'Content-Type':'text/plain' } );
 			res.end(""+buzy);
 		
@@ -4762,7 +4767,7 @@ function commit_labirints_changes(req, res)
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -4790,7 +4795,7 @@ function commit_labirints_changes(req, res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('commit_labirints_changes:error: not found obj with this md5:'+md5);
+				logger_console_log('commit_labirints_changes:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('commit_labirints_changes:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -4799,8 +4804,8 @@ function commit_labirints_changes(req, res)
 		
 			var obj = glob_labirint_memory[ind];
 			var nm1 =  post['data_id'];
-			console.log('nm1='+nm1);
-			// console.log(global_memory[nm1]);
+			logger_console_log('nm1='+nm1);
+			// logger_console_log(global_memory[nm1]);
 			//now we can to check semaphorus of right access
 			if(is_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id)==false)
 			{
@@ -4808,7 +4813,7 @@ function commit_labirints_changes(req, res)
 					if(pixelsPro_pg_main_image==null)
 					{
 						
-						console.log('commit_labirints_changes:error: may be white');
+						logger_console_log('commit_labirints_changes:error: may be white');
 						res.writeHead( 500, { 'Content-Type':'text/plain' } );
 						res.end('get_chaosed_labirint:error: may be white');
 						req.connection.destroy();
@@ -4821,14 +4826,14 @@ function commit_labirints_changes(req, res)
 						//if(set_buffer_by_id(obj.glob_pixelsPro_pg_main_image_id,nm1))
 						{
 							clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
-							console.log(global_buzy_object);
-							console.log("changes commited");
+							logger_console_log(global_buzy_object);
+							logger_console_log("changes commited");
 							when_commit_labirints_changes();
 							res.writeHead( 200, { 'Content-Type':'text/plain' } );
 							res.end("changes commited");
 						}
 						else{
-							console.log('commit_labirints_changes:error: something wrong');
+							logger_console_log('commit_labirints_changes:error: something wrong');
 							res.writeHead( 500, { 'Content-Type':'text/plain' } );
 							res.end('commit_labirints_changes:error: may be white');
 							req.connection.destroy();
@@ -5051,7 +5056,7 @@ function combo_old_main_image_and_changed_main_image(where_png_id,in_memory_id)
 					}
 					else
 					{
-						console.log("combo_old_main_image_and_changed_main_image:in global_memory not found object with id:"+in_memory_id);
+						logger_console_log("combo_old_main_image_and_changed_main_image:in global_memory not found object with id:"+in_memory_id);
 						return false;
 					}
 			
@@ -5093,7 +5098,7 @@ function set_buffer_by_id(where_png_id,in_memory_id)
 					}
 					else
 					{
-						console.log("set_buffer_by_id:in global_memory not found object with id:"+in_memory_id);
+						logger_console_log("set_buffer_by_id:in global_memory not found object with id:"+in_memory_id);
 						return false;
 					}
 			
@@ -5159,7 +5164,7 @@ function  get_allowed_pattern_id()
 
 function __execute_script(commands)
 {
-	console.log('In __execute_script:');
+	logger_console_log('In __execute_script:');
 		
 	var arr = commands.split(",");
 	var res_png=null;
@@ -5169,7 +5174,7 @@ function __execute_script(commands)
 	for(var i=0;i<arr.length;i++)
 	{
 		arr[i]=arr[i].trim();
-		console.log("executing ["+arr[i]+"]"); 
+		logger_console_log("executing ["+arr[i]+"]"); 
 		
 		if(arr[i].indexOf("generate random seed")===0)
 		{
@@ -5359,7 +5364,7 @@ function getRndColor()
 /***
 function copy_image(oldpng)
 {
-	//console.log('\nIn copy_image(...)\n');
+	//logger_console_log('\nIn copy_image(...)\n');
 	
 		
 	var newpng = new PNG(
@@ -5395,13 +5400,13 @@ function copy_image(oldpng)
 
 function get_xy_labirint(request, response) {
 	
-	console.log(request.body);
+	logger_console_log(request.body);
 	var md5 =  (''+request.body['md5']).trim();
 	
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('get_xy_labirint:error: not found obj with this md5:'+md5);
+				logger_console_log('get_xy_labirint:error: not found obj with this md5:'+md5);
 				response.writeHead( 500, { 'Content-Type':'text/plain' } );
 					response.end('get_xy_labirint:error:  not found obj with this md5:'+md5);
 					request.connection.destroy();
@@ -5420,14 +5425,14 @@ function get_xy_labirint(request, response) {
 
 function get_array_of_all_generated_stones(request, response) {
 
-console.log(request.body);
+logger_console_log(request.body);
 	//var md5 =  post['md5'];
 	var md5 =  (''+request.body['md5']).trim();
 	
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('get_array_of_all_generated_stones:error: not found obj with this md5:'+md5);
+				logger_console_log('get_array_of_all_generated_stones:error: not found obj with this md5:'+md5);
 				response.writeHead( 500, { 'Content-Type':'text/plain' } );
 					response.end('get_array_of_all_generated_stones:error:  not found obj with this md5:'+md5);
 					request.connection.destroy();
@@ -5444,15 +5449,15 @@ console.log(request.body);
 function get_chaosed_labirint(req, res)
 {
 	
-	console.log('\nIn get_chaosed_labirint(...)\n');
-	console.log(req.body);
+	logger_console_log('\nIn get_chaosed_labirint(...)\n');
+	logger_console_log(req.body);
 		//var md5 =  post['md5'];
 		var md5 =  (''+req.body['md5']).trim();
 		
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('get_chaosed_labirint:error: not found obj with this md5:'+md5);
+				logger_console_log('get_chaosed_labirint:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('get_chaosed_labirint:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -5465,7 +5470,7 @@ function get_chaosed_labirint(req, res)
 			if(pixelsPro_pg_main_image==null)
 			{
 				
-				console.log('get_chaosed_labirint:error: may be white');
+				logger_console_log('get_chaosed_labirint:error: may be white');
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('get_chaosed_labirint:error: may be white');
 					req.connection.destroy();
@@ -5480,7 +5485,7 @@ function get_chaosed_labirint(req, res)
 
 // function init_boh_pixels(req, res)
 // {
-	// console.log('\nIn init_boh_pixels(...)\n');
+	// logger_console_log('\nIn init_boh_pixels(...)\n');
 	
 		// if(glob_pixelsPro_pg_main_image==null)
 		// {
@@ -5560,7 +5565,7 @@ function get_chaosed_labirint(req, res)
 
 function add_boh_pixel(req, res)
 {
-	console.log('\nIn add_boh_pixel(...)\n');
+	logger_console_log('\nIn add_boh_pixel(...)\n');
 	
 		
 			
@@ -5569,7 +5574,7 @@ function add_boh_pixel(req, res)
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -5597,7 +5602,7 @@ function add_boh_pixel(req, res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('add_boh_pixel:error: not found obj with this md5:'+md5);
+				logger_console_log('add_boh_pixel:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('add_boh_pixel:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -5611,8 +5616,8 @@ function add_boh_pixel(req, res)
 			var y =  +post['y'];
 			var nx=6;
 			var ny=6;
-			console.log("x="+x);
-			console.log("y="+y);
+			logger_console_log("x="+x);
+			logger_console_log("y="+y);
 			obj.glob_pixelsPro_x_left_top=x;
 			obj.glob_pixelsPro_y_left_top=y;
 			 // +post['scale_koeficient'];
@@ -5624,7 +5629,7 @@ function add_boh_pixel(req, res)
 			var pixelsPro_pg_main_image= get_main_image(obj);
 			if(pixelsPro_pg_main_image==null)
 			{
-				console.log('add_boh_pixel:error: may be white');
+				logger_console_log('add_boh_pixel:error: may be white');
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('add_boh_pixel:error: may be white');
 					req.connection.destroy();
@@ -5740,13 +5745,13 @@ function add_boh_pixel(req, res)
 
 function clear_stones(req, res)
 {
-		console.log('\nIn clear_stones(...)\n');
+		logger_console_log('\nIn clear_stones(...)\n');
 		
 		var body = '';
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -5774,7 +5779,7 @@ function clear_stones(req, res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('clear_stones:error: not found obj with this md5:'+md5);
+				logger_console_log('clear_stones:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('clear_stones:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -5784,7 +5789,7 @@ function clear_stones(req, res)
 			var obj = glob_labirint_memory[ind];
 			
 			if(obj.global_inside_stones.length==0)
-			{console.log('\nIn clear_stones(...)');
+			{logger_console_log('\nIn clear_stones(...)');
 				obj.number_of_collected_stones=obj.global_karman_stones.length;
 				obj.global_karman_stones=[];
 				obj.global_inside_stones=[];
@@ -6058,14 +6063,14 @@ function generate_md5_id()
 
 function init_pixels(req, res)
 {
-	console.log('\nIn init_pixels(...)\n');
+	logger_console_log('\nIn init_pixels(...)\n');
 	
 	
 	var body = '';
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -6112,7 +6117,7 @@ function init_pixels(req, res)
 	
 	obj.copy_image = function(oldpng)
 	{
-		//console.log('\nIn copy_image(...)\n');
+		//logger_console_log('\nIn copy_image(...)\n');
 	
 		
 		var newpng = new PNG(
@@ -6144,7 +6149,7 @@ function init_pixels(req, res)
 	}
 	
 	obj.glob_pixelsPro_pg_main_image_id = get_allowed_pattern_id();
-	console.log('init_pixels:obj.glob_pixelsPro_pg_main_image_id ='+obj.glob_pixelsPro_pg_main_image_id );	
+	logger_console_log('init_pixels:obj.glob_pixelsPro_pg_main_image_id ='+obj.glob_pixelsPro_pg_main_image_id );	
 	if(obj.glob_pixelsPro_pg_main_image_id==null)
 	{
 		res.writeHead( 500, { 'Content-Type':'text/plain' } );
@@ -6156,7 +6161,7 @@ function init_pixels(req, res)
 	var pixelsPro_pg_main_image = get_main_image(obj);
 	if(pixelsPro_pg_main_image==null)
 			{
-				console.log('init_pixels:error: may be white');
+				logger_console_log('init_pixels:error: may be white');
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('init_pixels:error: may be white');
 					req.connection.destroy();
@@ -6210,7 +6215,7 @@ function init_labirint_settings(req, res)
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -6237,7 +6242,7 @@ function init_labirint_settings(req, res)
 		var ind = getIndexObjectByMD5(md5);
 		if(ind==null)
 		{
-			console.log('init_labirint_settings:error: not found obj with this md5:'+md5);
+			logger_console_log('init_labirint_settings:error: not found obj with this md5:'+md5);
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
 				res.end('init_labirint_settings:error:  not found obj with this md5:'+md5);
 				req.connection.destroy();
@@ -6250,7 +6255,7 @@ function init_labirint_settings(req, res)
 		var pixelsPro_pg_main_image= get_main_image(obj);
 		if(pixelsPro_pg_main_image==null)
 		{
-			console.log('init_labirint_settings:error: not found labirint with this md5:'+md5);
+			logger_console_log('init_labirint_settings:error: not found labirint with this md5:'+md5);
 			res.writeHead( 500, { 'Content-Type':'text/plain' } );
 			res.end('init_labirint_settings:error: not found labirint with this md5:'+md5);
 			req.connection.destroy();
@@ -6262,8 +6267,8 @@ function init_labirint_settings(req, res)
 			var x =  +post['x'];
 			var y =  +post['y'];
 			
-			console.log("x="+x);
-			console.log("y="+y);
+			logger_console_log("x="+x);
+			logger_console_log("y="+y);
 			obj.glob_pixelsPro_x_left_top=x;
 			obj.glob_pixelsPro_y_left_top=y;
 			var nn =  +post['scale_koeficient'];
@@ -6368,7 +6373,7 @@ var md5 =  (''+req.body['md5']).trim();
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('get_error_message:error: not found obj with this md5:'+md5);
+				logger_console_log('get_error_message:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('get_error_message:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -6379,7 +6384,7 @@ var md5 =  (''+req.body['md5']).trim();
 
 
 					
-		console.log("\nIn get_error_message: "+obj.glob_pixelsPro_errorMessage);
+		logger_console_log("\nIn get_error_message: "+obj.glob_pixelsPro_errorMessage);
 		res.writeHead( 200, { 'Content-Type':'text/plain' } );
 		res.end(""+obj.glob_pixelsPro_errorMessage);
 		req.connection.destroy();
@@ -6388,13 +6393,13 @@ var md5 =  (''+req.body['md5']).trim();
 
 function get_qty_neighbours(req,res)	
 {
-		console.log("\nIn get_qty_neighbours: ");
+		logger_console_log("\nIn get_qty_neighbours: ");
 		
 		var body = '';
 
 			req.on('data', function (data) {
 				
-				//console.log("when req.on data");
+				//logger_console_log("when req.on data");
 				
 				body += data;
 
@@ -6422,7 +6427,7 @@ function get_qty_neighbours(req,res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('get_qty_neighbours:error: not found obj with this md5:'+md5);
+				logger_console_log('get_qty_neighbours:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('get_qty_neighbours:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -6434,7 +6439,7 @@ function get_qty_neighbours(req,res)
 			var pixelsPro_pg_main_image= get_main_image(obj);
 			if(pixelsPro_pg_main_image==null)
 			{
-				console.log('get_qty_neighbours:error: may be white');
+				logger_console_log('get_qty_neighbours:error: may be white');
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('get_qty_neighbours:error: may be white');
 					req.connection.destroy();
@@ -6442,21 +6447,21 @@ function get_qty_neighbours(req,res)
 			}
 			obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);	
 				
-				console.log(post);
+				logger_console_log(post);
 				
 				var x =  +post['x'];
 				var y =  +post['y'];
 				
 				
 				
-				console.log('Before: \n'+pixelsPro_pg_main_image.width);
+				logger_console_log('Before: \n'+pixelsPro_pg_main_image.width);
 				
 				pixelsPro_pg_main_image = setChaosPixels(obj);
-				console.log('After: \n'+pixelsPro_pg_main_image.width);
-				console.log('-=7878=-');
+				logger_console_log('After: \n'+pixelsPro_pg_main_image.width);
+				logger_console_log('-=7878=-');
 				
 				var arr = pixelsPro_getNeighborsColorsAllArray(obj,x,y,pixelsPro_pg_main_image);
-				console.log("arr.length="+arr.length);
+				logger_console_log("arr.length="+arr.length);
 				
 				res.writeHead(200, {  'Content-Type': 'text/html' } );
 				var res0=JSON.stringify(arr);
@@ -6472,14 +6477,14 @@ function get_qty_neighbours(req,res)
 
 function pixels(req,res)	
 {								
-		console.log("\nIn pixels");
+		logger_console_log("\nIn pixels");
 		
 		
 		var body = '';
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -6509,7 +6514,7 @@ function pixels(req,res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('pixels:error: not found obj with this md5:'+md5);
+				logger_console_log('pixels:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('pixels:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -6522,7 +6527,7 @@ function pixels(req,res)
 				if(pixelsPro_pg_main_image==null)
 				{
 					
-					console.log('pixels:error: may be white');
+					logger_console_log('pixels:error: may be white');
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('pixels:error: may be white');
 					req.connection.destroy();
@@ -6533,7 +6538,7 @@ function pixels(req,res)
 			
 			
 			
-			console.log(post);
+			logger_console_log(post);
 			
 			var x =  +post['x'];
 			var y =  +post['y'];
@@ -6541,13 +6546,13 @@ function pixels(req,res)
 			
 			
 			pixelsPro_pg_main_image = setChaosPixels(obj);
-			console.log('-=7878=-');
+			logger_console_log('-=7878=-');
 			
 			
 			
 			if( is_color_ishodn(obj,pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image))==false)
 			{
-				console.log('-=7979=-');
+				logger_console_log('-=7979=-');
 				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 				
 				obj.glob_pixelsPro_errorMessage='1. labirint not ok';
@@ -6583,16 +6588,16 @@ function pixels(req,res)
 				var color = pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 				if(pixelsPro_array_equals(color_prev,color)==false)
 				{
-					console.log('-=791791=-');
+					logger_console_log('-=791791=-');
 					
 					
 					
 					if(left(obj,x,y,pixelsPro_pg_main_image)||right(obj,x,y,pixelsPro_pg_main_image)||floor(obj,x,y,pixelsPro_pg_main_image))
 					{
-						console.log('-=79999=-');
+						logger_console_log('-=79999=-');
 						if(stone_neighbours_of(obj,x,y)==0)
 						{
-							console.log('-=7988889=-');
+							logger_console_log('-=7988889=-');
 							var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 					obj.glob_pixelsPro_errorMessage='6.1.27 stone_neighbours_of not ok';
 								sendImage(result_png, res, '\n6.1.27 stone_neighbours_of not ok\n');	
@@ -6601,7 +6606,7 @@ function pixels(req,res)
 						}
 						else{
 						
-						console.log('-=7988fmhfvuff889=-');
+						logger_console_log('-=7988fmhfvuff889=-');
 						obj.glob_pixelsPro_x_left_top = x;
 						obj.glob_pixelsPro_y_left_top = y;
 						 
@@ -6655,7 +6660,7 @@ function pixels(req,res)
 						
 							
 							var neh = pixelsPro_getNeighborsColors(obj,x,y,color,pixelsPro_pg_main_image);
-							console.log("neh.length="+neh.length);
+							logger_console_log("neh.length="+neh.length);
 							var f=false;
 							for(var inh=0;inh<neh.length;inh++)
 							{
@@ -6691,20 +6696,20 @@ function pixels(req,res)
 						var color =  pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 						obj.glob_pixelsPro_pg_main_color = color;
 			
-						console.log("testing 8888.000");	
+						logger_console_log("testing 8888.000");	
 
 						
 			
 						pixelsPro_pg_main_image = setChaosPixels(obj);
 						
-						console.log("testing 8888.222");
+						logger_console_log("testing 8888.222");
 						
 						var result_png = pixelsPro_redrawPixels_main(obj,x,y,pixelsPro_pg_main_image);
 						
-						console.log("testing 8888.111");
+						logger_console_log("testing 8888.111");
 						//obj.glob_pixelsPro_color_for_pass = define_color_for_pass(x,y,color);
-				//		console.log("testing 222 "+glob_pixelsPro_color_for_pass);
-				console.log("testing 8888.77777");
+				//		logger_console_log("testing 222 "+glob_pixelsPro_color_for_pass);
+				logger_console_log("testing 8888.77777");
 				obj.glob_pixelsPro_errorMessage='5. labirint ok';
 						sendImage(result_png, res, '\n5. labirint ok\n');
 							
@@ -6794,14 +6799,14 @@ function pixels(req,res)
 
 function right_pixels(req,res)	
 {								
-		console.log("\nIn right_pixels");
+		logger_console_log("\nIn right_pixels");
 		
 		
 		var body = '';
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -6830,7 +6835,7 @@ function right_pixels(req,res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('right_pixels:error: not found obj with this md5:'+md5);
+				logger_console_log('right_pixels:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('right_pixels:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -6843,7 +6848,7 @@ function right_pixels(req,res)
 			if(pixelsPro_pg_main_image==null)
 			{
 				
-				console.log('right_pixels:error: may be white');
+				logger_console_log('right_pixels:error: may be white');
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('right_pixels:error: may be white');
 					req.connection.destroy();
@@ -6853,7 +6858,7 @@ function right_pixels(req,res)
 	obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
 			
 			
-			console.log(post);
+			logger_console_log(post);
 			
 			var x =  +post['x'];
 			var y =  +post['y'];
@@ -6865,7 +6870,7 @@ function right_pixels(req,res)
 			pixelsPro_pg_main_image = setChaosPixels(obj); 
 			
 			var neh = pixelsPro_getNeighborsColors(obj,x,y,color,pixelsPro_pg_main_image);
-			console.log("neh.length="+neh.length);
+			logger_console_log("neh.length="+neh.length);
 			
 			var color = pixelsPro_getColorArrayFromImageData(obj,x,y,pixelsPro_pg_main_image);
 			if( post['color'] ) color = cloneColor( post['color'].split(',') );
@@ -6875,7 +6880,7 @@ function right_pixels(req,res)
 				
 			
 			if(x<0||x>=pixelsPro_pg_main_image.width) {
-				console.log("y444");
+				logger_console_log("y444");
 				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			obj.glob_pixelsPro_errorMessage='1. chaos not ok';
 				sendImage(result_png, res, '\n1. chaos not ok\n');	
@@ -6884,7 +6889,7 @@ function right_pixels(req,res)
 				
 			}
 			else if(y<0||y>=pixelsPro_pg_main_image.height) {
-				console.log("y15555");
+				logger_console_log("y15555");
 				var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 			obj.glob_pixelsPro_errorMessage='2. chaos not ok';
 				sendImage(result_png, res, '\n2. chaos not ok\n');	
@@ -6916,7 +6921,7 @@ function right_pixels(req,res)
 					{
 						
 						
-						console.log("y1888");
+						logger_console_log("y1888");
 						
 						var result_png = pixelsPro_redrawPixels_main(obj,obj.glob_pixelsPro_x_left_top,obj.glob_pixelsPro_y_left_top,pixelsPro_pg_main_image);
 					obj.glob_pixelsPro_errorMessage='3. chaos not ok';
@@ -7043,14 +7048,14 @@ function is_color_ishodn(obj,color)
 
 function set_collected_pixels(req,res)	
 {								
-		console.log("\nIn set_collected_pixels");
+		logger_console_log("\nIn set_collected_pixels");
 		
 		
 		var body = '';
 
 		req.on('data', function (data) {
 			
-			//console.log("when req.on data");
+			//logger_console_log("when req.on data");
 			
 			body += data;
 
@@ -7077,7 +7082,7 @@ function set_collected_pixels(req,res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('set_collected_pixels:error: not found obj with this md5:'+md5);
+				logger_console_log('set_collected_pixels:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('set_collected_pixels:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -7089,8 +7094,8 @@ function set_collected_pixels(req,res)
 			
 			
 			
-			//console.log("22");
-			console.log(post);
+			//logger_console_log("22");
+			logger_console_log(post);
 			
 			var x =  +post['x'];
 			var y =  +post['y'];
@@ -7108,16 +7113,16 @@ function __set__collected__pixels(req,res,obj,x,y,color)
 {
 			color=cloneColor(color);
 			
-			// console.log("x="+x);
-			// console.log("y="+y);
-			// console.log("color="+color);
+			// logger_console_log("x="+x);
+			// logger_console_log("y="+y);
+			// logger_console_log("color="+color);
 			
 			
 			var pixelsPro_pg_main_image= get_main_image(obj);
 			if(pixelsPro_pg_main_image==null)
 			{
 				
-				console.log('set_collected_pixels:error: may be white');
+				logger_console_log('set_collected_pixels:error: may be white');
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('set_collected_pixels:error: may be white');
 					req.connection.destroy();
@@ -7174,7 +7179,7 @@ function __set__collected__pixels(req,res,obj,x,y,color)
 					
 					
 								var neh = pixelsPro_getNeighborsColors(obj,x,y,color,pixelsPro_pg_main_image);
-							console.log("neh.length="+neh.length);
+							logger_console_log("neh.length="+neh.length);
 							var f=false;
 							for(var inh=0;inh<neh.length;inh++)
 							{
@@ -7234,7 +7239,7 @@ function get_collected(req, res)
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				console.log('get_collected:error: not found obj with this md5:'+md5);
+				logger_console_log('get_collected:error: not found obj with this md5:'+md5);
 				res.writeHead( 500, { 'Content-Type':'text/plain' } );
 					res.end('get_collected:error:  not found obj with this md5:'+md5);
 					req.connection.destroy();
@@ -7474,7 +7479,7 @@ function pixelsPro_redrawPixels_main(obj, x,y,pixelsPro_pg_main_image)
 			newpng.data[index2+2] = pixelsPro_pg_main_image.data[index+2];
 			newpng.data[index2+3] = pixelsPro_pg_main_image.data[index+3];
 			
-			//console.log('i='+i+' j='+j);
+			//logger_console_log('i='+i+' j='+j);
 		}
 	}
 	
@@ -7853,7 +7858,7 @@ function pixelsPro_setEventListenersOnTri_Btns()
 
 
 app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+  logger_console_log('Node app is running on port', app.get('port'));
 });
 
 var WebSocketServer = new require('ws');
@@ -7869,10 +7874,10 @@ webSocketServer.on('connection', function(ws) {
 
   var id = Math.random();
   clients[id] = ws;
-  console.log("новое соединение " + id);
+  logger_console_log("новое соединение " + id);
 
   ws.on('message', function(message) {
-    // console.log('получено сообщение ' + message);
+    // logger_console_log('получено сообщение ' + message);
 
     // for (var key in clients) {
       // clients[key].send(message);
@@ -7880,7 +7885,7 @@ webSocketServer.on('connection', function(ws) {
   });
 
   ws.on('close', function() {
-    console.log('соединение закрыто ' + id);
+    logger_console_log('соединение закрыто ' + id);
     delete clients[id];
   });
   

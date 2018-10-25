@@ -1,5 +1,5 @@
 //var opbeat = require('opbeat').start()
-var glob_debug_flag=false;
+var glob_debug_flag=true;
 
 var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');
@@ -7856,18 +7856,18 @@ app.listen(app.get('port'), function() {
 
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 8081 });
 
-// Broadcast to all.
-wss.broadcast = function broadcast(data) {
-  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(data);
-    }
-  });
-};
+// // Broadcast to all.
+// wss.broadcast = function broadcast(data) {
+ 
+// };
 
 wss.on('connection', function connection(ws) {
+	ws.on('error', function(error) {
+    console.log(error);
+    // delete clients[id];
+   });
   ws.on('message', function incoming(data) {
     // Broadcast to everyone else.
     wss.clients.forEach(function each(client) {
@@ -7915,6 +7915,11 @@ wss.on('connection', function connection(ws) {
 function when_commit_labirints_changes()
 {
 	 console.log("when_commit_labirints_changes");
-	 wss.broadcast('Take last update, please, from '+new Date());
+	  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send('Take last update, please, from '+new Date());
+    }
+  });
+	// wss.broadcast();
 	//for (var key in clients) {  clients[key].send('Take last update, please, from '+new Date());	}
 }

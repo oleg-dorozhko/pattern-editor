@@ -4604,6 +4604,7 @@ function blob_from_server(req, res)
 
 function get_main_image(obj)
 {
+	try{
 	var id = obj.glob_pixelsPro_pg_main_image_id;
 	
 	var buf = get_array_buffer_by_id(id);
@@ -4611,6 +4612,15 @@ function get_main_image(obj)
 	var ind = get_index_of_main_image(id);
 	
 	return createPNGfromBuffer(global_patterns_objects_array[ind].width, global_patterns_objects_array[ind].height, buf);
+	}
+	catch(e)
+	{
+		logger_console_log('catch err in  get_main_image');
+		logger_console_log('id='+ obj.glob_pixelsPro_pg_main_image_id);
+		logger_console_log('ind='+get_index_of_main_image(id));
+	
+		return null;
+	}
 }
 
 function all_buzy_free(req,res)
@@ -4816,9 +4826,13 @@ function commit_labirints_changes(req, res)
 					{
 						
 						logger_console_log('commit_labirints_changes:error: may be white');
-						res.writeHead( 500, { 'Content-Type':'text/plain' } );
-						res.end('get_chaosed_labirint:error: may be white');
-						req.connection.destroy();
+						
+						init_pixels(req,res);
+						
+						// res.writeHead( 500, { 'Content-Type':'text/plain' } );
+						// res.end('get_chaosed_labirint:error: may be white');
+						
+						// req.connection.destroy();
 						return;
 						
 					}
@@ -4835,10 +4849,12 @@ function commit_labirints_changes(req, res)
 							res.end("changes commited");
 						}
 						else{
-							logger_console_log('commit_labirints_changes:error: something wrong');
-							res.writeHead( 500, { 'Content-Type':'text/plain' } );
-							res.end('commit_labirints_changes:error: may be white');
-							req.connection.destroy();
+							clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
+							logger_console_log(global_buzy_object);
+							logger_console_log("changes commited. png is white");
+						//	when_commit_labirints_changes();
+							res.writeHead( 200, { 'Content-Type':'text/plain' } );
+							res.end("changes commited. png is white");
 							return;
 							
 						}
@@ -4978,6 +4994,10 @@ function combo_by_white_two_array_buffers(old_ab,new_ab,w,h)
 {
 	var old_png = createPNGfromBuffer(w,h,old_ab);
 	var new_png = createPNGfromBuffer(w,h,new_ab);
+	
+	if(check_is_white(new_png)==true) return null; 
+	
+	
 	var result_png = new PNG ( {
 						
 							width: w,
@@ -5037,6 +5057,9 @@ function old_combo_by_white_two_array_buffers(old_ab,new_ab,w,h)
 {
 	var old_png = createPNGfromBuffer(w,h,old_ab);
 	var new_png = createPNGfromBuffer(w,h,new_ab);
+	
+	
+	
 	var result_png = new PNG ( {
 						
 							width: w,
@@ -5108,7 +5131,7 @@ function combo_old_main_image_and_changed_main_image(where_png_id,in_memory_id)
 					{
 			
 						obj.png=combo_by_white_two_array_buffers(obj.png,global_memory[ind].png,obj.width,obj.height); //we buffer have here, newest buffer
-						
+						if(obj.png==null) {obj.white=true;obj.png=global_memory[ind].png; return null;}
 						global_patterns_objects_array[i]=obj;
 						
 						
@@ -5170,9 +5193,43 @@ function set_buffer_by_id(where_png_id,in_memory_id)
 	return false;
 }
 
-function check_is_not_white(png)
+
+function is_white(color2)
 {
-	return true; //not white
+	var color=[255,255,255,255];
+	if(
+					(color2[0] == color[0]) &&
+					(color2[1] == color[1]) &&
+					(color2[2] == color[2]) &&
+					(color2[3]== color[3])
+					
+		) 
+			{
+				return true;
+			}
+			return false;
+
+}
+
+function check_is_white(png)
+{
+	
+	var imgData0 = png;
+	
+	for(var ind=0;ind<imgData0.data.length;ind+=4)
+	{
+		
+		var arr0 = [];
+		arr0[0] = imgData0.data[ind];	
+		arr0[1] = imgData0.data[ind+1];	
+		arr0[2] = imgData0.data[ind+2];
+		arr0[3] = imgData0.data[ind+3];	
+				
+		if(is_white(arr0)==false) return false;
+	}
+	
+	return true;
+	
 }	
 	
 function  get_allowed_pattern_id()
@@ -5530,10 +5587,12 @@ function get_chaosed_labirint(req, res)
 			if(pixelsPro_pg_main_image==null)
 			{
 				
-				logger_console_log('get_chaosed_labirint:error: may be white');
-				res.writeHead( 500, { 'Content-Type':'text/plain' } );
-					res.end('get_chaosed_labirint:error: may be white');
-					req.connection.destroy();
+				//logger_console_log('get_chaosed_labirint:error: may be white\n'+JSON.stringify(obj);
+				glob_labirint_memory.splice(ind,1); 
+				init_pixels(req,res);
+			//	res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			//		res.end('get_chaosed_labirint:error: may be white');
+			//		req.connection.destroy();
 					return;
 				
 			}
@@ -6157,7 +6216,7 @@ function init_pixels(req, res)
 	/////////////////////////////////////////
 	//create_glob_labirint_memory_object();
 	/////////////////////////////////////////
-	
+	console.log('create_glob_labirint_memory_obj');
 	var obj = {};
 	obj.id = generate_md5_id();
 	obj.glob_pixelsPro_x_left_top = 0;

@@ -1,5 +1,5 @@
 //var opbeat = require('opbeat').start()
-var glob_debug_flag=false;
+var glob_debug_flag=true;
 
 var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');
@@ -4830,7 +4830,7 @@ function commit_labirints_changes(req, res)
 							clear_buzy(obj.glob_pixelsPro_pg_main_image_id,obj.id);
 							logger_console_log(global_buzy_object);
 							logger_console_log("changes commited");
-							when_commit_labirints_changes();
+						//	when_commit_labirints_changes();
 							res.writeHead( 200, { 'Content-Type':'text/plain' } );
 							res.end("changes commited");
 						}
@@ -4993,6 +4993,65 @@ function combo_by_white_two_array_buffers(old_ab,new_ab,w,h)
 							
 								
 								var idx = result_png.width * j + i << 2;
+								// if(colors_equals(old_png,idx,new_png,idx)==false)
+								// {
+									// if(is_white(old_png,idx))
+									// {
+										// result_png.data[idx] = old_png.data[idx];
+										// result_png.data[idx+1] = old_png.data[idx+1];
+										// result_png.data[idx+2] = old_png.data[idx+2];
+										// result_png.data[idx+3] = old_png.data[idx+3];
+									// }
+									// else if(is_white(new_png,idx))
+									// {
+										// result_png.data[idx] = new_png.data[idx];
+										// result_png.data[idx+1] = new_png.data[idx+1];
+										// result_png.data[idx+2] = new_png.data[idx+2];
+										// result_png.data[idx+3] = new_png.data[idx+3];
+									// }
+									// else
+									// {
+										// result_png.data[idx] = 0;
+										// result_png.data[idx+1] = 0;
+										// result_png.data[idx+2] = 0;
+										// result_png.data[idx+3] = 255;
+									// }
+								// }
+								// else
+							//	{
+									result_png.data[idx] = new_png.data[idx];
+									result_png.data[idx+1] = new_png.data[idx+1];
+									result_png.data[idx+2] = new_png.data[idx+2];
+									result_png.data[idx+3] = new_png.data[idx+3];
+							//	}
+								
+								
+						}
+					}
+					
+					return createBufferfromPNG(result_png);
+}
+
+
+function old_combo_by_white_two_array_buffers(old_ab,new_ab,w,h)
+{
+	var old_png = createPNGfromBuffer(w,h,old_ab);
+	var new_png = createPNGfromBuffer(w,h,new_ab);
+	var result_png = new PNG ( {
+						
+							width: w,
+							height: h,
+							filterType: 4
+					} );
+					
+		
+					for(var j=0;j<result_png.height;j++)
+					{
+						for(var i=0;i<result_png.width;i++)
+						{
+							
+								
+								var idx = result_png.width * j + i << 2;
 								if(colors_equals(old_png,idx,new_png,idx)==false)
 								{
 									if(is_white(old_png,idx))
@@ -5031,7 +5090,6 @@ function combo_by_white_two_array_buffers(old_ab,new_ab,w,h)
 					
 					return createBufferfromPNG(result_png);
 }
-
 
 
 function combo_old_main_image_and_changed_main_image(where_png_id,in_memory_id)
@@ -5139,7 +5197,7 @@ function  get_allowed_pattern_id()
 		
 		var obj = {};
 		obj.id=generate_md5_id();
-		obj.count=1;
+		obj.count=4;
 		obj.white=false;
 		var rnd='number of pattern schema';
 		var png = generate_new_pattern(rnd); //new PNG({filterType: 4});
@@ -5332,7 +5390,7 @@ function __execute_script(commands)
 function generate_new_pattern()
 {
 	var txt=[];
-	txt[0] = "generate random seed 9 5, mirror right, mirror down, axes minus, axes minus, mirror right, mirror down, axes minus, plus,plus,plus,median,rotate plus 45,median,plus";
+	txt[0] = "generate random seed 9 5, mirror right, mirror down, axes minus, axes minus, mirror right, mirror down, axes minus, plus,median,rotate plus 45,median";
 	
 	return __execute_script(txt[0]);
 	
@@ -6208,6 +6266,134 @@ function init_pixels(req, res)
 		});
 		
 	
+}
+
+function get_labirint_settings(req, res)
+{
+	
+	var body = '';
+
+		req.on('data', function (data) {
+			
+			//logger_console_log("when req.on data");
+			
+			body += data;
+
+			// Too much POST data, kill the connection!
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+			if (body.length > 99)
+			{
+				res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end("init_labirint_settings: error: data.length > 99 too big");
+				req.connection.destroy();
+				return;
+			}
+			
+		});
+
+		req.on('end', function () {
+			
+			
+			
+		
+			var post = qs.parse(body);
+			
+		var md5 =  post['md5'];
+		var ind = getIndexObjectByMD5(md5);
+		if(ind==null)
+		{
+			logger_console_log('get_labirint_settings:error: not found obj with this md5:'+md5);
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end('get_labirint_settings:error:  not found obj with this md5:'+md5);
+				req.connection.destroy();
+				return;
+		}
+	
+		var obj = glob_labirint_memory[ind];
+		
+		
+		var pixelsPro_pg_main_image= get_main_image(obj);
+		if(pixelsPro_pg_main_image==null)
+		{
+			logger_console_log('get_labirint_settings:error: not found labirint with this md5:'+md5);
+			res.writeHead( 500, { 'Content-Type':'text/plain' } );
+			res.end('get_labirint_settings:error: not found labirint with this md5:'+md5);
+			req.connection.destroy();
+			return;
+			
+		}
+		obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
+		
+			// var x =  +post['x'];
+			// var y =  +post['y'];
+			
+			// logger_console_log("x="+x);
+			// logger_console_log("y="+y);
+			// obj.glob_pixelsPro_x_left_top=x;
+			// obj.glob_pixelsPro_y_left_top=y;
+			var nn =  +post['scale_koeficient'];
+			obj.glob_pixelsPro_pg_pixels_scale = nn;
+			obj.glob_num_of_strawbery =  +post['num_of_strawbery'];
+				
+				var newpng = new PNG(
+			{
+				width: pixelsPro_pg_main_image.width,
+				height: pixelsPro_pg_main_image.height,
+				filterType: 4
+			});
+			
+			for(var i=0;i<pixelsPro_pg_main_image.width;i++)
+			{
+				for(var j=0;j<pixelsPro_pg_main_image.height;j++)
+				{
+					
+					var index2 = pixelsPro_pg_main_image.width * j + i << 2;
+					
+					newpng.data[index2+0] = 127;
+					newpng.data[index2+1] = 127;
+					newpng.data[index2+2] = 127;
+					newpng.data[index2+3] = 255;
+					
+					
+				}
+			}	
+			obj.global_karman_stones=[];
+			obj.global_inside_stones=[];
+			var w = pixelsPro_pg_main_image.width;
+			var h = pixelsPro_pg_main_image.height;
+			var n=obj.glob_num_of_strawbery;
+			for(var i=0;i<n;i++)
+			{
+				var rx = getRandomInt(0, w);
+				var ry = getRandomInt(0, h);
+				var rgba = getRndColor();
+				var ind = ry*w + rx << 2;
+				newpng.data[ind] = rgba[0];
+				newpng.data[ind+1] = rgba[1];
+				newpng.data[ind+2] = rgba[2];
+				newpng.data[ind+3] = rgba[3];
+				if(stone_in_array(obj,rx,ry,rgba)==false)
+				addStone(obj,rx,ry,cloneColor(rgba),obj.global_inside_stones);
+			}
+	
+		
+	
+		
+		obj.glob_pixelsPro_pg_boh_image = newpng;
+	
+			pixelsPro_pg_main_image = setChaosPixels(obj);
+				
+			var result_png = pixelsPro_redrawPixels_main(obj,x,y,pixelsPro_pg_main_image);
+								
+			sendImage(result_png, res, '\ngetting Labirint ok\n');	
+			
+			
+			
+			
+		});
+		
+	
+					
 }
 
 function init_labirint_settings(req, res)
@@ -7900,72 +8086,72 @@ var listener = app.listen(app.get('port'), function() {
   //console.log('Node app is running on port', listener.address());
 });
 
-const WebSocket = require('ws');
+// const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ server:listener });
+// const wss = new WebSocket.Server({ server:listener });
 
-// // Broadcast to all.
-// wss.broadcast = function broadcast(data) {
+// // // Broadcast to all.
+// // wss.broadcast = function broadcast(data) {
  
-// };
+// // };
 
-wss.on('connection', function connection(ws) {
-	ws.on('error', function(error) {
-    console.log(error);
-    // delete clients[id];
-   });
-  ws.on('message', function incoming(data) {
-    // Broadcast to everyone else.
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
-    });
-  });
-});
-
-// var WebSocketServer = new require('ws').Server;
-
-// // подключенные клиенты
-// var clients = {};
-// //
-// // WebSocket-сервер на порту 8081
-// var webSocketServer = new WebSocketServer({server:app});
-// app.on('upgrade', webSocketServer.handleUpgrade);
-// webSocketServer.on('connection', function(ws) {
-
-  // var id = Math.random();
-  // clients[id] = ws;
-  // console.log("новое соединение " + id);
-
-  // ws.on('message', function(message) {
-    // // logger_console_log('получено сообщение ' + message);
-
-    // // for (var key in clients) {
-      // // clients[key].send(message);
-    // // }
+// wss.on('connection', function connection(ws) {
+	// ws.on('error', function(error) {
+    // console.log(error);
+    // // delete clients[id];
+   // });
+  // ws.on('message', function incoming(data) {
+    // // Broadcast to everyone else.
+    // wss.clients.forEach(function each(client) {
+      // if (client !== ws && client.readyState === WebSocket.OPEN) {
+        // client.send(data);
+      // }
+    // });
   // });
-
-  // ws.on('close', function() {
-    // console.log('соединение закрыто ' + id);
-    // delete clients[id];
-  // });
-  
- 
-  
 // });
 
+// // var WebSocketServer = new require('ws').Server;
+
+// // // подключенные клиенты
+// // var clients = {};
+// // //
+// // // WebSocket-сервер на порту 8081
+// // var webSocketServer = new WebSocketServer({server:app});
+// // app.on('upgrade', webSocketServer.handleUpgrade);
+// // webSocketServer.on('connection', function(ws) {
+
+  // // var id = Math.random();
+  // // clients[id] = ws;
+  // // console.log("новое соединение " + id);
+
+  // // ws.on('message', function(message) {
+    // // // logger_console_log('получено сообщение ' + message);
+
+    // // // for (var key in clients) {
+      // // // clients[key].send(message);
+    // // // }
+  // // });
+
+  // // ws.on('close', function() {
+    // // console.log('соединение закрыто ' + id);
+    // // delete clients[id];
+  // // });
+  
+ 
+  
+// // });
 
 
-//setInterval(  () => { for (var key in clients) {  clients[key].send(''+new Date());	}  },  1000  );
-function when_commit_labirints_changes()
-{
-	 console.log("when_commit_labirints_changes");
-	  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send('Take last update, please, from '+new Date());
-    }
-  });
-	// wss.broadcast();
-	//for (var key in clients) {  clients[key].send('Take last update, please, from '+new Date());	}
-}
+
+// //setInterval(  () => { for (var key in clients) {  clients[key].send(''+new Date());	}  },  1000  );
+// function when_commit_labirints_changes()
+// {
+	 // console.log("when_commit_labirints_changes");
+	  // wss.clients.forEach(function each(client) {
+    // if (client.readyState === WebSocket.OPEN) {
+      // client.send('Take last update, please, from '+new Date());
+    // }
+  // });
+	// // wss.broadcast();
+	// //for (var key in clients) {  clients[key].send('Take last update, please, from '+new Date());	}
+// }

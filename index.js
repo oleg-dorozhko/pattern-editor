@@ -4826,11 +4826,11 @@ function commit_labirints_changes(req, res)
 					{
 						
 						logger_console_log('commit_labirints_changes:error: may be white');
+						glob_labirint_memory.splice(ind,1);
+						//init_pixels(req,res);
 						
-						init_pixels(req,res);
-						
-						// res.writeHead( 500, { 'Content-Type':'text/plain' } );
-						// res.end('get_chaosed_labirint:error: may be white');
+						res.writeHead( 200, { 'Content-Type':'text/plain' } );
+						res.end('get_chaosed_labirint:error: may be white');
 						
 						// req.connection.destroy();
 						return;
@@ -5447,7 +5447,7 @@ function __execute_script(commands)
 function generate_new_pattern()
 {
 	var txt=[];
-	txt[0] = "generate random seed 9 5, mirror right, mirror down, axes minus, axes minus, mirror right, mirror down, axes minus, plus,median,rotate plus 45,median";
+	txt[0] = "generate random seed 9 5, mirror right, mirror down, axes minus, axes minus, mirror right, mirror down, axes minus, plus,median,rotate plus 45,median,plus";
 	
 	return __execute_script(txt[0]);
 	

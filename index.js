@@ -1,5 +1,5 @@
 //var opbeat = require('opbeat').start()
-var glob_debug_flag=true;
+var glob_debug_flag=false;
 
 var mod_rio = require('./lib/mod_rio');
 var mod_up = require('./lib/mod_up');
@@ -4602,7 +4602,7 @@ function blob_from_server(req, res)
 					
 }
 
-function get_main_image(obj)
+function get_main_image(obj, w, h)
 {
 	try{
 	var id = obj.glob_pixelsPro_pg_main_image_id;
@@ -4610,7 +4610,11 @@ function get_main_image(obj)
 	var buf = get_array_buffer_by_id(id);
 	
 	var ind = get_index_of_main_image(id);
-	
+	if((w!=undefined)&&(h!=undefined)&&(ind!=null))
+	{
+		global_patterns_objects_array[ind].width=w;
+		global_patterns_objects_array[ind].height=h;
+	}
 	return createPNGfromBuffer(global_patterns_objects_array[ind].width, global_patterns_objects_array[ind].height, buf);
 	}
 	catch(e)
@@ -4804,15 +4808,24 @@ function commit_labirints_changes(req, res)
 			
 			
 			var md5 =  post['md5'];
+			// var rnd= post['rnd_pattern_schema'];
+			// logger_console_log('height='+he);
+			// var wi= post['width'];
+			// logger_console_log('width='+wi);
+			// var he= post['height'];
+			// logger_console_log('height='+he);
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
-				logger_console_log('commit_labirints_changes:error: not found obj with this md5:'+md5);
-				res.writeHead( 500, { 'Content-Type':'text/plain' } );
-					res.end('commit_labirints_changes:error:  not found obj with this md5:'+md5);
-					req.connection.destroy();
-					return;
+					logger_console_log('commit_labirints_changes:error: not found obj with this md5:'+md5);
+					
+					res.writeHead( 500, { 'Content-Type':'text/plain' } );
+				res.end('commit_labirints_changes:error: not found obj with this md5:'+md5);
+				req.connection.destroy();
+				return;
+					
 			}
+			
 		
 			var obj = glob_labirint_memory[ind];
 			var nm1 =  post['data_id'];
@@ -5232,7 +5245,7 @@ function check_is_white(png)
 	
 }	
 	
-function  get_allowed_pattern_id()
+function  get_allowed_pattern_id(rnd)
 {
 	var ind=null;
 	for(var i=0;i<global_patterns_objects_array.length;i++)
@@ -5256,7 +5269,7 @@ function  get_allowed_pattern_id()
 		obj.id=generate_md5_id();
 		obj.count=4;
 		obj.white=false;
-		var rnd='number of pattern schema';
+		//var rnd='number of pattern schema';
 		var png = generate_new_pattern(rnd); //new PNG({filterType: 4});
 		if(png == null) return null;
 		
@@ -5444,12 +5457,27 @@ function __execute_script(commands)
 	
 }
 
-function generate_new_pattern()
+function generate_new_pattern(num)
 {
+	if(num==undefined) num=0;
+	num = ''+num;
+	var regexp = /^\d$/;
+	logger_console_log( num.search(regexp) );
+	if(num.search(regexp)==-1) num='0';
+	// var str = "45"//Я люблю56 JavaScript!"; // будем искать в этой строке
+    // var regexp = /^\d$/;
+    // logger_console_log( str.search(regexp) ); // -1
+	num=Number(''+num);
+	
+	if(num<0) num=0;
+	if(num>2) num = 2;
+	
 	var txt=[];
 	txt[0] = "generate random seed 9 5, mirror right, mirror down, axes minus, axes minus, mirror right, mirror down, axes minus, plus,median,rotate plus 45,median,plus";
+	txt[1] = "generate random seed, mirror right, mirror down, axes minus, plus, plus, plus, plus, median, median,rotate plus 45,median, mirror right, mirror down";
+	txt[2] = "generate random seed 9 5, mirror right, mirror down, axes minus, axes minus, mirror right, mirror down, axes minus, plus,median,rotate plus 45,median,plus,plus,plus";
 	
-	return __execute_script(txt[0]);
+	return __execute_script(txt[num]);
 	
 	
 }
@@ -6209,6 +6237,9 @@ function init_pixels(req, res)
 				
 			var post = qs.parse(body);
 			var md5 =  post['md5'];
+			var rnd =  post['rnd_pattern_schema'];
+			logger_console_log('rnd='+rnd);
+			if(rnd==undefined) rnd=0;
 			var ind = getIndexObjectByMD5(md5);
 			if(ind==null)
 			{
@@ -6216,7 +6247,7 @@ function init_pixels(req, res)
 	/////////////////////////////////////////
 	//create_glob_labirint_memory_object();
 	/////////////////////////////////////////
-	console.log('create_glob_labirint_memory_obj');
+	logger_console_log('create_glob_labirint_memory_obj');
 	var obj = {};
 	obj.id = generate_md5_id();
 	obj.glob_pixelsPro_x_left_top = 0;
@@ -6267,7 +6298,7 @@ function init_pixels(req, res)
 
 	}
 	
-	obj.glob_pixelsPro_pg_main_image_id = get_allowed_pattern_id();
+	obj.glob_pixelsPro_pg_main_image_id = get_allowed_pattern_id(rnd);
 	logger_console_log('init_pixels:obj.glob_pixelsPro_pg_main_image_id ='+obj.glob_pixelsPro_pg_main_image_id );	
 	if(obj.glob_pixelsPro_pg_main_image_id==null)
 	{
@@ -8203,8 +8234,8 @@ var listener = app.listen(app.get('port'), function() {
 
 
 // //setInterval(  () => { for (var key in clients) {  clients[key].send(''+new Date());	}  },  1000  );
-// function when_commit_labirints_changes()
-// {
+ function when_commit_labirints_changes()
+ {
 	 // console.log("when_commit_labirints_changes");
 	  // wss.clients.forEach(function each(client) {
     // if (client.readyState === WebSocket.OPEN) {
@@ -8213,4 +8244,110 @@ var listener = app.listen(app.get('port'), function() {
   // });
 	// // wss.broadcast();
 	// //for (var key in clients) {  clients[key].send('Take last update, please, from '+new Date());	}
-// }
+}
+
+
+
+
+
+
+
+
+
+
+
+function create_glob_labirint_memory_obj(rnd,wi,he)
+{			
+				
+	console.log('in create_glob_labirint_memory_obj: ');
+	
+	var obj = {};
+	obj.id = generate_md5_id();
+	obj.glob_pixelsPro_x_left_top = 0;
+	obj.glob_pixelsPro_y_left_top = 0;
+	obj.glob_pixelsPro_point = null;
+	obj.glob_pixelsPro_collected = [];
+	obj.glob_pixelsPro_pg_main_color = null;
+	obj.glob_pixelsPro_showing_scale_div = false;
+	obj.glob_pixelsPro_scale_div = null;
+	obj.global_karman_stones=[];
+	obj.global_inside_stones=[];
+	obj.number_of_collected_stones=0;
+	obj.glob_pixelsPro_errorMessage='none';
+	obj.glob_pixelsPro_pg_boh_image = null;
+	obj.glob_pixelsPro_pg_map_image = null;
+	obj.glob_pixelsPro_pg_pixels_scale = 2;
+	
+	obj.copy_image = function(oldpng)
+	{
+		//logger_console_log('\nIn copy_image(...)\n');
+	
+		
+		var newpng = new PNG(
+		{
+			width: oldpng.width,
+			height: oldpng.height,
+			filterType: 4
+		});
+		
+		for(var i=0;i<newpng.width;i++)
+		{
+			for(var j=0;j<newpng.height;j++)
+			{
+				
+				var index = newpng.width * j + i << 2;
+				
+				newpng.data[index] = oldpng.data[index];
+				newpng.data[index+1] = oldpng.data[index+1];
+				newpng.data[index+2] = oldpng.data[index+2];
+				newpng.data[index+3] = oldpng.data[index+3];
+				
+				
+			}
+		}	
+		
+		return newpng;
+			
+
+	}
+	
+	if(rnd==undefined) rnd=0;
+	obj.glob_pixelsPro_pg_main_image_id = get_allowed_pattern_id(rnd);
+	logger_console_log('create_glob_labirint_memory_obj:obj.glob_pixelsPro_pg_main_image_id ='+obj.glob_pixelsPro_pg_main_image_id );	
+	if(obj.glob_pixelsPro_pg_main_image_id==null)
+	{
+		
+		logger_console_log("create_glob_labirint_memory_obj: error: obj.glob_pixelsPro_pg_main_image_id==null");
+		
+		return null;;	
+	}
+	
+	var pixelsPro_pg_main_image = get_main_image(obj,wi,he);
+	if(pixelsPro_pg_main_image==null)
+			{
+				logger_console_log('create_glob_labirint_memory_obj:error: pixelsPro_pg_main_image==null');
+				
+					return null;
+			}
+	obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
+	//req.pipe(obj.glob_pixelsPro_pg_main_image).on( 'parsed', function()  {
+		
+	
+		var x=obj.glob_pixelsPro_x_left_top;
+		var y=obj.glob_pixelsPro_y_left_top;
+		
+		var index = pixelsPro_pg_main_image.width * (y) + (x) << 2;
+				var color = [
+					pixelsPro_pg_main_image.data[index],
+					pixelsPro_pg_main_image.data[index+1],
+					pixelsPro_pg_main_image.data[index+2],
+					pixelsPro_pg_main_image.data[index+3]
+				];
+				obj.glob_pixelsPro_pg_main_color=color;
+				
+				obj.glob_pixelsPro_pg_map_image = obj.copy_image(pixelsPro_pg_main_image);
+				
+				glob_labirint_memory.push(obj);
+				
+				return getIndexObjectByMD5(obj.id);		
+	}	
